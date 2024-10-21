@@ -1,0 +1,25 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Courgette&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+.greeting-container{
+    font-family: "Courgette", cursive;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.greeting-container-left{
+    font-size: 20px;
+    margin: 0;
+}
+.greeting-container-left > h4 {
+    margin: 0;
+    padding-bottom:5px;
+}
+.greeting-container-left > h6 {
+    margin: 0;
+    color: rgb(128, 126, 126);
+    font-weight: 300;
+}
+.history-container{
+    margin-right: 20px;
+}

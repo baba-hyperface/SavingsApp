@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+.balance-container{
+    display: flex;
+     font-family: "Noto Sans", sans-serif;
+}
+.balance-container-left{
+    background-color: #380080;
+    margin-top: 20px;
+    width: 40%;
+    height: 50vh;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+
+}
+.balance-container-right{
+    background-color: #380080;
+    margin-top: 20px;
+    width: 15%;
+    height: 40vh;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    position: relative;
+}
+.add-fund-button{
+    position: absolute;
+    bottom: -25%;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 1rem;
+    left: 3%;
+    color: rgb(218, 218, 218);
+    background-color: #1A1A1A;
+    border: none;
+    padding: 24px;
+    width: 95%;
+    border-radius: 20px;
+    font-weight: 300;
+    letter-spacing: 1px;
+
+}
+
+.amount-container{
+    margin-left: 40px;
+    display: flex;
+    flex-direction: column;
+    height: 47vh;
+    justify-content: space-between;
+
+}
+.total-balance{
+    margin: 30px 0 5px 0;
+    color: rgb(206, 203, 203);
+    font-size: 13px;
+}
+.balance-amount{
+    color: white;
+    letter-spacing: 2px;
+    font-weight: 600;
+    font-size: 20px;
+    padding-left: 20px;
+    margin: 0;
+}
+.account-details-container{
+    display: flex;
+    justify-content: space-between;
+}
+.account-number > h5{
+    color: rgb(186, 185, 185);
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 100;
+    font-size: 20px;
+    margin: 0;
+
+}
+.account-number > p{
+    margin: 0;
+    color: white;
+    margin-right: 50px;
+}
+.expire-date > h5{
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 100;
+    font-size: 20px;
+    margin: 0;
+    color: rgb(193, 193, 193);
+}
+.expire-date > p{
+    margin: 0;
+    color: white;
+    margin-right: 50px;
+    letter-spacing: 1px;
+}
+.donut-style{
+    margin-left: 15%;
+}
+
+
+
+@media (max-width: 1208px) {
+    .add-fund-button {
+        font-size: 0.9rem;
+        padding: 20px;
+        width: 90%;
+        left: 5%;
+    }
+}
+
+/* Adjust for mobile devices */
+@media (max-width: 1081px) {
+    .add-fund-button {
+        font-size: 0.8rem;
+        padding: 19px;
+        width: 85%;
+        left: 7%;
+        bottom: -24%;
+    }
+}
+
+@media (max-width: 1064px) {
+    .add-fund-button {
+        font-size: 0.7rem;
+        padding: 19px;
+        width: 85%;
+        left: 7%;
+        bottom: -24%;
+    }
+}
