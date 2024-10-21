@@ -22,7 +22,7 @@ export const Was = () => {
                 setLoading(false);
             } catch (error) {
                 setError(error);
-                console.log(error);
+                console.log("error",error);
             }
         }
         fetchUserdata();

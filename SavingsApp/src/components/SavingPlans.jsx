@@ -14,7 +14,7 @@ import {
   Input,
   useToast,
 } from '@chakra-ui/react';
-import axios from 'axios';
+import api from './api';
 
 export const SavingPlans = ({totalBalance, onBalanceUpdate, updateBalance}) => {
   const [plans, setPlans] = useState([]);
@@ -35,7 +35,7 @@ export const SavingPlans = ({totalBalance, onBalanceUpdate, updateBalance}) => {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/user/${userId}/savingplan`);
+        const res = await api.get(`/user/${userId}/savingplan`);
         setPlans(res.data);
       } catch (error) {
         console.error('Error fetching saving plans:', error);
@@ -59,7 +59,7 @@ export const SavingPlans = ({totalBalance, onBalanceUpdate, updateBalance}) => {
     if (selectedPlanId && addMoney) {
       try {
         const amountToAdd = parseFloat(addMoney);
-        const response = await axios.patch(`http://localhost:5000/api/user/${userId}/savingplan/${selectedPlanId}`, {
+        const response = await api.patch(`/user/${userId}/savingplan/${selectedPlanId}`, {
           currentBalance: amountToAdd,
         });
         const newBalance = await updateBalance(userId, balance, addMoney, false)
@@ -114,7 +114,7 @@ export const SavingPlans = ({totalBalance, onBalanceUpdate, updateBalance}) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this plan?');
     if (confirmDelete) {
       try {
-        await axios.delete(`http://localhost:5000/api/user/${userId}/savingplan/${planId}`);
+        await api.delete(`/user/${userId}/savingplan/${planId}`);
         setPlans((prevPlans) => prevPlans.filter((plan) => plan._id !== planId));
         toast({
           title: "Amount debited",

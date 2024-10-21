@@ -78,22 +78,38 @@ savingPlanRouter.patch('/user/:userId/savingplan/:potId',protect, async (req, re
         res.status(500).json({ message: error.message });
     }
 });
-savingPlanRouter.get('/user/:userId/savingplan/:potId', async (req, res) => {
-    const { userId, potId } = req.params;
+// savingPlanRouter.get('/user/:userId/savingplan',protect, async (req, res) => {
+//     const { userId, potId } = req.params;
+
+//     try {
+//         if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(potId)) {
+//             return res.status(400).json({ message: 'Invalid user ID or pot ID' });
+//         }
+//         const user = await User.findById(userId).populate('pots');
+//         if (!user) {
+//             return res.status(404).json({ message: 'User not found' });
+//         }
+//         const pot = user.pots.find(pot => pot._id.toString() === potId);
+//         if (!pot) {
+//             return res.status(404).json({ message: 'Saving plan not found' });
+//         }
+//         res.json(pot);
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// });
+savingPlanRouter.get('/user/:userId/savingplan', async (req, res) => {
+    const { userId } = req.params;
 
     try {
-        if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(potId)) {
-            return res.status(400).json({ message: 'Invalid user ID or pot ID' });
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: 'Invalid user ID' });
         }
         const user = await User.findById(userId).populate('pots');
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        const pot = user.pots.find(pot => pot._id.toString() === potId);
-        if (!pot) {
-            return res.status(404).json({ message: 'Saving plan not found' });
-        }
-        res.json(pot);
+        res.json(user.pots);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

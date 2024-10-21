@@ -18,12 +18,12 @@ export const Transaction = () => {
                 setLoading(true);
                 const res = await api.get(`/history`)
                 setHistorydata(res.data);
-                console.log(historydata);
+                console.log("historydata",historydata);
                 console.log(res.data);
                 setLoading(false);
             } catch (error) {
                 setError(error);
-                console.log(error);
+                console.log("error in history fetching",error);
             }
         }
         fetchUserdata();
