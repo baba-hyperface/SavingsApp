@@ -16,6 +16,7 @@ import {
   Select, 
 } from '@chakra-ui/react';
 import api from './api';
+import { Transaction } from './Transaction';
 
 export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
   const [plans, setPlans] = useState([]);
@@ -26,6 +27,7 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
   const [selectedCategory, setSelectedCategory] = useState('all'); // Default to 'all'
   const { onClose, onOpen, isOpen } = useDisclosure();
   const [balance, setBalance] = useState(totalBalance);
+  const [hsitoryOpen, setHistory] = useState(false);
   const toast = useToast();
   const userIdFromLocalStorage = localStorage.getItem("userid");
   const userId = userIdFromLocalStorage;
@@ -33,6 +35,10 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
   useEffect(() => {
     setBalance(totalBalance || 0);
   }, [totalBalance]);
+
+  const HandleHistory = () => {
+    setHistory(!hsitoryOpen);
+  }
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -198,6 +204,14 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
                 </button>
                 <button onClick={() => handleDeletePlan(plan._id)} className="delete-btn">
                   <i className="fa-solid fa-trash"></i> Delete
+                </button>
+                <button className='history-btn' onClick={HandleHistory}>
+                <i class="fa-solid fa-clock-rotate-left"></i> history
+                {hsitoryOpen && (
+                  <div>
+                    
+                  </div>
+                ) }
                 </button>
               </div>
             </div>

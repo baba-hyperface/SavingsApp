@@ -12,8 +12,6 @@ export const Greeting = ({name}) => {
         <h6>How are you today?</h6>
         </div>
         <div className='history-container'>
-
-        <Transaction />
         </div>
     </div>
   )
