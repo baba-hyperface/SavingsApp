@@ -6,9 +6,28 @@ export const Transaction = ({history}) => {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-    const toggleHistory = async () => {
-      setIsHistoryOpen(!isHistoryOpen);
-    };
+  const [historydata,setHistorydata]=useState([]);
+  const toggleHistory = () => {
+    setIsHistoryOpen(!isHistoryOpen);
+  };
+ const userIdFromLocalStorage = localStorage.getItem("userid");
+
+    useEffect(() => {
+        const fetchUserdata = async () => {
+            try {
+                setLoading(true);
+                const res = await api.get(`/history`);
+                setHistorydata(res.data.historydata);
+                console.log("history data",historydata);
+                console.log(res.data.historydata);
+                setLoading(false);
+            } catch (error) {
+                setError(error);
+                console.log("error in history fetching",error);
+            }
+        }
+        fetchUserdata();
+    }, []);
 
   return (
     <div>

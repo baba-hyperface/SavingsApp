@@ -16,7 +16,7 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
   const [emoji, setEmoji] = useState('');
   const [category, setCategory] = useState('');
   const [autoDeduction, setAutoDeduction] = useState('no');
-  const [dailyAmount, setDailyAmount] = useState('');
+  const [dailyAmount, setDailyAmount] = useState(0);
   const toast = useToast();
   const userIdFromLocalStorage = localStorage.getItem("userid");
 
@@ -47,7 +47,7 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
       emoji: emoji,
       user: userIdFromLocalStorage,
       autoDeduction: autoDeduction === 'yes' ? true : false,
-      dailyAmount: autoDeduction === 'yes' ? dailyAmount : null, // Only set if autoDeduction is yes
+      dailyAmount: autoDeduction === 'yes' ? dailyAmount : 0, 
     };
 
     try {
@@ -125,7 +125,16 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
                 sx={{ fontFamily: "Noto Sans, sans-serif" }}
               />
             </FormControl>
-
+            <FormControl mb={3}>
+              <FormLabel>Current Amount</FormLabel>
+              <Input 
+                type="number" 
+                placeholder="Current Amount" 
+                value={amount} 
+                onChange={(e) => setAmount(e.target.value)} 
+                sx={{ fontFamily: "Noto Sans, sans-serif" }}
+              />
+            </FormControl>
             <FormControl mb={3}>
               <FormLabel>Goal Amount</FormLabel>
               <Input

@@ -20,15 +20,6 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
-  // helthcareamount:{
-  //   type:Number,
-  //   default:0,
-  // },
-  // Detuctionamount:{
-  //   type: Number,
-  //   default:0,
-  //   required:true
-  // },
   expDate: {
     type: Date, 
     required: false

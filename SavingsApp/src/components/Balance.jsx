@@ -13,6 +13,13 @@ export const Balance = ({totalBalance, onBalanceUpdate, accNum, expDate, updateB
   const toast = useToast();
   const[potData, setPotData] = useState([]);
   const userIdFromLocalStorage = localStorage.getItem("userid")
+  // let prevBalance = totalBalance;
+
+  // if(totalBalance !== prevBalance){
+  //   prevBalance = totalBalance;
+  //   useEffect(() => {
+
+  //   }, [totalBalance]);
 
   useEffect(() => {
     setBalance(totalBalance || 0);
