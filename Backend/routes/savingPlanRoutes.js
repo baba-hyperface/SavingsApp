@@ -8,8 +8,10 @@ import { protect } from '../middleware/auth.js';
 const savingPlanRouter = express.Router();
 
 savingPlanRouter.post(`/user/:userId/savingplan`, protect,async (req, res) => {
-    const { potPurpose, targetAmount, currentBalance, imoji, color,category } = req.body;
-
+    const { potPurpose, targetAmount, currentBalance, imoji, color,category,autoDeduction,dailyAmount } = req.body;
+    if(!currentBalance){
+        currentBalance=0;
+    }
     try {
         const user = await User.findById(req.params.userId);
         if (!user) {
@@ -19,15 +21,29 @@ savingPlanRouter.post(`/user/:userId/savingplan`, protect,async (req, res) => {
         const newSaving = new SavingPot({
             potPurpose,
             targetAmount,
-            // currentBalance,
+            currentBalance,
             category:category,
             imoji,
             color,
-            user: req.params.userId 
+            autoDeduction,
+            dailyAmount,
+            user: req.params.userId
         });
 
         const savedPot = await newSaving.save();
         user.pots.push(savedPot._id);
+        const transaction = new Transaction({
+            email:req.user.email,
+            type: "transfer", 
+            amount:currentBalance,
+            from: "walete", 
+            to: "saving_pot",
+            date: new Date()
+        });
+        console.log("traansaction",transaction);
+        
+        user.history.push(transaction); 
+      await transaction.save();       
         await user.save();
 
         res.status(201).json({ message: 'Saving plan created', pot: savedPot });
@@ -131,10 +147,10 @@ savingPlanRouter.delete('/user/:userId/savingplan/:potId', protect,async (req, r
         
         const transaction = new Transaction({
             email:req.user.email,
-            type: "deposit", 
+            type: "credit", 
             amount:currentBalance,
-            from: "walete", 
-            to: "saving_pot",
+            from: "saving_pot", 
+            to: "Bank",
             potId: potId,
             date: new Date()
         });
