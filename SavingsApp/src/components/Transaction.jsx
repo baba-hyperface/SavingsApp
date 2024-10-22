@@ -16,10 +16,10 @@ export const Transaction = () => {
         const fetchUserdata = async () => {
             try {
                 setLoading(true);
-                const res = await api.get(`/history`)
-                setHistorydata(res.data);
-                console.log("historydata",historydata);
-                console.log(res.data);
+                const res = await api.get(`/history`);
+                setHistorydata(res.data.historydata);
+                console.log("history data",historydata);
+                console.log(res.data.historydata);
                 setLoading(false);
             } catch (error) {
                 setError(error);

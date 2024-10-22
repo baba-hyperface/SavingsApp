@@ -1,18 +1,28 @@
 
-import mongoose from 'mongoose'; 
+import mongoose from 'mongoose';
 
 const savingPotSchema = new mongoose.Schema({
-  potPurpose: { 
-    type: String, 
-    required: true 
+  potPurpose: {
+    type: String,
+    required: true
   },
-  targetAmount: { 
-    type: Number, 
-    required: false 
+  targetAmount: {
+    type: Number,
+    required: false
   },
-  category:{
-    type:String,
-    enum:[
+  autoDeduction: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  dailyAmount: {
+    type: Number,
+    default:0,
+    required:true
+  },
+  category: {
+    type: String,
+    enum: [
       "travel",
       "health",
       "home",
@@ -28,17 +38,17 @@ const savingPotSchema = new mongoose.Schema({
       "charity",
       "misc"],
   },
-  currentBalance: { 
-    type: Number, 
-    default: 0 
+  currentBalance: {
+    type: Number,
+    default: 0
   },
-  imoji: { 
-    type: String, 
-    required: false 
+  imoji: {
+    type: String,
+    required: false
   },
-  color: { 
-    type: String, 
-    required: false 
+  color: {
+    type: String,
+    required: false
   }
 }, { timestamps: true });
 
