@@ -4,7 +4,7 @@ import { Balance } from './Balance';
 import { SendMoney } from './SendMoney';
 import { WithdrawMoney } from './WithdrawMoney';
 import { SaveButton } from './SaveButton';
-import { Was } from './Was';
+// import { Was } from './Was';
 import { SavingPlans } from './SavingPlans';
 // import axios from 'axios';
 import api from './api';
@@ -55,7 +55,7 @@ export const ChildDashBoard = ({data, setUser}) => {
         <SendMoney totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance}/>
         <WithdrawMoney totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance} />
         <SaveButton totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance} />
-        <Was />
+        {/* <Was /> */}
       </div>
       <SavingPlans totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance}/>
     </div>

@@ -8,7 +8,7 @@ import { protect } from '../middleware/auth.js';
 const savingPlanRouter = express.Router();
 
 savingPlanRouter.post(`/user/:userId/savingplan`, protect,async (req, res) => {
-    const { potPurpose, targetAmount, currentBalance, imoji, color } = req.body;
+    const { potPurpose, targetAmount, currentBalance, imoji, color,category } = req.body;
 
     try {
         const user = await User.findById(req.params.userId);
@@ -19,7 +19,8 @@ savingPlanRouter.post(`/user/:userId/savingplan`, protect,async (req, res) => {
         const newSaving = new SavingPot({
             potPurpose,
             targetAmount,
-            currentBalance,
+            // currentBalance,
+            category:category,
             imoji,
             color,
             user: req.params.userId 

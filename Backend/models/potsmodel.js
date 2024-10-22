@@ -10,6 +10,24 @@ const savingPotSchema = new mongoose.Schema({
     type: Number, 
     required: false 
   },
+  category:{
+    type:String,
+    enum:[
+      "travel",
+      "health",
+      "home",
+      "business",
+      "education",
+      "gadgets",
+      "vehicle",
+      "gifts",
+      "emergency",
+      "retirement",
+      "hobbies",
+      "clothing",
+      "charity",
+      "misc"],
+  },
   currentBalance: { 
     type: Number, 
     default: 0 
@@ -21,11 +39,6 @@ const savingPotSchema = new mongoose.Schema({
   color: { 
     type: String, 
     required: false 
-  },
-  user: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
-    required: true 
   }
 }, { timestamps: true });
 

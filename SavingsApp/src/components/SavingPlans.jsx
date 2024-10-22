@@ -13,30 +13,40 @@ import {
   Button,
   Input,
   useToast,
+  Select, 
 } from '@chakra-ui/react';
 import api from './api';
 
-export const SavingPlans = ({totalBalance, onBalanceUpdate, updateBalance}) => {
+export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
   const [plans, setPlans] = useState([]);
+  const [filteredPlans, setFilteredPlans] = useState([]); // New state for filtered plans
+  const [categories, setCategories] = useState([]); // For dropdown categories
   const [addMoney, setAddMoney] = useState('');
-  const [selectedPlanId, setSelectedPlanId] = useState(null); 
+  const [selectedPlanId, setSelectedPlanId] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('all'); // Default to 'all'
   const { onClose, onOpen, isOpen } = useDisclosure();
-  const[balance, setBalance] = useState(totalBalance);
-  const[count, setCount] = useState(0);
-  const userIdFromLocalStorage = localStorage.getItem("userid")
-
-  const userId = userIdFromLocalStorage; 
+  const [balance, setBalance] = useState(totalBalance);
   const toast = useToast();
+  const userIdFromLocalStorage = localStorage.getItem("userid");
+  const userId = userIdFromLocalStorage;
 
   useEffect(() => {
     setBalance(totalBalance || 0);
-}, [totalBalance]);
+  }, [totalBalance]);
 
   useEffect(() => {
     const fetchPlans = async () => {
       try {
         const res = await api.get(`/user/${userId}/savingplan`);
-        setPlans(res.data);
+        const fetchedPlans = res.data;
+        setPlans(fetchedPlans);
+
+        // Extract categories and include 'Others' for plans without a category
+        const categoriesSet = new Set(fetchedPlans.map(plan => plan.category || 'Others'));
+        setCategories(['all', ...Array.from(categoriesSet)]);
+
+        // Initially show all plans
+        setFilteredPlans(fetchedPlans);
       } catch (error) {
         console.error('Error fetching saving plans:', error);
       }
@@ -44,6 +54,19 @@ export const SavingPlans = ({totalBalance, onBalanceUpdate, updateBalance}) => {
     fetchPlans();
   }, [userId]);
 
+  // Filter plans by category
+  useEffect(() => {
+    if (selectedCategory === 'all') {
+      setFilteredPlans(plans);
+    } else {
+      const filtered = plans.filter(plan => (plan.category || 'Others') === selectedCategory);
+      setFilteredPlans(filtered);
+    }
+  }, [selectedCategory, plans]);
+
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+  };
 
   const handleAddMoney = async () => {
     if (addMoney > totalBalance) {
@@ -62,7 +85,7 @@ export const SavingPlans = ({totalBalance, onBalanceUpdate, updateBalance}) => {
         const response = await api.patch(`/user/${userId}/savingplan/${selectedPlanId}`, {
           currentBalance: amountToAdd,
         });
-        const newBalance = await updateBalance(userId, balance, addMoney, false)
+        const newBalance = await updateBalance(userId, balance, addMoney, false);
         onBalanceUpdate(newBalance);
         toast({
           title: "Amount added successful.",
@@ -71,21 +94,12 @@ export const SavingPlans = ({totalBalance, onBalanceUpdate, updateBalance}) => {
           duration: 3000,
           isClosable: true,
         });
-        console.log(response.data.pot);
-         const updatedPlan = response.data.pot;
+        const updatedPlan = response.data.pot;
         setPlans((prevPlans) =>
           prevPlans.map((plan) =>
             plan._id === updatedPlan._id ? updatedPlan : plan
           )
         );
-        console.log(addMoney);
-        toast({
-          title: "Success",
-          description: `Added ₹${amountToAdd} to ${updatedPlan.potPurpose}`,
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
         setAddMoney('');
         onClose();
       } catch (error) {
@@ -109,7 +123,6 @@ export const SavingPlans = ({totalBalance, onBalanceUpdate, updateBalance}) => {
     }
   };
 
- 
   const handleDeletePlan = async (planId) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this plan?');
     if (confirmDelete) {
@@ -118,7 +131,7 @@ export const SavingPlans = ({totalBalance, onBalanceUpdate, updateBalance}) => {
         setPlans((prevPlans) => prevPlans.filter((plan) => plan._id !== planId));
         toast({
           title: "Amount debited",
-          description: "Your savings added to your Bankaccount",
+          description: "Your savings added to your Bank account",
           status: "success",
           duration: 3000,
           isClosable: true,
@@ -142,9 +155,22 @@ export const SavingPlans = ({totalBalance, onBalanceUpdate, updateBalance}) => {
         <div className="header">
           <h4>Savings plan</h4>
         </div>
-        <h3>{plans.length} saving plans</h3>
+        <h3>{filteredPlans.length} saving plans</h3>
+
+        <Select
+          value={selectedCategory}
+          onChange={handleCategoryChange}
+          mb={4} // Removed the placeholder attribute
+        >
+          {categories.map((category, index) => (
+            <option key={index} value={category}>
+              {category === 'all' ? 'All' : category}
+            </option>
+          ))}
+        </Select>
+
         <div className="plans-list">
-          {plans.map((plan) => (
+          {filteredPlans.map((plan) => (
             <div key={plan._id} className="plan-card">
               <div className="progress-bar">
                 <div
@@ -164,7 +190,6 @@ export const SavingPlans = ({totalBalance, onBalanceUpdate, updateBalance}) => {
                 <button
                   onClick={() => {
                     setSelectedPlanId(plan._id);
-                    console.log(plan._id);
                     onOpen();
                   }}
                   className="add-money-btn"
@@ -179,8 +204,7 @@ export const SavingPlans = ({totalBalance, onBalanceUpdate, updateBalance}) => {
           ))}
         </div>
       </div>
-      <div className='dummy-styling'>
-      </div>
+      <div className='dummy-styling'></div>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
