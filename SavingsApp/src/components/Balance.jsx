@@ -4,7 +4,7 @@ import { useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFoo
 import { DonutChart } from './DonutChart';
 import api from './api';
 
-export const Balance = ({totalBalance, onBalanceUpdate, accNum, expDate, updateBalance}) => {
+export const Balance = ({totalBalance, onBalanceUpdate, accNum, expDate, updateBalance, email, onHistoryChange}) => {
   const { onClose, onOpen, isOpen } = useDisclosure();
   const [balance, setBalance] = useState(totalBalance);
   const [loading, setLoading] = useState(false);
@@ -59,6 +59,30 @@ export const Balance = ({totalBalance, onBalanceUpdate, accNum, expDate, updateB
         const newBalance = await updateBalance(userIdFromLocalStorage, balance, addMoney, true)
         setBalance(newBalance);
         onBalanceUpdate(newBalance);
+
+        await api.post('/history', {
+          email: email,
+          type: "credited",
+          amount: addMoney,
+          from: "Bank",
+          to: "Wallet",
+          date: new Date()
+      });
+  
+        onHistoryChange({
+          email: email,
+          type : "Credited",
+          amount: addMoney,
+          from: "Bank",
+          to: "wallet",
+          date: new Date()
+        })
+
+
+
+
+
+
         setAddMoney("");
         onClose();
         toast({

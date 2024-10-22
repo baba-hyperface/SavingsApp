@@ -58,10 +58,6 @@ userRouter.patch('/user/:id', protect,async (req, res) => {
             const pot = await SavingPot.findById(potId);
 
             if(!pot) return res.status(404).json({message: "Saving plan not found"});
-            // if (potBalance !== undefined) pot.balance = potBalance;
-            // if (targetAmount !== undefined) pot.target = targetAmount;
-            // await pot.save();
-            // await user.save(); 
 
             const transaction = new Transaction({
                 email:req.user.email,
@@ -76,6 +72,7 @@ userRouter.patch('/user/:id', protect,async (req, res) => {
             
             user.history.push(transaction);
                 
+            await transaction.save();
             await user.save(); 
 
             res.json({ message: 'User or Saving plan updated successfully', user });

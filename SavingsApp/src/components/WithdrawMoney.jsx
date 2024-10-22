@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react'
 import '../styles/buttonStyles.css'
 import { useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, toastStore, useToast } from '@chakra-ui/react';
 import { updateBalance } from './MinusMoney';
+import api from './api';
 
 
-export const WithdrawMoney = ({totalBalance, onBalanceUpdate, updateBalance}) => {
+export const WithdrawMoney = ({totalBalance, onBalanceUpdate, updateBalance, email, onHistoryChange}) => {
     const {onClose, onOpen, isOpen} = useDisclosure();
    const [balance, setBalance] = useState(totalBalance);
     const [loading, setLoading] = useState(false);
@@ -36,6 +37,26 @@ export const WithdrawMoney = ({totalBalance, onBalanceUpdate, updateBalance}) =>
       setLoading(true);
       const newBalance = await updateBalance(userIdFromLocalStorage, balance, addMoney, false)
       onBalanceUpdate(newBalance);
+
+      await api.post('/history', {
+        email: email,
+        type: "Debited",
+        amount: addMoney,
+        from: "Wallet",
+        to: "Bank",
+        date: new Date()
+    });
+
+      onHistoryChange({
+        email: email,
+        type : "Debited",
+        amount: addMoney,
+        from: "wallet",
+        to: "Bank",
+        date: new Date()
+      })
+
+
       toast({
         title: "Withdrawal successful.",
         description: `₹${addMoney} has been withdrawn from your account.`,

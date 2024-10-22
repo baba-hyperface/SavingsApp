@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, useToast } from '@chakra-ui/react';
 import '../styles/buttonStyles.css';
+import api from './api';
 
-export const SendMoney = ({totalBalance, onBalanceUpdate, updateBalance}) => {
+export const SendMoney = ({totalBalance, onBalanceUpdate, updateBalance, onHistoryChange, email, accountNum}) => {
   const { onClose, onOpen, isOpen } = useDisclosure();
   const [accountNumber, setAccountNumber] = useState('');
   const [ifsc, setIfsc] = useState('');
@@ -27,11 +28,32 @@ export const SendMoney = ({totalBalance, onBalanceUpdate, updateBalance}) => {
       });
       return;
     }
+    
+
 
 
     try {
       const newBalance = await updateBalance(userIdFromLocalStorage, balance, amount, false)
       onBalanceUpdate(newBalance);
+
+      await api.post('/history', {
+        email: email,
+        type: "transfer",
+        amount: amount,
+        from: accountNum,
+        to: holderName,
+        date: new Date()
+    });
+
+      onHistoryChange({
+        email: email,
+        type : "transfer",
+        amount: amount,
+        from: accountNum,
+        to: holderName,
+        date: new Date()
+      })
+
       toast({
         title: "Transaction successful.",
         description: `₹${amount} has been debited from your account.`,
