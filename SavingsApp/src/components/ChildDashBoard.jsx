@@ -11,6 +11,7 @@ import api from './api';
 import { DonutChart } from './DonutChart';
 import '../App.css'
 import { Transaction } from './Transaction';
+import { DeActivated } from './DeActivated';
 
 export const ChildDashBoard = ({data, setUser}) => {
     let {name,email, totalBalance, accountNumber, expDate} = data;
@@ -78,6 +79,7 @@ const handleTransactionHistoryUpdate = (transaction) => {
         <SendMoney totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance} onHistoryChange={handleTransactionHistoryUpdate} email={email} accountNum={name}/>
         <WithdrawMoney totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance} email={email} onHistoryChange={handleTransactionHistoryUpdate}/>
         <SaveButton totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance} />
+        <DeActivated />
         {/* <Was /> */}
       </div>
       <SavingPlans totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance}/>

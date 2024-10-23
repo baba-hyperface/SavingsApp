@@ -1,0 +1,86 @@
+/* Loading message style */
+.loading-message {
+      text-align: center;
+      font-size: 24px;
+      color: #555;
+      margin-top: 50px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .saving-child-container{
+      display: flex;
+      justify-content: space-between;
+    }
+    /* Main container for the saving plan details */
+    .saving-plan-container {
+      width: 90%;
+      max-width: 900px;
+      margin: 10;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    .saving-plan-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(45deg, #6a11cb, #2575fc);
+      padding: 20px;
+      border-radius: 16px;
+      color: white;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .saving-plan-header h1 {
+      font-size: 28px;
+      font-weight: bold;
+      margin: 0;
+    }
+    .emoji {
+      font-size: 40px;
+    }
+    .saving-plan-details {
+      margin-top: 20px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+    .saving-plan-details p {
+      font-size: 18px;
+      margin: 10px 0;
+      color: #444;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      border-radius: 8px;
+      background-color: #f1f1f1;
+    }
+    /* Slight highlight for target and current amounts */
+    .saving-plan-details p span {
+      font-weight: bold;
+      color: #2575fc;
+    }
+    .saving-plan-details p span.value {
+      font-size: 20px;
+    }
+    /* Hover effect for interaction */
+    .saving-plan-container:hover {
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      transform: translateY(-5px);
+    }
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .saving-plan-header h1 {
+        font-size: 22px;
+      }
+      .saving-plan-details p {
+        font-size: 16px;
+      }
+      .emoji {
+        font-size: 36px;
+      }
+    }
+    

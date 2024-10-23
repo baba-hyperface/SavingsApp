@@ -1,4 +1,3 @@
-
 import mongoose from 'mongoose';
 
 const transactionSchema = new mongoose.Schema({
@@ -8,7 +7,6 @@ const transactionSchema = new mongoose.Schema({
   },
   type: { 
     type: String, 
-    enum: ['deposit', 'transfer', 'closing_pot', 'credited'],  
     required: true 
   },
   amount: { 
@@ -35,8 +33,8 @@ const transactionSchema = new mongoose.Schema({
   time: { 
     type: String, 
     default: function() { 
-      return new Date().toLocaleTimeString(); 
-    } 
+      return new Date().toLocaleTimeString();
+    }
   }
 });
 

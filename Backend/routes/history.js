@@ -7,7 +7,6 @@ const historyrouter=Router();
 historyrouter.get('/history',protect, async (req, res) => {
     try {
         const historydata = await Transaction.find({ email: req.user.email });
-        console.log("history data",historydata);
 
         if (!historydata.length) {
             return res.json({ message: 'No transaction history found for this user' });
@@ -43,6 +42,23 @@ historyrouter.post('/history',protect, async (req, res) => {
       res.status(500).json({ error: 'Failed to save transaction.' });
     }
   });
+
+  
+
+  historyrouter.get('/history/:potId', async (req, res) => {
+        const {potId} = req.params;
+    try {
+        const historydata = await Transaction.find({potId});
+        console.log("got with potId", historydata);
+        if (!historydata.length) {
+          return res.json({ message: 'No transaction history found for this user' });
+      }
+      
+      res.status(200).json({ historydata });
+    } catch (error) {
+      res.status(500).json({ message: err.message });
+    }
+  })
 
 
 export default historyrouter;

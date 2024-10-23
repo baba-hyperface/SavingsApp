@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/SavingPlans.css';
 import { DonutChart } from './DonutChart';
+
 import {
   useDisclosure,
   Modal,
@@ -42,6 +43,11 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
   const handleNav = (potid) => {
     console.log(potid)
     nav(`/savingplan/${potid}`)
+  }
+
+  const handleNav = (potid) => {
+    console.log(potid)
+      nav(`/savingplan/${potid}`)
   }
   useEffect(() => {
     const fetchPlans = async () => {
@@ -220,6 +226,45 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
             </Select>
           </div>
         </div>
+          <div>
+          <h4>Savings plan</h4>
+        </div>
+        <h3>{filteredPlans.length} saving plans</h3>
+          </div>
+          <div>
+        <Select
+  value={selectedCategory}
+  onChange={handleCategoryChange}
+  placeholder="Select a category"
+  variant="filled"
+  borderRadius="md"
+  borderColor="teal.500"
+  focusBorderColor="teal.500"
+  _hover={{
+    borderColor: "teal.300",
+  }}
+  size="sm"  
+  fontWeight="medium"
+  bg="gray.50" 
+  color="gray.600" 
+  p={2} 
+  width="200px" 
+  boxShadow="sm" 
+  _focus={{
+    outline: "none",
+    boxShadow: "0 0 2px 2px rgba(56, 178, 172, 0.6)", 
+  }}
+>
+  {categories.map((category, index) => (
+    <option key={index} value={category}>
+      {category === 'all' ? 'All Categories' : category}
+    </option>
+  ))}
+</Select>
+</div>
+</div>
+
+
         <div className="plans-list">
           {filteredPlans.map((plan) => (
             <div key={plan._id} className="plan-card">
@@ -238,13 +283,26 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
                     <span className="goal-amount"> ₹{plan.targetAmount.toFixed(2)}</span>
                   </p>
                 </div>
+              <div className="progress-bar">
+                <div
+                  className="progress"
+                  style={{ width: `${(plan.currentBalance / plan.targetAmount) * 100}%`, backgroundColor: plan.color }}
+                />
+              </div>
+              <div className="plan-icon">{plan.imoji}</div>
+              <div className="plan-details">
+                <h4>{plan.potPurpose}</h4>
+                <p>
+                  <span className="current-amount">₹{plan.currentBalance.toFixed(2)}</span> /
+                  <span className="goal-amount"> ₹{plan.targetAmount.toFixed(2)}</span>
+                </p>
+              </div>
               </div>
               <div className="action-buttons-saving">
                 <button className="add-money-btn" onClick={() => handleautoDetuctionStatus(plan._id, plan.potPurpose)} >
                   {plan.autoDeduction ? <i className="fa-solid fa-play-circle" style={{ color: "green" }}></i> : <i className="fa-solid fa-play-circle" style={{ color: "red" }}></i>}
                   {plan.autoDeductionStatus? "Pause":"Resume"}
                 </button>
-
                 <button
                   onClick={() => {
                     setSelectedPlanId(plan._id);
