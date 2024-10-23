@@ -40,7 +40,7 @@ savingPlanRouter.post(`/user/:userId/savingplan`, protect,async (req, res) => {
             to: "saving_pot",
             date: new Date()
         });
-        console.log("traansaction",transaction);
+        console.log("traansaction post",transaction);
         
         user.history.push(transaction); 
       await transaction.save();       
@@ -63,29 +63,33 @@ savingPlanRouter.patch('/user/:userId/savingplan/:potId',protect, async (req, re
         const pot = await SavingPot.findById(potId);
         console.log("pot update",pot);
         if (!pot) return res.status(404).json({ message: 'Saving plan not found' });
+        console.log(currentBalance)
 
-        if (currentBalance !== undefined) {
-            pot.currentBalance += currentBalance;
-        } else {
-            return res.status(400).json({ message: 'currentBalance is required' });
-        }
-        console.log("creting transaction");
         const transaction = new Transaction({
             email:req.user.email,
-            type: "deposit", 
-            amount:currentBalance,
+            type: "added money to saving plan", 
+            amount: currentBalance,
             from: "walete", 
             to: "saving_pot",
             potId: potId,
             date: new Date()
         });
         console.log("traansaction patch",transaction);
+        await transaction.save();
+        await user.save(); 
+
+        if (currentBalance !== undefined) {
+            pot.currentBalance += currentBalance;
+        } else {
+            return res.status(400).json({ message: 'currentBalance is required' });
+        }
+        // console.log("creting transaction");
         
         user.history.push(transaction);
             
         await transaction.save();
         await user.save(); 
-        console.log("user after saved",user);
+        // console.log("user after saved",user);
 
         await pot.save();
 
@@ -133,6 +137,32 @@ savingPlanRouter.get('/user/:userId/savingplan', async (req, res) => {
 });
 
 
+savingPlanRouter.get('/user/:userId/savingplan/:potId', async (req, res) => {
+    const { userId, potId } = req.params;
+
+    try {
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: 'Invalid user ID' });
+        }
+        const user = await User.findById(userId).populate('pots');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        if (!mongoose.Types.ObjectId.isValid(potId)) {
+            return res.status(400).json({ message: 'Invalid pot ID' });
+        }
+        const pot = user.pots.find(pot => pot._id.toString() === potId);
+        if (!pot) {
+            return res.status(404).json({ message: 'Pot not found for this user' });
+        }
+        res.status(200).json(pot);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+
+
 
 
 savingPlanRouter.delete('/user/:userId/savingplan/:potId', protect,async (req, res) => {
@@ -147,14 +177,14 @@ savingPlanRouter.delete('/user/:userId/savingplan/:potId', protect,async (req, r
         
         const transaction = new Transaction({
             email:req.user.email,
-            type: "credit", 
+            type: "deactivated", 
             amount:currentBalance,
             from: "saving_pot", 
             to: "Bank",
             potId: potId,
             date: new Date()
         });
-        console.log("traansaction",transaction);
+        console.log("traansaction delete",transaction);
         
         user.history.push(transaction);
             

@@ -42,6 +42,9 @@ const savingPotSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  status: {
+    type: Boolean
+  },
   imoji: {
     type: String,
     required: false

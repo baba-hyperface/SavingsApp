@@ -62,6 +62,7 @@ cron.schedule('1,15,30,45,59 * * * * *', async () => {
               user.totalBalance -= pot.dailyAmount;
               pot.currentBalance += pot.dailyAmount;
               potsUpdated = true;
+
               totalPotsUpdated++;
               console.log(`Deducted ${pot.dailyAmount} from user: ${user.name} for pot: ${pot.potPurpose} current balence is ${pot.currentBalance}`);
               await pot.save();

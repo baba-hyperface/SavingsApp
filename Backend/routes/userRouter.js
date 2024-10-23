@@ -68,7 +68,7 @@ userRouter.patch('/user/:id', protect,async (req, res) => {
                 potId: potId,
                 date: new Date()
             });
-            console.log("traansaction",transaction);
+            console.log("traansaction patched 5",transaction);
             
             user.history.push(transaction);
                 
@@ -98,9 +98,9 @@ userRouter.delete('/users/:id',protect, async (req, res) => {
   userRouter.patch('/user/:id/balance',protect, async (req, res) => {
     const userId = req.params.id;
     const {balance} = req.body;
+    
     try {
         const updateBalance = await User.findByIdAndUpdate(userId, {totalBalance : balance}, {new: true});
-
         if(updateBalance){
             const user=await User.findOne({email:req.user.email});
         const transaction = new Transaction({
@@ -111,7 +111,7 @@ userRouter.delete('/users/:id',protect, async (req, res) => {
             to: "saving_pot",
             date: new Date()
         });
-        console.log("traansaction",transaction);
+        console.log("traansaction pache wallete 5",transaction);
         
         user.history.push(transaction); 
       await transaction.save();       

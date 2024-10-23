@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/SavingPlans.css';
 import { DonutChart } from './DonutChart';
+
 import {
   useDisclosure,
   Modal,
@@ -17,6 +18,7 @@ import {
 } from '@chakra-ui/react';
 import api from './api';
 import { Transaction } from './Transaction';
+import { useNavigate } from 'react-router-dom';
 
 export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
   const [plans, setPlans] = useState([]);
@@ -31,6 +33,8 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
   const toast = useToast();
   const userIdFromLocalStorage = localStorage.getItem("userid");
   const userId = userIdFromLocalStorage;
+  const nav = useNavigate();
+  
 
   useEffect(() => {
     setBalance(totalBalance || 0);
@@ -40,18 +44,19 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
     setHistory(!hsitoryOpen);
   }
 
+  const handleNav = (potid) => {
+    console.log(potid)
+      nav(`/savingplan/${potid}`)
+  }
+
   useEffect(() => {
     const fetchPlans = async () => {
       try {
         const res = await api.get(`/user/${userId}/savingplan`);
         const fetchedPlans = res.data;
         setPlans(fetchedPlans);
-
-        // Extract categories and include 'Others' for plans without a category
         const categoriesSet = new Set(fetchedPlans.map(plan => plan.category || 'Others'));
         setCategories(['all', ...Array.from(categoriesSet)]);
-
-        // Initially show all plans
         setFilteredPlans(fetchedPlans);
       } catch (error) {
         console.error('Error fetching saving plans:', error);
@@ -59,8 +64,6 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
     };
     fetchPlans();
   }, [userId]);
-
-  // Filter plans by category
   useEffect(() => {
     if (selectedCategory === 'all') {
       setFilteredPlans(plans);
@@ -159,25 +162,50 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
     <div>
       <div className="saving-plans-container">
         <div className="header">
+          <div>
+          <div>
           <h4>Savings plan</h4>
         </div>
         <h3>{filteredPlans.length} saving plans</h3>
-
+          </div>
+          <div>
         <Select
-          value={selectedCategory}
-          onChange={handleCategoryChange}
-          mb={4} // Removed the placeholder attribute
-        >
-          {categories.map((category, index) => (
-            <option key={index} value={category}>
-              {category === 'all' ? 'All' : category}
-            </option>
-          ))}
-        </Select>
+  value={selectedCategory}
+  onChange={handleCategoryChange}
+  placeholder="Select a category"
+  variant="filled"
+  borderRadius="md"
+  borderColor="teal.500"
+  focusBorderColor="teal.500"
+  _hover={{
+    borderColor: "teal.300",
+  }}
+  size="sm"  
+  fontWeight="medium"
+  bg="gray.50" 
+  color="gray.600" 
+  p={2} 
+  width="200px" 
+  boxShadow="sm" 
+  _focus={{
+    outline: "none",
+    boxShadow: "0 0 2px 2px rgba(56, 178, 172, 0.6)", 
+  }}
+>
+  {categories.map((category, index) => (
+    <option key={index} value={category}>
+      {category === 'all' ? 'All Categories' : category}
+    </option>
+  ))}
+</Select>
+</div>
+</div>
+
 
         <div className="plans-list">
           {filteredPlans.map((plan) => (
             <div key={plan._id} className="plan-card">
+              <div onClick={() => handleNav(plan._id)}>
               <div className="progress-bar">
                 <div
                   className="progress"
@@ -192,7 +220,11 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
                   <span className="goal-amount"> ₹{plan.targetAmount.toFixed(2)}</span>
                 </p>
               </div>
+              </div>
               <div className="action-buttons-saving">
+                <button className="add-money-btn">
+                  {plan.autoDeduction ? <i className="fa-solid fa-play-circle" style={{color: "green"}}></i> : <i className="fa-solid fa-play-circle" style={{color: "red"}}></i>}
+                </button>
                 <button
                   onClick={() => {
                     setSelectedPlanId(plan._id);
@@ -203,15 +235,7 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
                   <i className="fa-solid fa-plus"></i> Add Money
                 </button>
                 <button onClick={() => handleDeletePlan(plan._id)} className="delete-btn">
-                  <i className="fa-solid fa-trash"></i> Delete
-                </button>
-                <button className='history-btn' onClick={HandleHistory}>
-                <i class="fa-solid fa-clock-rotate-left"></i> history
-                {hsitoryOpen && (
-                  <div>
-                    
-                  </div>
-                ) }
+                <i class="fa-regular fa-circle-pause"></i> Deactivate
                 </button>
               </div>
             </div>
