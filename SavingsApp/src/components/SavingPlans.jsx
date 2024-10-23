@@ -13,11 +13,11 @@ import {
   Button,
   Input,
   useToast,
-  Select, 
+  Select,
 } from '@chakra-ui/react';
 import api from './api';
 import { Transaction } from './Transaction';
-
+import { useNavigate } from 'react-router-dom';
 export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
   const [plans, setPlans] = useState([]);
   const [filteredPlans, setFilteredPlans] = useState([]); // New state for filtered plans
@@ -28,30 +28,29 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
   const { onClose, onOpen, isOpen } = useDisclosure();
   const [balance, setBalance] = useState(totalBalance);
   const [hsitoryOpen, setHistory] = useState(false);
+  // const [autodetuctionstatus,setAutoDeductionStatus]=useState(false);
   const toast = useToast();
   const userIdFromLocalStorage = localStorage.getItem("userid");
   const userId = userIdFromLocalStorage;
-
+  const nav = useNavigate();
   useEffect(() => {
     setBalance(totalBalance || 0);
   }, [totalBalance]);
-
   const HandleHistory = () => {
     setHistory(!hsitoryOpen);
   }
-
+  const handleNav = (potid) => {
+    console.log(potid)
+    nav(`/savingplan/${potid}`)
+  }
   useEffect(() => {
     const fetchPlans = async () => {
       try {
         const res = await api.get(`/user/${userId}/savingplan`);
         const fetchedPlans = res.data;
         setPlans(fetchedPlans);
-
-        // Extract categories and include 'Others' for plans without a category
         const categoriesSet = new Set(fetchedPlans.map(plan => plan.category || 'Others'));
         setCategories(['all', ...Array.from(categoriesSet)]);
-
-        // Initially show all plans
         setFilteredPlans(fetchedPlans);
       } catch (error) {
         console.error('Error fetching saving plans:', error);
@@ -59,8 +58,6 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
     };
     fetchPlans();
   }, [userId]);
-
-  // Filter plans by category
   useEffect(() => {
     if (selectedCategory === 'all') {
       setFilteredPlans(plans);
@@ -69,11 +66,9 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
       setFilteredPlans(filtered);
     }
   }, [selectedCategory, plans]);
-
   const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value);
   };
-
   const handleAddMoney = async () => {
     if (addMoney > totalBalance) {
       toast({
@@ -128,12 +123,41 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
       });
     }
   };
+  const handleautoDetuctionStatus = async (planId, potPurpose) => {
+    // const confirmDelete = window.confirm('Are you sure you want to  this plan?');
+    // if (confirmDelete) {
+    try {
+      const responce = await api.patch(`/user/${userId}/savingplanstatus/${planId}`);
+      console.log(responce);
+      if (responce.data.status) {
+
+        toast({
+          title: `${potPurpose} status updated`,
+          description: "Thank you",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.error('Error  in autodetuctionstatus updating saving plan:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update status of the saving plan.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+    // }
+
+  }
 
   const handleDeletePlan = async (planId) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this plan?');
+    const confirmDelete = window.confirm('Are you sure you want to deactivate this plan?');
     if (confirmDelete) {
       try {
-        await api.delete(`/user/${userId}/savingplan/${planId}`);
+        await api.patch(`/user/${userId}/savingplandeactivate/${planId}`);
         setPlans((prevPlans) => prevPlans.filter((plan) => plan._id !== planId));
         toast({
           title: "Amount debited",
@@ -154,45 +178,73 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
       }
     }
   };
-
   return (
     <div>
       <div className="saving-plans-container">
         <div className="header">
-          <h4>Savings plan</h4>
+          <div>
+            <div>
+              <h4>Savings plan</h4>
+            </div>
+            <h3>{filteredPlans.length} saving plans</h3>
+          </div>
+          <div>
+            <Select
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+              placeholder="Select a category"
+              variant="filled"
+              borderRadius="md"
+              borderColor="teal.500"
+              focusBorderColor="teal.500"
+              _hover={{
+                borderColor: "teal.300",
+              }}
+              size="sm"
+              fontWeight="medium"
+              bg="gray.50"
+              color="gray.600"
+              p={2}
+              width="200px"
+              boxShadow="sm"
+              _focus={{
+                outline: "none",
+                boxShadow: "0 0 2px 2px rgba(56, 178, 172, 0.6)",
+              }}
+            >
+              {categories.map((category, index) => (
+                <option key={index} value={category}>
+                  {category === 'all' ? 'All Categories' : category}
+                </option>
+              ))}
+            </Select>
+          </div>
         </div>
-        <h3>{filteredPlans.length} saving plans</h3>
-
-        <Select
-          value={selectedCategory}
-          onChange={handleCategoryChange}
-          mb={4} // Removed the placeholder attribute
-        >
-          {categories.map((category, index) => (
-            <option key={index} value={category}>
-              {category === 'all' ? 'All' : category}
-            </option>
-          ))}
-        </Select>
-
         <div className="plans-list">
           {filteredPlans.map((plan) => (
             <div key={plan._id} className="plan-card">
-              <div className="progress-bar">
-                <div
-                  className="progress"
-                  style={{ width: `${(plan.currentBalance / plan.targetAmount) * 100}%`, backgroundColor: plan.color }}
-                />
-              </div>
-              <div className="plan-icon">{plan.imoji}</div>
-              <div className="plan-details">
-                <h4>{plan.potPurpose}</h4>
-                <p>
-                  <span className="current-amount">₹{plan.currentBalance.toFixed(2)}</span> /
-                  <span className="goal-amount"> ₹{plan.targetAmount.toFixed(2)}</span>
-                </p>
+              <div onClick={() => handleNav(plan._id)}>
+                <div className="progress-bar">
+                  <div
+                    className="progress"
+                    style={{ width: `${(plan.currentBalance / plan.targetAmount) * 100}%`, backgroundColor: plan.color }}
+                  />
+                </div>
+                <div className="plan-icon">{plan.imoji}</div>
+                <div className="plan-details">
+                  <h4>{plan.potPurpose}</h4>
+                  <p>
+                    <span className="current-amount">₹{plan.currentBalance.toFixed(2)}</span> /
+                    <span className="goal-amount"> ₹{plan.targetAmount.toFixed(2)}</span>
+                  </p>
+                </div>
               </div>
               <div className="action-buttons-saving">
+                <button className="add-money-btn" onClick={() => handleautoDetuctionStatus(plan._id, plan.potPurpose)} >
+                  {plan.autoDeduction ? <i className="fa-solid fa-play-circle" style={{ color: "green" }}></i> : <i className="fa-solid fa-play-circle" style={{ color: "red" }}></i>}
+                  {plan.autoDeductionStatus? "Pause":"Resume"}
+                </button>
+
                 <button
                   onClick={() => {
                     setSelectedPlanId(plan._id);
@@ -203,15 +255,7 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
                   <i className="fa-solid fa-plus"></i> Add Money
                 </button>
                 <button onClick={() => handleDeletePlan(plan._id)} className="delete-btn">
-                  <i className="fa-solid fa-trash"></i> Delete
-                </button>
-                <button className='history-btn' onClick={HandleHistory}>
-                <i class="fa-solid fa-clock-rotate-left"></i> history
-                {hsitoryOpen && (
-                  <div>
-                    
-                  </div>
-                ) }
+                  <i class="fa-regular fa-circle-pause"></i> Deactivate
                 </button>
               </div>
             </div>
@@ -219,7 +263,6 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
         </div>
       </div>
       <div className='dummy-styling'></div>
-
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent sx={{
@@ -238,7 +281,7 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
               placeholder='₹0'
               sx={{
                 fontFamily: "Noto Sans, sans-serif",
-                backgroundColor: "#f0f0f0",
+                backgroundColor: "#F0F0F0",
                 color: "#000"
               }}
             />
@@ -254,3 +297,8 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
     </div>
   );
 };
+
+
+
+
+
