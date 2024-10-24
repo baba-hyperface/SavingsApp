@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import '../styles/transaction.css';
 import api from './api';
 
-export const Transaction = ({ history }) => {
+export const Transaction = () => {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -30,6 +30,20 @@ export const Transaction = ({ history }) => {
     fetchUserdata();
   }, []);
 
+  const groupByDate = (transactions) => {
+    return transactions.reduce((groupedTransactions, transaction) => {
+      const transactionDate = new Date(transaction.date).toLocaleDateString();
+      if (!groupedTransactions[transactionDate]) {
+        groupedTransactions[transactionDate] = [];
+      }
+      groupedTransactions[transactionDate].push(transaction);
+      return groupedTransactions;
+    }, {});
+  };
+
+  // Grouping transactions by date
+  const groupedTransactions = groupByDate(historydata);
+
   return (
     <div>
       {/* Icon to toggle transaction history */}
@@ -50,21 +64,27 @@ export const Transaction = ({ history }) => {
         ) : (
           <div className="transaction-list">
             <h3>Transactions</h3>
-            {historydata.length > 0 ? (
-              historydata.map((transaction, index) => (
-                <div key={index} className="transaction-item-container">
-                  <div className="transaction-details-container">
-                    <p>{transaction.type}</p>
-                    <p>{new Date(transaction.date).toLocaleString()}</p>
-                  </div>
-                  <div>
-                    <p>
-                      <span>{transaction.from}</span> - to - <span>{transaction.to}</span>
-                    </p>
-                  </div>
-                  <div className="transaction-amount-container">
-                    <p>{transaction.type === 'Debited' || transaction.type === 'Sent' ? '-' : '+'} ₹{transaction.amount}</p>
-                  </div>
+            {Object.keys(groupedTransactions).length > 0 ? (
+              Object.keys(groupedTransactions).map((date, index) => (
+                <div key={index} className="date-group">
+                  <h4>{date}</h4>
+
+                  {groupedTransactions[date].map((transaction, index) => (
+                    <div key={index} className="transaction-item-container">
+                      <div className="transaction-details-container">
+                        <p>{transaction.type}</p>
+                        <p>{new Date(transaction.date).toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <p>
+                          <span>{transaction.from}</span> - to - <span>{transaction.to}</span>
+                        </p>
+                      </div>
+                      <div className="transaction-amount-container">
+                        <p>{transaction.type === 'Debited' || transaction.type === 'Sent' ? '-' : '+'} ₹{transaction.amount}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ))
             ) : (

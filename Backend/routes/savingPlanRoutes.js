@@ -54,7 +54,7 @@ savingPlanRouter.post(`/user/:userId/savingplan`, protect, async (req, res) => {
         });
         await transaction.save();
         user.history.push(transaction);
-
+        console.log("traansaction post",transaction);
         await user.save();
 
         res.status(201).json({ message: 'Saving plan created', pot: savedPot });
@@ -111,6 +111,29 @@ savingPlanRouter.patch('/user/:userId/savingplan/:potId',protect, async (req, re
         res.status(500).json({ message: error.message });
     }
 });
+
+savingPlanRouter.patch('/user/:userId/savingplanstatus/:potId',protect, async (req, res) => {
+    const { potId, userId } = req.params;
+    try {
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        const pot = await SavingPot.findById(potId);
+        console.log("pot update",pot);
+        if (!pot) return res.status(404).json({ message: 'Saving plan not found' });
+
+            pot.autoDeductionStatus =!pot.autoDeductionStatus;
+            console.log("autodetucionstatus updated",pot.autoDeductionStatus);
+        
+        await pot.save();
+        await user.save(); 
+
+        res.status(200).json({ message: 'Saving plan autodetuctionstatus balance updated',status: pot.autoDeductionStatus});
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 // savingPlanRouter.get('/user/:userId/savingplan',protect, async (req, res) => {
 //     const { userId, potId } = req.params;
 
@@ -131,8 +154,9 @@ savingPlanRouter.patch('/user/:userId/savingplan/:potId',protect, async (req, re
 //         res.status(500).json({ message: error.message });
 //     }
 // });
-savingPlanRouter.get('/user/:userId/savingplan', async (req, res) => {
-    const { userId } = req.params;
+savingPlanRouter.get('/user/:userId/savingplan',protect, async (req, res) => {
+    // const { userId } = req.params;
+    const userId=req.user._id;
 
     try {
         if (!mongoose.Types.ObjectId.isValid(userId)) {
@@ -149,7 +173,7 @@ savingPlanRouter.get('/user/:userId/savingplan', async (req, res) => {
 });
 
 
-savingPlanRouter.get('/user/:userId/savingplan/:potId', async (req, res) => {
+savingPlanRouter.get('/user/:userId/savingplan/:potId',protect, async (req, res) => {
     const { userId, potId } = req.params;
 
     try {
@@ -176,37 +200,44 @@ savingPlanRouter.get('/user/:userId/savingplan/:potId', async (req, res) => {
 
 
 
+savingPlanRouter.patch('/user/:userId/savingplandeactivate/:potId', protect, async (req, res) => {
+    const { potId, userId } = req.params;
 
-savingPlanRouter.delete('/user/:userId/savingplan/:potId', protect,async (req, res) => {
-    const {potId, userId} = req.params;
     try {
         const user = await User.findById(userId);
-        if(!user) res.status(404).send("user not found");
+        if (!user) return res.status(404).send("User not found");
+
         const pot = await SavingPot.findById(potId);
         if (!pot) return res.status(404).json({ message: 'Saving plan not found' });
-        await SavingPot.deleteOne({ _id: potId });
-        user.pots = user.pots.filter(potId => potId.toString() !== pot._id.toString());
-        
+
+        const previousStatus = pot.potStatus;
+        pot.potStatus = !pot.potStatus;
+
+        const transactionType = pot.potStatus ? "reopen pot" : "closing pot";
+
         const transaction = new Transaction({
-            email:req.user.email,
-            type: "deactivated", 
-            amount:currentBalance,
-            from: "saving_pot", 
+            email: req.user.email,
+            type: transactionType,
+            amount: previousStatus ? pot.currentBalance : 0, 
+            from: "saving_pot",
             to: "Bank",
             potId: potId,
             date: new Date()
         });
-        console.log("traansaction delete",transaction);
-        
-        user.history.push(transaction);
-            
-        await user.save(); 
-        console.log(user);  
 
-        res.json({ message: 'Saving plan deleted successfully' });
+        if (!pot.potStatus) {
+            user.totalBalance += pot.currentBalance;
+            pot.currentBalance = 0;
+        }
+
+        await pot.save();
+        user.history.push(transaction);
+        await user.save();
+
+        res.json({ message: 'Saving plan status updated successfully', transaction,potStatus:pot.potStatus});
     } catch (error) {
         res.status(500).json({ message: error.message });
-    } 
+    }
 });
 
 export default savingPlanRouter;

@@ -1,4 +1,3 @@
-
 import mongoose from 'mongoose';
 
 const savingPotSchema = new mongoose.Schema({
@@ -10,33 +9,38 @@ const savingPotSchema = new mongoose.Schema({
     type: Number,
     required: false
   },
+  potStatus:{
+    type:Boolean,
+    required:true,
+    default: true,
+  },
   autoDeduction: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  autoDeductionStatus: {
     type: Boolean,
     required: true,
     default: false,
   },
   dailyAmount: {
     type: Number,
-    default:0,
-    required:true
+    default: 0,
+    required: true
   },
+  lastAutoDeductionDate: {
+    type: Date,
+    default: null 
+  },
+  lastInterestAddedDate: { type: Date, default: null },
   category: {
     type: String,
     enum: [
-      "travel",
-      "health",
-      "home",
-      "business",
-      "education",
-      "gadgets",
-      "vehicle",
-      "gifts",
-      "emergency",
-      "retirement",
-      "hobbies",
-      "clothing",
-      "charity",
-      "misc"],
+      "travel", "health", "home", "business", "education", "gadgets",
+      "vehicle", "gifts", "emergency", "retirement", "hobbies", 
+      "clothing", "charity", "misc"
+    ],
   },
   currentBalance: {
     type: Number,
@@ -51,6 +55,11 @@ const savingPotSchema = new mongoose.Schema({
     type: Date,
     required: false // Optional; you can specify it based on user preference
   },
+  interestAmount: {
+    type: Number,
+    default: 0, 
+    required: true
+  },
   imoji: {
     type: String,
     required: false
@@ -64,5 +73,3 @@ const savingPotSchema = new mongoose.Schema({
 const SavingPot = mongoose.model('SavingPot', savingPotSchema);
 
 export default SavingPot;
-
-
