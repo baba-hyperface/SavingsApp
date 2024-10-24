@@ -2,6 +2,7 @@ import cron from 'node-cron';
 import User from '../models/usermodel.js';
 
 import nodemailer from 'nodemailer';
+import Transaction from '../models/historymodel.js';
 
 // // '0 0 * * *'
 cron.schedule('1,15,30,45,59 * * * * *', async () => {
@@ -78,6 +79,17 @@ cron.schedule('0 1 * * *', async () => {
 
               totalPotsUpdated++;
               console.log(`Deducted ${pot.dailyAmount} from user: ${user.name} for pot: ${pot.potPurpose}, Current Balance: ${pot.currentBalance}`);
+              const transaction = new Transaction({
+                email: user.email,
+                type: 'Auto-Deduction',
+                amount: pot.dailyAmount,
+                from: 'Total Balance',
+                to: pot.potPurpose,
+                potId: pot._id,
+              });
+
+              await transaction.save();
+              user.history.push(transaction._id);
               await pot.save();
             } else {
               await sendInsufficientFundsEmail(user, pot);
@@ -153,12 +165,25 @@ cron.schedule('0 1 1 * *', async () => {  // Runs at 1:00 AM on the 1st of every
         const interest = Math.floor(pot.interestAmount);
         if (interest > 0) {
           pot.currentBalance += interest;  // Add floored interest to currentBalance
-          pot.interestAmount = 0;  // Reset interestAmount
-          pot.lastInterestAddedDate = currentDate;  // Update the lastInterestAddedDate to now
-          await pot.save();  // Save the updated pot
+          pot.interestAmount = 0;  
+          pot.lastInterestAddedDate = currentDate;  
+          await pot.save();  
           potsUpdated = true;
           totalPotsUpdated++;
           console.log(`Added interest of ${interest} to pot: ${pot.potPurpose}, New Balance: ${pot.currentBalance}`);
+
+          const transaction = new Transaction({
+            email: user.email,
+            type: 'Interest Added',
+            amount: interest,
+            from: 'Interest Amount',
+            to: pot.potPurpose,
+            potId: pot._id,
+          });
+
+          await transaction.save();
+          user.history.push(transaction._id);
+          
         }
       }
 

@@ -4,9 +4,7 @@ import { Balance } from './Balance';
 import { SendMoney } from './SendMoney';
 import { WithdrawMoney } from './WithdrawMoney';
 import { SaveButton } from './SaveButton';
-// import { Was } from './Was';
 import { SavingPlans } from './SavingPlans';
-// import axios from 'axios';
 import api from './api';
 import { DonutChart } from './DonutChart';
 import '../App.css'
