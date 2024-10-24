@@ -6,7 +6,7 @@
     border-radius: 0.625rem;
     box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 1500px; /* Ensures it's not too wide on larger screens */
+    max-width: 1500px; 
     margin: auto;
     font-family: "Noto Sans", sans-serif;
 }
@@ -41,7 +41,7 @@ h3 {
 .plan-card {
     flex: 1 1 30%; 
     min-width: 250px;
-    max-width: 450px;
+    max-width: 500px;
     border: 1px dashed #d1d1d1;
     border-radius: 0.5rem;
     padding: 1rem;
