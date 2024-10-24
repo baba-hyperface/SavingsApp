@@ -80,9 +80,13 @@ export const SendMoney = ({totalBalance, onBalanceUpdate, updateBalance, onHisto
 
   return (
     <div>
-      <button className='action-buttons' onClick={onOpen}>
-        Send it <i className="fa-solid fa-paper-plane"></i>
-      </button>
+    <div>
+  <button className='action-buttons' onClick={onOpen}>
+    <i className="fa-solid fa-paper-plane"></i>
+    <span className='button-text'>Send it</span>
+  </button>
+  <p className='send-text'>Send</p>
+</div>
 
      
       <Modal isOpen={isOpen} onClose={onClose}>

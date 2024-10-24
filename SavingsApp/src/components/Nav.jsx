@@ -1,10 +1,10 @@
-
-import { Box, Heading, HStack, Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import '../styles/Nav.css';
 
 const Nav = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,69 +16,72 @@ const Nav = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('userid');
     setIsAuthenticated(false);
-    navigate('/'); 
+    navigate('/');
+  };
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen); 
   };
 
   return (
-    <Box as="nav" borderBottom="1px solid" borderColor="gray.200" pt={5} pb={5}>
-      <HStack justifyContent="space-between"  pr={6} pl={6}>
-        <Heading as="h1" size="lg" color="blue.500">
-          Coins Stash
-        </Heading>
+    <nav className="nav">
+      <div className="nav-content">
+        <h1 className="nav-logo">Coins Stash</h1>
 
-        <HStack spacing={6}>
-          <Text fontWeight={900} as={Link} to='/' fontSize="lg" _hover={{ color: "blue.500" }}>
-            Home
-          </Text>
-
+        {/* Links for larger screens */}
+        <ul className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
+          <li>
+            <Link className="nav-link" to="/">Home</Link>
+          </li>
           {isAuthenticated ? (
             <>
-            <Text
-            as={Link} 
-            to='/dashboard'
-            fontSize="lg"
-            _hover={{ color: "blue.500" }}
-            fontWeight={900}
-          >
-            DashBoard
-          </Text>
-          
-          <Text
-              as={Link} 
-              to='/'
-              onClick={handleLogout}
-              fontSize="lg"
-              _hover={{ color: "blue.500" }}
-              fontWeight={900}
-            >
-              Logout
-            </Text>
-          </>
+              <li>
+                <Link className="nav-link" to="/dashboard">DashBoard</Link>
+              </li>
+              <li>
+                <Link className="nav-link logout-btn" to="/" onClick={handleLogout}>
+                  Logout
+                </Link>
+              </li>
+            </>
           ) : (
             <>
-              <Text
-                as={Link}
-                to='/login'
-                fontSize="lg"
-                _hover={{ color: "blue.500" }}
-                fontWeight={900}
-              >
-                Login
-              </Text>
-              <Text
-                as={Link}
-                to='/register'
-                fontSize="lg"
-                _hover={{ color: "blue.500" }}
-                fontWeight={900}
-              >
-                Signup
-              </Text>
+              <li>
+                <Link className="nav-link" to="/login">Login</Link>
+              </li>
+              <li>
+                <Link className="nav-link" to="/register">Signup</Link>
+              </li>
             </>
           )}
-        </HStack>
-      </HStack>
-    </Box>
+        </ul>
+
+        {/* Menu Toggle for mobile */}
+        <button className="menu-toggle" onClick={toggleMenu}>
+            {isMenuOpen ?  <i class="fa-solid fa-x"></i> : <i class="fa-solid fa-bars"></i>}
+        </button>
+      </div>
+
+      {isMenuOpen && (
+        <div className="menu-body">
+          <ul>
+            <li><Link to="/" onClick={toggleMenu}>Home</Link></li>
+            <li><Link to="/chart" onClick={toggleMenu}>Chart</Link></li>
+            {isAuthenticated ? (
+              <>
+                <li><Link to="/dashboard" onClick={toggleMenu}>Dashboard</Link></li>
+                <li><Link to="/" onClick={() => { handleLogout(); toggleMenu(); }}>Logout</Link></li>
+              </>
+            ) : (
+              <>
+                <li><Link to="/login" onClick={toggleMenu}>Login</Link></li>
+                <li><Link to="/register" onClick={toggleMenu}>Signup</Link></li>
+              </>
+            )}
+          </ul>
+        </div>
+      )}
+    </nav>
   );
 };
 

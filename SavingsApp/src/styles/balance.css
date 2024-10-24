@@ -24,19 +24,18 @@
 }
 .add-fund-button{
     position: absolute;
-    bottom: -25%;
+    bottom: -23%;
     font-family: "Noto Sans", sans-serif;
     font-size: 1rem;
     left: 3%;
     color: rgb(218, 218, 218);
     background-color: #1A1A1A;
     border: none;
-    padding: 24px;
+    padding: 25px;
     width: 95%;
     border-radius: 20px;
     font-weight: 300;
     letter-spacing: 1px;
-
 }
 
 .amount-container{
@@ -45,7 +44,7 @@
     flex-direction: column;
     height: 47vh;
     justify-content: space-between;
-
+    overflow: hidden;
 }
 .total-balance{
     margin: 30px 0 5px 0;
@@ -92,6 +91,7 @@
 }
 .donut-style{
     margin-left: 15%;
+    display: block;
 }
 
 
@@ -116,7 +116,7 @@
     }
 }
 
-@media (max-width: 1064px) {
+@media (max-width: 904px) {
     .add-fund-button {
         font-size: 0.7rem;
         padding: 19px;
@@ -124,4 +124,144 @@
         left: 7%;
         bottom: -24%;
     }
+    .balance-container-left{
+        width: 100%;
+    }
+    .donut-style{
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .balance-container-left{
+        background-color: #380080;
+        margin-top: 20px;
+        width: 70%;
+        height: 30vh;
+    }
+    .balance-container-right{
+        background-color: #380080;
+        margin-top: 20px;
+        width: 30%;
+        height: 25vh;
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+        position: relative;
+    }
+    .add-fund-button{
+        position: absolute;
+        bottom: -20%;
+        font-family: "Noto Sans", sans-serif;
+        font-size: 0.8rem;
+        left: 3%;
+        color: rgb(218, 218, 218);
+        background-color: #1A1A1A;
+        border: none;
+        padding: 10px;
+        width: 95%;
+        border-radius: 20px;
+        font-weight: 300;
+        letter-spacing: 1px;
+    
+    }
+    .amount-container{
+        margin-left: 40px;
+        height: 29vh;
+    }
+    .account-number > h5{
+        font-weight: 100;
+        color: #cac9c9;
+        font-size: 15px;
+        margin: 0;
+    
+    }
+    .account-number > p{
+        margin: 0;
+        color: white;
+        margin-right: 50px;
+        font-size: 15px;
+    }
+    .expire-date > h5{
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 100;
+        font-size: 15px;
+        margin: 0;
+        color: rgb(193, 193, 193);
+    }
+    .expire-date > p{
+        margin: 0;
+        color: white;
+        margin-right: 50px;
+        font-size: 15px;
+        letter-spacing: 1px;
+    }
+    
+}
+
+
+
+@media (max-width: 504px) {
+    .balance-container-left{
+        background-color: #380080;
+        margin-top: 20px;
+        width: 70%;
+        height: 30vh;
+    }
+    .balance-container-right{
+        background-color: #380080;
+        margin-top: 20px;
+        width: 30%;
+        height: 25vh;
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+        position: relative;
+    }
+    .add-fund-button{
+        position: absolute;
+        bottom: -20%;
+        font-family: "Noto Sans", sans-serif;
+        font-size: 0.8rem;
+        left: 3%;
+        color: rgb(218, 218, 218);
+        background-color: #1A1A1A;
+        border: none;
+        padding: 10px;
+        width: 95%;
+        border-radius: 20px;
+        font-weight: 300;
+        letter-spacing: 1px;
+    
+    }
+    .amount-container{
+        margin-left: 40px;
+        height: 29vh;
+    }
+    .account-number > h5{
+        font-weight: 100;
+        color: #cac9c9;
+        font-size: 15px;
+        margin: 0;
+    
+    }
+    .account-number > p{
+        margin: 0;
+        color: white;
+        margin-right: 50px;
+        font-size: 15px;
+    }
+    .expire-date > h5{
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 100;
+        font-size: 15px;
+        margin: 0;
+        color: rgb(193, 193, 193);
+    }
+    .expire-date > p{
+        margin: 0;
+        color: white;
+        margin-right: 50px;
+        font-size: 15px;
+        letter-spacing: 1px;
+    }
+    
 }

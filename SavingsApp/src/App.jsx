@@ -10,6 +10,8 @@ import { DeActivated } from './components/DeActivated'
 import { DeActivatedPage } from './components/DeActivatedPage'
 import { SavingPlans } from './components/SavingPlans'
 import { SavingPlanPage } from './components/SavingPlanPage'
+import { Transaction } from './components/Transaction'
+import { DonutChart } from './components/DonutChart'
 
 function App() {
 
@@ -24,6 +26,8 @@ function App() {
           <Route path='/dashboard' element={<DashBoard/>}/>
           <Route path='/savingplan/:id' element={<SavingPlanPage />} />
           <Route path='/deactivated' element={<DeActivatedPage />}></Route>
+          <Route path='/history' element={<Transaction />} />
+          <Route path='/chart' element={<DonutChart />} />
         </Routes>
       </Box>
   )

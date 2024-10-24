@@ -13,8 +13,9 @@ const handleButtonClick = () => {
   return (
     <div>
       <button className='action-buttons' onClick={handleButtonClick}>
-      <i class="fa-solid fa-face-frown"></i> Deactivated Plan
+      <i class="fa-solid fa-face-frown"></i><span className='button-text'>Deactivated Plan</span>
       </button>
+      <p className='send-text'>Deactivated</p>
     </div>
   )
 }

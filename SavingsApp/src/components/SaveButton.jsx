@@ -17,12 +17,32 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
   const [category, setCategory] = useState('');
   const [autoDeduction, setAutoDeduction] = useState('no');
   const [dailyAmount, setDailyAmount] = useState(0);
+  const [days, setDays] = useState(''); // New state for days
   const toast = useToast();
   const userIdFromLocalStorage = localStorage.getItem("userid");
 
   useEffect(() => {
     setBalance(totalBalance || 0);
   }, [totalBalance]);
+
+
+  useEffect(() => {
+    calculateDailyAmount();  
+  }, [goal, amount, days]);
+
+  const calculateDailyAmount = () => {
+    const parsedGoal = parseInt(goal);
+    const parsedCurrentAmount = parseInt(amount);
+    const parsedDays = parseInt(days);
+
+    if (parsedGoal && parsedCurrentAmount && parsedDays > 0) {
+      const neededAmount = parsedGoal - parsedCurrentAmount;
+      const dailyNeeded = Math.ceil(neededAmount / parsedDays);
+      setDailyAmount(dailyNeeded);
+    } else {
+      setDailyAmount(0); 
+    }
+  };
 
   const handleSavePlan = async () => {
     const randomColor = generateRandomColor();
@@ -66,6 +86,7 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
     setCategory('');
     setAutoDeduction('no');
     setDailyAmount('');
+    setDays(''); // Reset days input
     onClose();
     window.location.reload();
   };
@@ -73,8 +94,10 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
   return (
     <div>
       <button className='action-buttons' onClick={onOpen}>
-        <i className="fa-solid fa-piggy-bank"></i> Save it!
+        <i className="fa-solid fa-piggy-bank"></i>  <span className='button-text'>Save it</span>
       </button>
+      <p className='send-text'>Save</p>
+      
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -141,7 +164,24 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
                 type="number"
                 placeholder="Goal Amount"
                 value={goal}
-                onChange={(e) => setGoal(e.target.value)}
+                onChange={(e) => {
+                  setGoal(e.target.value);
+                  calculateDailyAmount(); 
+                }}
+                sx={{ fontFamily: "Noto Sans, sans-serif" }}
+              />
+            </FormControl>
+
+            <FormControl mb={3}>
+              <FormLabel>Days to Achieve Goal</FormLabel>
+              <Input
+                type="number"
+                placeholder="Enter number of days"
+                value={days}
+                onChange={(e) => {
+                  setDays(e.target.value);
+                  calculateDailyAmount(); 
+                }}
                 sx={{ fontFamily: "Noto Sans, sans-serif" }}
               />
             </FormControl>
@@ -156,7 +196,7 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
               />
             </FormControl>
             <FormControl mb={3}>
-              <FormLabel>Would you like auto-deduction for daily savings?</FormLabel>
+            <FormLabel>Enable daily auto-deduction {dailyAmount ? 'of ' + dailyAmount : ''}?</FormLabel>
               <Select
                 placeholder="Select an option"  
                 value={autoDeduction}
@@ -167,27 +207,24 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
                 <option value="no">No</option>
               </Select>
             </FormControl>
-
             {/* Show daily amount input if auto-deduction is yes */}
             {autoDeduction === 'yes' && (
               <FormControl mb={3}>
                 <FormLabel>Daily Deduction Amount</FormLabel>
                 <Input
                   type="number"
-                  placeholder="Enter daily amount"
+                  placeholder="Calculated daily amount"
                   value={dailyAmount}
-                  onChange={(e) => setDailyAmount(e.target.value)}
+                  readOnly // Make it read-only since it is auto-calculated
                   sx={{ fontFamily: "Noto Sans, sans-serif" }}
                 />
               </FormControl>
             )}
-
           </ModalBody>
+
           <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={handleSavePlan}>
-              Save Plan
-            </Button>
-            <Button variant='ghost' onClick={onClose}>Cancel</Button>
+            <Button colorScheme="blue" onClick={handleSavePlan}>Save</Button>
+            <Button variant="outline" onClick={onClose} ml={3}>Cancel</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

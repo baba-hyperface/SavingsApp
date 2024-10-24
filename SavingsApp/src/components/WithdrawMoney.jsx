@@ -82,7 +82,12 @@ export const WithdrawMoney = ({totalBalance, onBalanceUpdate, updateBalance, ema
 
   return (
     <div>
-       <button className='action-buttons' onClick={onOpen}><i className="fa-solid fa-hand-holding-dollar"></i>Withdraw it</button>
+       <button className='action-buttons' onClick={onOpen}>
+        <i className="fa-solid fa-hand-holding-dollar"></i> 
+        <span className='button-text'>Withdraw it</span>
+        </button>
+        <p className='send-text'>Withdraw</p>
+
        <Modal isOpen={isOpen} onClose={onClose} >
         <ModalOverlay />
         <ModalContent sx={{

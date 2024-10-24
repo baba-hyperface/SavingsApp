@@ -14,14 +14,20 @@ import {
   Input,
   useToast,
   Select,
+  
   Flex,
   Box,
   Checkbox,
-} from "@chakra-ui/react";
+  useBreakpointValue, 
+} from '@chakra-ui/react';
+import api from './api';
+import { Transaction } from './Transaction';
+import { useNavigate } from 'react-router-dom';
 import api from "./api";
 import { FiFilter } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { usePlans } from "./ContextApi";
+
 
 export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
   
@@ -49,6 +55,17 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
     setBalance(totalBalance || 0);
   }, [totalBalance]);
 
+
+  const HandleHistory = () => {
+    setHistory(!hsitoryOpen);
+  }
+
+  const handleNav = (potid) => {
+    console.log(potid)
+      nav(`/savingplan/${potid}`)
+  }
+
+  const selectWidth = useBreakpointValue({ base: "100%", md: "200px" });
   useEffect(() => {
     const fetchPlans = async () => {
       try {
@@ -164,6 +181,13 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
   Filter
 </Button>
         </div>
+
+        <h3>{filteredPlans.length} saving plans</h3>
+          </div>
+          <div>
+
+</div>
+</div>
 
         {/* Filter Modal */}
         <Modal isOpen={isFilterOpen} onClose={onFilterClose}>

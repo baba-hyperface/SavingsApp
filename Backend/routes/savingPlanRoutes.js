@@ -7,46 +7,58 @@ import { protect } from '../middleware/auth.js';
 
 const savingPlanRouter = express.Router();
 
-savingPlanRouter.post(`/user/:userId/savingplan`, protect,async (req, res) => {
-    const { potPurpose, targetAmount, currentBalance, imoji, color,category,autoDeduction,dailyAmount } = req.body;
-    if(!currentBalance){
-        currentBalance=0;
+savingPlanRouter.post(`/user/:userId/savingplan`, protect, async (req, res) => {
+    let { potPurpose, targetAmount, currentBalance, imoji, color, category, autoDeduction, dailyAmount, days } = req.body;
+
+    // Default currentBalance to 0 if not provided
+    if (!currentBalance) {
+        currentBalance = 0;
     }
+
     try {
         const user = await User.findById(req.params.userId);
         if (!user) {
-            return res.status(404).json({ message: "User Not found" });
+            return res.status(404).json({ message: "User not found" });
         }
-
+        const startDate = new Date();
+        let endDate;
+        if (days) {
+            endDate = new Date(startDate);
+            endDate.setDate(startDate.getDate() + Number(days)); 
+        }
         const newSaving = new SavingPot({
             potPurpose,
             targetAmount,
             currentBalance,
-            category:category,
+            category,
             imoji,
             color,
             autoDeduction,
             dailyAmount,
+            startDate,  // Start date is automatically set to the current date
+            endDate,    // Calculated end date
             user: req.params.userId
         });
 
         const savedPot = await newSaving.save();
         user.pots.push(savedPot._id);
+
+        // Create a transaction for the initial amount added to the saving pot
         const transaction = new Transaction({
-            email:req.user.email,
-            type: "transfer", 
-            amount:currentBalance,
-            from: "walete", 
+            email: req.user.email,
+            type: "transfer",
+            amount: currentBalance,
+            from: "wallet",
             to: "saving_pot",
             date: new Date()
         });
+        await transaction.save();
+        user.history.push(transaction);
         console.log("traansaction post",transaction);
-        
-    //     user.history.push(transaction); 
-    //   await transaction.save();       
         await user.save();
 
         res.status(201).json({ message: 'Saving plan created', pot: savedPot });
+        console.log("posted", newSaving)
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

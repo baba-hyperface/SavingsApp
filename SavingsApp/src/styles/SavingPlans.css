@@ -6,7 +6,7 @@
     border-radius: 0.625rem;
     box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 1500px; 
+    max-width: 1500px;
     margin: auto;
     font-family: "Noto Sans", sans-serif;
 }
@@ -35,13 +35,13 @@ h3 {
     display: flex;
     gap: 1rem;
     margin-top: 1.25rem;
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
 }
 
 .plan-card {
-    flex: 1 1 30%; 
-    min-width: 250px;
-    max-width: 500px;
+    flex: 1 1 30%;
+    min-width: 30%;
+    max-width: 450px;
     border: 1px dashed #d1d1d1;
     border-radius: 0.5rem;
     padding: 1rem;
@@ -133,34 +133,77 @@ h3 {
     color: white;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1300px) {
     .plans-list {
         gap: 1rem;
     }
+    .plan-card {
+        width: 100%;
+        min-width: 40%;
+    }
+    .add-money-btn, .delete-btn {
+        font-size: 12px;
+        padding: 0.5rem 1rem;
+    }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 808px) {
     .plans-list {
         flex-direction: column;
         gap: 1.25rem;
     }
+    .saving-plans-container {
+        width: 100%;
+    }
 
     .plan-card {
         margin-bottom: 1.25rem;
+        width: 100%;
+        margin: auto;
     }
     
     .saving-plans-container {
         padding: 1rem;
     }
+    .add-money-btn, .delete-btn {
+        font-size: 12px;
+        padding: 0.5rem 1rem;
+    }
 }
 
 @media (max-width: 576px) {
+    .plans-list {
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+    .plan-card {
+        width: 100%;
+    }
     .add-money-btn, .delete-btn {
-        font-size: 0.875rem;
+        font-size: 12px;
         padding: 0.5rem 1rem;
     }
 
     .plan-icon {
         font-size: 1.5rem;
+    }
+
+    .header h4 {
+        font-size: 0.875rem;
+    }
+
+    h3 {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .add-money-btn, .delete-btn, .history-btn {
+        font-size: 0.875rem;
+        padding: 0.5rem;
+    }
+
+    .plan-card {
+        padding: 0.75rem;
     }
 }
