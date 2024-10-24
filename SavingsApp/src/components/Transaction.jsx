@@ -2,75 +2,77 @@ import React, { useEffect, useState } from 'react';
 import '../styles/transaction.css';
 import api from './api';
 
-export const Transaction = ({history}) => {
+export const Transaction = ({ history }) => {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [historydata,setHistorydata]=useState([]);
+  const [historydata, setHistorydata] = useState([]);
+
   const toggleHistory = () => {
     setIsHistoryOpen(!isHistoryOpen);
+    console.log("Toggled history open state:", !isHistoryOpen);
   };
- const userIdFromLocalStorage = localStorage.getItem("userid");
 
-    useEffect(() => {
-        const fetchUserdata = async () => {
-            try {
-                setLoading(true);
-                const res = await api.get(`/history`);
-                setHistorydata(res.data.historydata);
-                console.log("history data",historydata);
-                console.log(res.data.historydata);
-                setLoading(false);
-            } catch (error) {
-                setError(error);
-                console.log("error in history fetching",error);
-            }
-        }
-        fetchUserdata();
-    }, []);
+  useEffect(() => {
+    const fetchUserdata = async () => {
+      try {
+        setLoading(true);
+        const res = await api.get(`/history`);
+        setHistorydata(res.data.historydata);
+        console.log("Fetched history data:", res.data.historydata);
+      } catch (error) {
+        setError(error);
+        console.log("Error fetching history:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUserdata();
+  }, []);
 
   return (
     <div>
-      <div className='icon-container'>
+      {/* Icon to toggle transaction history */}
+      <div className="transaction-icon-container">
         <i className="fa-solid fa-clock-rotate-left" onClick={toggleHistory}></i>
       </div>
-      {isHistoryOpen && (
-        <div className="transaction-history">
-          <div className="close-container">
-            <i className="fa-solid fa-xmark" onClick={toggleHistory}></i>
-          </div>
 
-          {loading ? (
-            <p>Loading transaction history...</p>
-          ) : error ? (
-            <p>Error loading history.</p>
-          ) : (
-            <div className="transactions">
-              <h3>Transactions</h3>
-              {history.length > 0 ? (
-                history.map((transaction, index) => (
-                  <div key={index} className="transaction-item">
-                    <div className="transaction-details">
-                      <p>{transaction.type}</p>
-                      <p>{new Date(transaction.date).toLocaleString()}</p>
-                    </div>
-                    <div>
-                      <p>
-                        <span>{transaction.from}</span> - to  - <span>{transaction.to}</span>
-                      </p>
-                    </div>
-                    <div className="transaction-amount">
-                      <p>{transaction.type === 'Withdrawn' || transaction.type === 'Sent' ? '-' : '+'}₹{transaction.amount}</p>
-                    </div>
+      {/* Transaction history container */}
+      <div className={`transaction-history-container ${isHistoryOpen ? 'open' : ''}`}>
+        <div className="transaction-close-btn-container">
+          <i className="fa-solid fa-xmark" onClick={toggleHistory}></i>
+        </div>
+
+        {loading ? (
+          <p>Loading transaction history...</p>
+        ) : error ? (
+          <p>Error loading history.</p>
+        ) : (
+          <div className="transaction-list">
+            <h3>Transactions</h3>
+            {historydata.length > 0 ? (
+              historydata.map((transaction, index) => (
+                <div key={index} className="transaction-item-container">
+                  <div className="transaction-details-container">
+                    <p>{transaction.type}</p>
+                    <p>{new Date(transaction.date).toLocaleString()}</p>
                   </div>
-                ))
-              ) : (
-                <p>No transaction history available.</p>
-              )}
-            </div>
-          )}
+                  <div>
+                    <p>
+                      <span>{transaction.from}</span> - to - <span>{transaction.to}</span>
+                    </p>
+                  </div>
+                  <div className="transaction-amount-container">
+                    <p>{transaction.type === 'Debited' || transaction.type === 'Sent' ? '-' : '+'} ₹{transaction.amount}</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>No transaction history available.</p>
+            )}
           </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

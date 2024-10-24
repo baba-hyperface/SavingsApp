@@ -42,8 +42,14 @@ const savingPotSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  status: {
-    type: Boolean
+  startDate: {
+    type: Date,
+    required: true, // Making it required, but you can set default: Date.now() if necessary
+    default: Date.now // Automatically sets the start date to the current date when a new pot is created
+  },
+  endDate: {
+    type: Date,
+    required: false // Optional; you can specify it based on user preference
   },
   imoji: {
     type: String,

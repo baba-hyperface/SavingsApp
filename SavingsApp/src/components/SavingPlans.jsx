@@ -14,7 +14,8 @@ import {
   Button,
   Input,
   useToast,
-  Select, 
+  Select,
+  useBreakpointValue, 
 } from '@chakra-ui/react';
 import api from './api';
 import { Transaction } from './Transaction';
@@ -48,6 +49,8 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
     console.log(potid)
       nav(`/savingplan/${potid}`)
   }
+
+  const selectWidth = useBreakpointValue({ base: "100%", md: "200px" });
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -169,7 +172,7 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
         <h3>{filteredPlans.length} saving plans</h3>
           </div>
           <div>
-        <Select
+          <Select
   value={selectedCategory}
   onChange={handleCategoryChange}
   placeholder="Select a category"
@@ -185,7 +188,7 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
   bg="gray.50" 
   color="gray.600" 
   p={2} 
-  width="200px" 
+  width={selectWidth} 
   boxShadow="sm" 
   _focus={{
     outline: "none",
