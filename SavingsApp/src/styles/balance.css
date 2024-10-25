@@ -265,3 +265,34 @@
     }
     
 }
+
+@media (max-width: 400px) {
+    .account-number > h5{
+        font-weight: 100;
+        color: #cac9c9;
+        font-size: 12px;
+        margin: 0;
+    
+    }
+    .account-number > p{
+        margin: 0;
+        color: white;
+        margin-right: 50px;
+        font-size: 12px;
+    }
+    .expire-date > h5{
+        font-family: "Noto Sans", sans-serif;
+        font-weight: 100;
+        font-size: 12px;
+        margin: 0;
+        color: rgb(193, 193, 193);
+    }
+    .expire-date > p{
+        margin: 0;
+        color: white;
+        margin-right: 50px;
+        font-size: 12px;
+        letter-spacing: 1px;
+    }
+    
+}

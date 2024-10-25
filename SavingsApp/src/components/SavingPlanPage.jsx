@@ -16,7 +16,7 @@ export const SavingPlanPage = () => {
     const fetchData = async () => {
       try {
         const res = await api.get(`/user/${userid}/savingplan/${id}`);
-        setData(res.data); //succesfullly getting the data
+        setData(res.data); 
         console.log(res.data)
       } catch (error) {
         console.error('Error fetching saving plan data:', error);
@@ -33,12 +33,8 @@ export const SavingPlanPage = () => {
   }
 
   console.log(data.dailyAmount)
-
-  // Calculations
   const remainingAmount = data.targetAmount ? (data.targetAmount - data.currentBalance) : 0;
   const daysRequired = data.dailyAmount > 0 ? Math.ceil(remainingAmount / data.dailyAmount) : 'N/A';
-
-  // Date formatting
   const formatDate = (dateStr) => {
     if (!dateStr) return 'N/A';
     const date = new Date(dateStr);
