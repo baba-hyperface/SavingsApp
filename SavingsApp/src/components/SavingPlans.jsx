@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/SavingPlans.css";
-import { DonutChart } from "./DonutChart";
 import {
   useDisclosure,
   Modal,
@@ -14,58 +13,65 @@ import {
   Input,
   useToast,
   Select,
-  
-  Flex,
+  useBreakpointValue,
   Box,
-  Checkbox,
-  useBreakpointValue, 
-} from '@chakra-ui/react';
-import api from './api';
-import { Transaction } from './Transaction';
-import { useNavigate } from 'react-router-dom';
+  Text,
+} from "@chakra-ui/react";
 import api from "./api";
-import { FiFilter } from "react-icons/fi";
+import { FiFilter, FiTrash2 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { usePlans } from "./ContextApi";
+import { DeductionModal } from "./DetuctionModel";
 
-
-export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
-  
-  const [filteredPlans, setFilteredPlans] = useState([]); 
-  const [categories, setCategories] = useState([]); 
+export const SavingPlans = ({
+  totalBalance,
+  onBalanceUpdate,
+  updateBalance,
+}) => {
+  const [filteredPlans, setFilteredPlans] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [addMoney, setAddMoney] = useState("");
   const [selectedPlanId, setSelectedPlanId] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const { onClose, onOpen, isOpen } = useDisclosure();
   const [balance, setBalance] = useState(totalBalance);
-  const [historyOpen, setHistoryOpen] = useState(false); 
   const toast = useToast();
-  const [filterByAutoDeduction, setFilterByAutoDeduction] = useState("all"); // New state for auto-deduction filter
+  const [filterByAutoDeduction, setFilterByAutoDeduction] = useState("all");
   const [autoDeductionStatus, setAutoDeductionStatus] = useState("all");
 
-  const { refreshkey, handleAutoDeductionStatus, plans, setPlans, handleDeletePlan } = usePlans();
+  const {
+    refreshkey,
+    handleAutoDeductionStatus,
+    plans,
+    setPlans,
+    handleDeletePlan,
+    isDeductModalOpen,handleDeductCloseModal,
+    handleSaveDeduction,setIsDeductModalOpen,
+    handleDeductOpenModal
+
+  } = usePlans();
+  
   const userIdFromLocalStorage = localStorage.getItem("userid");
   const userId = userIdFromLocalStorage;
   const nav = useNavigate();
-  
+
   // Modal to manage filter
-  const { isOpen: isFilterOpen, onOpen: onFilterOpen, onClose: onFilterClose } = useDisclosure();
+  const {
+    isOpen: isFilterOpen,
+    onOpen: onFilterOpen,
+    onClose: onFilterClose,
+  } = useDisclosure();
 
   useEffect(() => {
     setBalance(totalBalance || 0);
   }, [totalBalance]);
 
-
-  const HandleHistory = () => {
-    setHistory(!hsitoryOpen);
-  }
-
   const handleNav = (potid) => {
-    console.log(potid)
-      nav(`/savingplan/${potid}`)
-  }
+    nav(`/savingplan/${potid}`);
+  };
 
   const selectWidth = useBreakpointValue({ base: "100%", md: "200px" });
+
   useEffect(() => {
     const fetchPlans = async () => {
       try {
@@ -86,15 +92,24 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
 
   useEffect(() => {
     const filtered = plans.filter((plan) => {
-      const categoryMatch = selectedCategory === "all" || (plan.category || "Others") === selectedCategory;
-      const autoDeductionMatch = filterByAutoDeduction === "all" ||
+      const categoryMatch =
+        selectedCategory === "all" ||
+        (plan.category || "Others") === selectedCategory;
+      const autoDeductionMatch =
+        filterByAutoDeduction === "all" ||
         (filterByAutoDeduction === "active" && plan.autoDeduction) ||
         (filterByAutoDeduction === "inactive" && !plan.autoDeduction);
-      const autoDeductionStatusMatch = autoDeductionStatus === "all" ||
+      const autoDeductionStatusMatch =
+        autoDeductionStatus === "all" ||
         (autoDeductionStatus === "paused" && !plan.autoDeductionStatus) ||
         (autoDeductionStatus === "running" && plan.autoDeductionStatus);
 
-      return categoryMatch && autoDeductionMatch && autoDeductionStatusMatch && plan.potStatus;
+      return (
+        categoryMatch &&
+        autoDeductionMatch &&
+        autoDeductionStatusMatch &&
+        plan.potStatus
+      );
     });
     setFilteredPlans(filtered);
   }, [selectedCategory, filterByAutoDeduction, autoDeductionStatus, plans]);
@@ -104,7 +119,7 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
   };
 
   const handleFilterApply = () => {
-    onFilterClose(); 
+    onFilterClose();
   };
 
   const handleAddMoney = async () => {
@@ -177,76 +192,15 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
           <div>
             <h4>Savings plan</h4>
             <h3>{filteredPlans.length} saving plans</h3>
-          </div><Button colorScheme="blue" onClick={onFilterOpen} leftIcon={<FiFilter />}>
-  Filter
-</Button>
-        </div>
-
-        <h3>{filteredPlans.length} saving plans</h3>
           </div>
-          <div>
-
-</div>
-</div>
-
-        {/* Filter Modal */}
-        <Modal isOpen={isFilterOpen} onClose={onFilterClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Filter Plans</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              {/* Category Filter */}
-              Category Filter
-              <Select
-                value={selectedCategory}
-                onChange={handleCategoryChange}
-                placeholder="Select a category"
-                variant="filled"
-                mb={4}
-              >
-                {categories.map((category, index) => (
-                  <option key={index} value={category}>
-                    {category === "all" ? "All Categories" : category}
-                  </option>
-                ))}
-              </Select>
-
-              {/* Auto Deduction Filter */}
-              Auto Deduction (Active/Inactive)
-              <Select
-                value={filterByAutoDeduction}
-                onChange={(e) => setFilterByAutoDeduction(e.target.value)}
-                placeholder="Auto Deduction"
-                variant="filled"
-                mb={4}
-              >
-                <option value="all">All</option>
-                <option value="active">Auto Deduction Active</option>
-                <option value="inactive">Auto Deduction Inactive</option>
-              </Select>
-
-              {/* Auto Deduction Status Filter */}
-              Auto Deduction (Running/Paused)
-              <Select
-                value={autoDeductionStatus}
-                onChange={(e) => setAutoDeductionStatus(e.target.value)}
-                placeholder="Auto Deduction Status"
-                variant="filled"
-              >
-                <option value="all">All</option>
-                <option value="running">Running</option>
-                <option value="paused">Paused</option>
-              </Select>
-            </ModalBody>
-
-            <ModalFooter>
-              <Button colorScheme="teal" onClick={handleFilterApply}>
-                Apply Filters
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+          <Button
+            colorScheme="blue"
+            onClick={onFilterOpen}
+            leftIcon={<FiFilter />}
+          >
+            Filter
+          </Button>
+        </div>
 
         <div className="plans-list">
           {filteredPlans.map((plan) => (
@@ -256,7 +210,9 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
                   <div
                     className="progress"
                     style={{
-                      width: `${(plan.currentBalance / plan.targetAmount) * 100}%`,
+                      width: `${
+                        (plan.currentBalance / plan.targetAmount) * 100
+                      }%`,
                       backgroundColor: plan.color,
                     }}
                   />
@@ -275,23 +231,65 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
                 </div>
               </div>
               <div className="action-buttons-saving">
-                {/* Auto Deduction Toggle */}
-                <button
+                <Button
                   className="add-money-btn"
-                  onClick={() => handleAutoDeductionStatus(plan._id, plan.potPurpose)}
                 >
                   {plan.autoDeduction ? (
-                    <>
-                      <i className="fa-solid fa-play-circle" style={{ color: plan.autoDeductionStatus ? "green" : "red" }}></i>
-                      {plan.autoDeductionStatus ? "Pause" : "Resume"}
-                    </>
+                    <Box
+                      onClick={() =>
+                        handleAutoDeductionStatus(plan._id, plan.potPurpose)
+                      }
+                      style={{ display: "flex", alignItems: "center" }}
+                    >
+                      {plan.autoDeductionStatus ? (
+                        <span
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            marginLeft: "8px",
+                          }}
+                        >
+                          <i
+                            className="fa-solid fa-pause-circle"
+                            style={{ color: "red", marginRight: "4px" }}
+                          ></i>
+                          <span>Pause</span>
+                        </span>
+                      ) : (
+                        <span
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            marginLeft: "8px",
+                          }}
+                        >
+                          <i
+                            className="fa-solid fa-play-circle"
+                            style={{ color: "green", marginRight: "4px" }}
+                          ></i>
+                          <span>Resume</span>
+                        </span>
+                      )}
+                    </Box>
                   ) : (
-                    <i className="fa-solid fa-play-circle" style={{ color: "gray" }}></i>
+                    <Box 
+                    onClick={() => handleDeductOpenModal(plan._id) 
+                      // setIsDeductModalOpen(true)
+                      }
+                    // onClick={() => DeductionModal(isOpen, onClose, currentDailyAmount, onSave)}
+                      // onClick={() => handleActivateAutoDeduction(plan._id)}
+                      style={{ display: "flex", alignItems: "center" }}
+                    >
+                      {/* <i
+                        className="fa-solid fa-play-circle"
+                        style={{ color: "blue", marginRight: "4px" }}
+                      ></i> */}
+                      <span >Set Deduct</span>
+                    </Box>
                   )}
-                </button>
+                </Button>
 
-                {/* Add Money Button */}
-                <button
+                <Button
                   onClick={() => {
                     setSelectedPlanId(plan._id);
                     onOpen();
@@ -299,36 +297,109 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
                   className="add-money-btn"
                 >
                   <i className="fa-solid fa-plus"></i> Add Money
-                </button>
-
-                {/* Deactivate Plan Button */}
-                <button
+                </Button>
+                <Button
                   onClick={() => handleDeletePlan(plan._id, false)}
                   className="delete-btn"
+                  // leftIcon={<FiTrash2 />}
+                  _hover={{ bg: "red.500", color: "white" }} // Change background to red on hover
+                  bg="gray.200" // Default background color
+                  color="black" // Default text color
                 >
                   <i className="fa-regular fa-circle-pause"></i> Deactivate
-                </button>
+                </Button>
               </div>
             </div>
           ))}
         </div>
       </div>
 
+      <DeductionModal 
+        isOpen={isDeductModalOpen} 
+        onClose={handleDeductCloseModal} 
+        // currentDailyAmount={deductPlan.dailyAmount} 
+        onSave={handleSaveDeduction} 
+      />
+          
+      {/* Filter Modal */}
+      <Modal isOpen={isFilterOpen} onClose={onFilterClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Filter Plans</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {/* Category Filter */}
+            <Select
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+              placeholder="Select a category"
+              variant="filled"
+              mb={4}
+            >
+              {categories.map((category, index) => (
+                <option key={index} value={category}>
+                  {category === "all" ? "All Categories" : category}
+                </option>
+              ))}
+            </Select>
+            Auto Deduction (Active/Inactive)
+            {/* Auto Deduction Filter */}
+            <Select
+              value={filterByAutoDeduction}
+              onChange={(e) => setFilterByAutoDeduction(e.target.value)}
+              placeholder="Auto Deduction"
+              variant="filled"
+              mb={4}
+            >
+              <option value="all">All</option>
+              <option value="active">Auto Deduction Active</option>
+              <option value="inactive">Auto Deduction Inactive</option>
+            </Select>
+            Auto Deduction (Running/Paused)
+            {/* Auto Deduction Status Filter */}
+            <Select
+              value={autoDeductionStatus}
+              onChange={(e) => setAutoDeductionStatus(e.target.value)}
+              placeholder="Auto Deduction Status"
+              variant="filled"
+              mb={4}
+            >
+              <option value="all">All</option>
+              <option value="paused">Paused</option>
+              <option value="running">Running</option>
+            </Select>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={handleFilterApply}>
+              Apply Filters
+            </Button>
+            <Button variant="ghost" onClick={onFilterClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+
+
       {/* Add Money Modal */}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Add Money</ModalHeader>
+          <ModalHeader>Add Money to Saving Plan</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Input
+              placeholder="Enter amount"
               value={addMoney}
               onChange={(e) => setAddMoney(e.target.value)}
-              placeholder="Enter amount to add"
+              type="number"
+              variant="filled"
+              mb={4}
             />
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="teal" onClick={handleAddMoney}>
+            <Button colorScheme="blue" mr={3} onClick={handleAddMoney}>
               Add
             </Button>
             <Button variant="ghost" onClick={onClose}>
@@ -340,3 +411,72 @@ export const SavingPlans = ({ totalBalance, onBalanceUpdate, updateBalance }) =>
     </div>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React, { useState } from 'react';
+
+
+function Plan() {
+  const [isDedutModalOpen, setIsDeductModalOpen] = useState(false);
+  const [detuctplan, setDetuctPlan] = useState({
+    autoDeduction: false,
+    autoDeductionStatus: false,
+  });
+
+  const handleDetuctOpenModal = () => setIsDeductModalOpen(true);
+  const handleDetuctCloseModal = () => setIsDeductModalOpen(false);
+
+  const handleSaveDeduction = (amount) => {
+    // Save the daily deduction amount and any related updates to the plan here
+    console.log("Daily Deduction Amount Saved:", amount);
+    setIsDeductModalOpen(false);
+  };
+
+  return (
+    <Box>
+      <Button
+        className="add-money-btn"
+        disabled={!detuctplan.autoDeduction}
+        onClick={detuctplan.autoDeduction ? handleOpenModal : null}
+        style={{
+          cursor: detuctplan.autoDeduction ? "pointer" : "not-allowed",
+        }}
+      >
+        {plan.autoDeduction 
+          ? plan.autoDeductionStatus 
+            ? (
+              <>
+                <i className="fa-solid fa-pause-circle" style={{ color: "red", marginRight: "8px" }}></i>
+                <span>Pause</span>
+              </>
+            ) : (
+              <>
+                <i className="fa-solid fa-play-circle" style={{ color: "green", marginRight: "8px" }}></i>
+                <span>Resume</span>
+              </>
+            )
+          : <span>Set Deduct</span>}
+      </Button>
+
+      <DeductionModal 
+        isOpen={isDedutModalOpen} 
+        onClose={handleDetuctCloseModal} 
+        currentDailyAmount={detuctplan.dailyAmount} 
+        onSave={handleSaveDeduction} 
+      />
+    </Box>
+  );
+}
+
+export default Plan;
