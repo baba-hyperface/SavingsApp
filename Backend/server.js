@@ -6,7 +6,7 @@ import cors from 'cors';
 import savingPlanRouter from './routes/savingPlanRoutes.js';
 import userRouter from './routes/userRouter.js';
 import historyrouter from './routes/history.js';
-import './controllers/cornsjob.js';
+// import './controllers/cornsjob.js';
 
 const app = express();
 app.use(express.json());

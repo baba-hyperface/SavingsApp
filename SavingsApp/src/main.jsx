@@ -7,12 +7,13 @@ import { PlanProvider } from "./components/ContextApi.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BrowserRouter>
       <PlanProvider>
+    <BrowserRouter>
         <ChakraProvider>
           <App />
         </ChakraProvider>
-      </PlanProvider>
+      
     </BrowserRouter>
+    </PlanProvider>
   </StrictMode>
 );

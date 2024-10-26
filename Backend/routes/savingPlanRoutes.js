@@ -134,30 +134,43 @@ savingPlanRouter.patch('/user/:userId/savingplanstatus/:potId',protect, async (r
     }
 });
 
-// savingPlanRouter.get('/user/:userId/savingplan',protect, async (req, res) => {
-//     const { userId, potId } = req.params;
+savingPlanRouter.patch('/user/:userId/savingsplanActivatingAutodeduct/:selectedPlanId',protect, async (req, res) => {
+    const { selectedPlanId, userId } = req.params;
+    const {deductionAmount} =req.body;
+    console.log("potid",selectedPlanId);
+    console.log(deductionAmount);
 
-//     try {
-//         if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(potId)) {
-//             return res.status(400).json({ message: 'Invalid user ID or pot ID' });
-//         }
-//         const user = await User.findById(userId).populate('pots');
-//         if (!user) {
-//             return res.status(404).json({ message: 'User not found' });
-//         }
-//         const pot = user.pots.find(pot => pot._id.toString() === potId);
-//         if (!pot) {
-//             return res.status(404).json({ message: 'Saving plan not found' });
-//         }
-//         res.json(pot);
-//     } catch (error) {
-//         res.status(500).json({ message: error.message });
-//     }
-// });
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        const pot = await SavingPot.findById(selectedPlanId);
+        console.log("pot update",pot);
+        if (!pot) return res.status(404).json({ message: 'Saving plan not found' });
+
+        pot.autoDeductionStatus =true;
+        pot.autoDeduction=true;
+        pot.dailyAmount = deductionAmount;
+        console.log("pot updated daily amount",pot.dailyAmount);
+
+        console.log("autodetucion starts from now",pot.autoDeductionStatus);
+    
+        await pot.save();
+        console.log("afterpot save");
+        await user.save(); 
+        console.log("user saving",pot);
+
+        res.status(200).json({ message: 'Saving plan autodetuction Activeted & Daily-amount updated',status: pot.autoDeduction});
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 savingPlanRouter.get('/user/:userId/savingplan',protect, async (req, res) => {
     // const { userId } = req.params;
     const userId=req.user._id;
-
     try {
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             return res.status(400).json({ message: 'Invalid user ID' });

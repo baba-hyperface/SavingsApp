@@ -215,7 +215,7 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
                   type="number"
                   placeholder="Calculated daily amount"
                   value={dailyAmount}
-                  readOnly // Make it read-only since it is auto-calculated
+                  readOnly 
                   sx={{ fontFamily: "Noto Sans, sans-serif" }}
                 />
               </FormControl>

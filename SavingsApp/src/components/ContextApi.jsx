@@ -10,6 +10,56 @@ export const PlanProvider = ({ children }) => {
   const [plans, setPlans] = useState([]);
   const userId=localStorage.getItem("userid");
 
+  const [isDeductModalOpen, setIsDeductModalOpen] = useState(false);
+  const handleDeductCloseModal = () => setIsDeductModalOpen(false);
+  const [selectedPlanId,setSelectedPlanId]=useState("");
+
+  const handleDeductOpenModal = (planId) => {
+    console.log("selectedPlanId 1",planId);
+
+    setSelectedPlanId(planId); 
+
+    // console.log("selectedPlanId",selectedPlanId);
+    setIsDeductModalOpen(true);
+
+  };
+
+  console.log("planid", selectedPlanId);
+
+  const handleSaveDeduction = async (deductionAmount) => {
+    console.log("Daily Deduction Amount Saved:", deductionAmount);
+
+    try{
+      console.log("selectedPlanId",selectedPlanId);
+      console.log("Deduction amount from front",deductionAmount);
+      const response=await api.patch(`/user/${userId}/savingsplanActivatingAutodeduct/${selectedPlanId}`, {deductionAmount} );
+      console.log(response.data.status);
+      if(response.data.status){
+      toast({
+        title: `Status updated.`,
+        description: "Your daily deduction is activated",
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+
+    } catch (error) {
+      console.error('Error updating saving plan:', error);
+
+      toast({
+        title: 'Error',
+        description: 'Failed to update the Daily Detuction status of the saving plan.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+
+    setIsDeductModalOpen(false);
+  };
+
+
   const handleAutoDeductionStatus = async (planId, potPurpose) => {
 
     try {
@@ -65,7 +115,7 @@ const handleDeletePlan = async (planId, isActive) => {
         });
       }
       setRefreshKey(prev => prev + 1);
-      window.location.reload();
+      
     } catch (error) {
       console.error("Error updating saving plan:", error);
       toast({
@@ -84,7 +134,13 @@ const handleDeletePlan = async (planId, isActive) => {
         handleAutoDeductionStatus,
         refreshKey,setRefreshKey,
         plans,setPlans,
-        handleDeletePlan
+        handleDeletePlan,
+
+        isDeductModalOpen,handleDeductCloseModal,
+        handleSaveDeduction,setIsDeductModalOpen,
+        handleDeductOpenModal
+
+        // setDeductPlan
       }}
     >
       {children}
