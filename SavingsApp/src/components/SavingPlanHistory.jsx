@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import '../styles/SavingPllanPageHistory.css';
 import api from './api';
 import { useParams } from 'react-router-dom';
+import { div } from 'framer-motion/client';
 
 export const SavingPlanHistory = () => {
   const [loading, setLoading] = useState(false);
@@ -31,6 +32,12 @@ export const SavingPlanHistory = () => {
     };
     fetchUserdata();
   }, [id]);
+
+  if(!history && history === undefined){
+    return (
+      <div className='no-history-available'>No History Available</div>
+    )
+  }
 
   return (
     <div>

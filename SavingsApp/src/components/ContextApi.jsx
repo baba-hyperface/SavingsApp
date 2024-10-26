@@ -95,10 +95,6 @@ export const PlanProvider = ({ children }) => {
 
 const handleDeletePlan = async (planId, isActive) => {
     if (!isActive) {
-      const confirmAction = window.confirm("Are you sure you want to deactivate this plan?");
-      if (!confirmAction) {
-        return; 
-      }
     }
   
     try {
@@ -106,14 +102,7 @@ const handleDeletePlan = async (planId, isActive) => {
       const potStatus = !res.data.potStatus; 
       const colorScheme=potStatus? "red":"green";
       if (potStatus) { 
-        toast({
-          title: "Plan Deactivated",
-          description: "Your saving plan has been successfully deactivated.",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-          colorScheme,
-        });
+        console.log("plan deActivated")
       } else {
         setPlans((prevPlans) => prevPlans.filter((plan) => plan._id !== planId));
         toast({

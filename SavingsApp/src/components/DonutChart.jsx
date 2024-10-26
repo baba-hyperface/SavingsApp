@@ -2,7 +2,6 @@ import React from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
-
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export const DonutChart = ({ savingsData }) => {
@@ -10,12 +9,17 @@ export const DonutChart = ({ savingsData }) => {
   if (!savingsData || savingsData.length === 0) {
     return <div>No savings data available.</div>;
   }
+  const activePots = savingsData.filter(item => item.potStatus); 
+
+  if (activePots.length === 0) {
+    return <div>No active pots available.</div>;
+  }
 
   const data = {
-    labels: savingsData.map((item) => item.potPurpose),  
+    labels: activePots.map((item) => item.potPurpose),  
     datasets: [
       {
-        data: savingsData.map((item) => item.currentBalance),
+        data: activePots.map((item) => item.currentBalance),
         backgroundColor: [
           '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
         ],  // Colors for each section

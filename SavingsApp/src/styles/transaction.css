@@ -78,7 +78,6 @@
 /* Mobile screens */
 @media (max-width: 950px) {
   .transaction-history-container {
-    position: fixed;
     top: 0;
     right: 0;
     width: 100%;
@@ -89,7 +88,6 @@
 
   .transaction-icon-container > i {
     font-size: 20px; /* Larger size for better visibility */
-    margin-top: 125px;
     display: block;
   }
 
@@ -99,8 +97,6 @@
   }
 
   .transaction-icon-container {
-    position: fixed;
-    top: 10px;
     right: 10px;
   }
 }
@@ -118,17 +114,10 @@
 
   .transaction-icon-container > i {
     font-size: 20px; /* Larger size for better visibility */
-    margin-top: 125px;
     display: block;
   }
 
   .transaction-history-container.open {
     display: block; 
-  }
-
-  .transaction-icon-container {
-    position: fixed;
-    top: 10px;
-    right: 10px;
   }
 }

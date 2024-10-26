@@ -12,8 +12,26 @@ import { SavingPlans } from './components/SavingPlans'
 import { SavingPlanPage } from './components/SavingPlanPage'
 import { Transaction } from './components/Transaction'
 import { DonutChart } from './components/DonutChart'
+import { useEffect, useState } from 'react'
+import api from './components/api'
 
 function App() {
+  const [potData, setPotData] = useState([]);
+  const userIdFromLocalStorage = localStorage.getItem("userid")
+
+
+  useEffect(() => {
+    const fetchPotData = async () => {
+        try {
+            const res = await api.get(`/user/${userIdFromLocalStorage}/savingplan`)
+            setPotData(res.data);
+            console.log(res.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    fetchPotData();
+}, []);
 
   return (
     <Box >
@@ -27,7 +45,7 @@ function App() {
           <Route path='/savingplan/:id' element={<SavingPlanPage />} />
           <Route path='/deactivated' element={<DeActivatedPage />}></Route>
           <Route path='/history' element={<Transaction />} />
-          <Route path='/chart' element={<DonutChart />} />
+          <Route path='/chart' element={<DonutChart savingsData={potData} />} />
         </Routes>
       </Box>
   )

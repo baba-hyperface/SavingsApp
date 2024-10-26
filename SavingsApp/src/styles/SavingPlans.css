@@ -91,7 +91,27 @@ h3 {
 
 .add-money-btn, .delete-btn, .history-btn {
     background-color: #E5EBF6;
-    padding: 0.625rem 1.25rem;
+    padding: 10px ;
+    border: none;
+    border-radius: 0.625rem;
+    font-size: 1rem;
+    color: rgb(66, 65, 65);
+    font-family: "Noto Sans", sans-serif;
+    transition: background-color 0.3s ease;
+}
+.target-achieved{
+    display: flex;
+    align-items: center;
+   justify-content: space-around;
+   gap: 110px;
+}
+.target-achieved > p{
+    color: #00b929;
+    font-weight: bold;
+}
+.target-achieved > button{
+    background-color: #E5EBF6;
+    padding: 10px ;
     border: none;
     border-radius: 0.625rem;
     font-size: 1rem;
@@ -197,9 +217,22 @@ h3 {
     }
 }
 
-@media (max-width: 400px) {
+
+@media (max-width: 430px) {
     .add-money-btn, .delete-btn, .history-btn {
-        font-size: 0.875rem;
+        font-size: 0.9rem;
+        padding: 0.5rem;
+    }
+
+    .plan-card {
+        padding: 0.75rem;
+    }
+}
+
+
+@media (max-width: 380px) {
+    .add-money-btn, .delete-btn, .history-btn {
+        font-size: 0.7rem;
         padding: 0.5rem;
     }
 
