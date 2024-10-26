@@ -11,9 +11,7 @@ import { FiFilter, FiTrash2 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { usePlans } from "./ContextApi";
 import { DeductionModal } from "./DetuctionModel";
-import { FiFilter } from "react-icons/fi";
 import api from "./api";
-import { useNavigate } from "react-router-dom";
 
 export const SavingPlans = ({
   totalBalance,
@@ -264,37 +262,55 @@ export const SavingPlans = ({
                 </div>
               ) : (
                 <>
-                  <Button onClick={() => handleDeductOpenModal(plan._id)}>
-                    {plan.autoDeduction ? (
-                      <Box
-                        onClick={() =>
-                          handleAutoDeductionStatus(plan._id, plan.potPurpose)
-                        }
-                        display="flex"
-                        alignItems="center"
-                      >
-                        {plan.autoDeductionStatus ? (
-                          <span>
-                            <i
-                              className="fa-solid fa-pause-circle"
-                              style={{ color: "red", marginRight: "4px" }}
-                            ></i>
-                            Pause
-                          </span>
-                        ) : (
-                          <span>
-                            <i
-                              className="fa-solid fa-play-circle"
-                              style={{ color: "green", marginRight: "4px" }}
-                            ></i>
-                            Resume
-                          </span>
-                        )}
-                      </Box>
-                    ) : (
-                      <span>Set Deduct</span>
-                    )}
-                  </Button>
+                  <Button
+                     className="add-money-btn"
+                   >
+                     {plan.autoDeduction ? (
+                       <Box
+                         onClick={() =>
+                           handleAutoDeductionStatus(plan._id, plan.potPurpose)
+                         }
+                         style={{ display: "flex", alignItems: "center" }}
+                       >
+                         {plan.autoDeductionStatus ? (
+                           <span
+                             style={{
+                               display: "flex",
+                               alignItems: "center",
+                               marginLeft: "8px",
+                             }}
+                           >
+                             <i
+                               className="fa-solid fa-pause-circle"
+                               style={{ color: "red", marginRight: "4px" }}
+                             ></i>
+                             <span>Pause</span>
+                           </span>
+                         ) : (
+                           <span
+                             style={{
+                               display: "flex",
+                               alignItems: "center",
+                               marginLeft: "8px",
+                             }}
+                           >
+                             <i
+                               className="fa-solid fa-play-circle"
+                               style={{ color: "green", marginRight: "4px" }}
+                             ></i>
+                             <span>Resume</span>
+                           </span>
+                         )}
+                       </Box>
+                     ) : (
+                       <Box
+                       onClick={() => handleDeductOpenModal(plan._id)}
+                         style={{ display: "flex", alignItems: "center" }}
+                       >
+                         <span >Set Deduct</span>
+                       </Box>
+                     )}
+                   </Button>
 
                   <Button
                     onClick={() => {
