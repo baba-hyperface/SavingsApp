@@ -24,6 +24,19 @@
       text-align: right;
       cursor: pointer;
     }
+
+    .no-history-available {
+      background-color: #f8d7da;  /* Light red background */
+      color: #721c24;              /* Dark red text */
+      border: 1px solid #f5c6cb;  /* Light red border */
+      border-radius: 5px;         /* Rounded corners */
+      padding: 15px;              /* Some padding for spacing */
+      text-align: center;         /* Center the text */
+      font-size: 18px;            /* Slightly larger text */
+      font-weight: bold;          /* Bold text */
+      margin: 20px;
+      margin-bottom: 700px;           /* Margin to separate from other elements */
+  }  
     
     .transactions {
       margin-top: 10px;
