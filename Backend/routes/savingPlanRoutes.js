@@ -246,6 +246,7 @@ savingPlanRouter.patch('/user/:userId/savingplandeactivate/:potId', protect, asy
         await pot.save();
         user.history.push(transaction);
         await user.save();
+        console.log(Transaction);
 
         res.json({ message: 'Saving plan status updated successfully', transaction,potStatus:pot.potStatus});
     } catch (error) {
