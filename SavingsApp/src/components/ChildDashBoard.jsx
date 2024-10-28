@@ -3,13 +3,13 @@ import { Greeting } from './Greeting'
 import { Balance } from './Balance';
 import { SendMoney } from './SendMoney';
 import { WithdrawMoney } from './WithdrawMoney';
-import { SaveButton } from './SaveButton';
 import { SavingPlans } from './SavingPlans';
 import api from './api';
 import { DonutChart } from './DonutChart';
 import '../App.css'
 import { Transaction } from './Transaction';
 import { DeActivated } from './DeActivated';
+import SaveButton from './SaveButton';
 
 export const ChildDashBoard = ({data, setUser}) => {
     let {name,email, totalBalance, accountNumber, expDate} = data;
