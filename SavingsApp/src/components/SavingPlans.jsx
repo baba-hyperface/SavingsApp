@@ -12,7 +12,6 @@ import {
   Button,
   Input,
   useToast,
-  
   useBreakpointValue,
   Box,
 } from "@chakra-ui/react";
@@ -146,6 +145,17 @@ export const SavingPlans = ({
       });
     }
   };
+  const handleClaimAmount = (potid, isActive) => {
+    handleDeletePlan(potid, isActive);
+    toast({
+      title: "Claim Successful",
+      description:
+        "The amount has been claimed successfully. and debited to bank",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
 
   return (
     <div>
@@ -193,72 +203,74 @@ export const SavingPlans = ({
                 </div>
               </div>
               <div className="action-buttons-saving">
-                <Button className="add-money-btn">
-                  {plan.autoDeduction ? (
-                    <Box
-                      onClick={() =>
-                        handleAutoDeductionStatus(plan._id, plan.potPurpose)
-                      }
-                      style={{ display: "flex", alignItems: "center" }}
-                    >
-                      {plan.autoDeductionStatus ? (
-                        <span
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            marginLeft: "8px",
-                          }}
+                {plan.currentBalance >= plan.targetAmount ? (
+                  <div className="target-achieved">
+                    <p>🎉 Target Achieved!</p>
+                    <Button onClick={() => handleClaimAmount(plan._id, false)}>
+                      <i className="fa-solid fa-hand-holding-dollar"></i> Claim
+                      Amount
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <Button onClick={() => handleDeductOpenModal(plan._id)}>
+                      {plan.autoDeduction ? (
+                        <Box
+                          onClick={() =>
+                            handleAutoDeductionStatus(plan._id, plan.potPurpose)
+                          }
+                          display="flex"
+                          alignItems="center"
                         >
-                          <i
-                            className="fa-solid fa-pause-circle"
-                            style={{ color: "red", marginRight: "4px" }}
-                          ></i>
-                          <span>Pause</span>
-                        </span>
+                          {plan.autoDeductionStatus ? (
+                            <span>
+                              <i
+                                className="fa-solid fa-pause-circle"
+                                style={{ color: "red", marginRight: "4px" }}
+                              ></i>
+                              Pause
+                            </span>
+                          ) : (
+                            <span>
+                              <i
+                                className="fa-solid fa-play-circle"
+                                style={{ color: "green", marginRight: "4px" }}
+                              ></i>
+                              Resume
+                            </span>
+                          )}
+                        </Box>
                       ) : (
-                        <span
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            marginLeft: "8px",
-                          }}
+                        <Box
+                          onClick={() => handleDeductOpenModal(plan._id)}
+                          style={{ display: "flex", alignItems: "center" }}
                         >
-                          <i
-                            className="fa-solid fa-play-circle"
-                            style={{ color: "green", marginRight: "4px" }}
-                          ></i>
-                          <span>Resume</span>
-                        </span>
+                          <span>Set Deduct</span>
+                        </Box>
                       )}
-                    </Box>
-                  ) : (
-                    <Box
-                      onClick={() => handleDeductOpenModal(plan._id)}
-                      style={{ display: "flex", alignItems: "center" }}
-                    >
-                      <span>Set Deduct</span>
-                    </Box>
-                  )}
-                </Button>
+                    </Button>
 
-                <Button
-                  onClick={() => {
-                    setSelectedPlanId(plan._id);
-                    onOpen();
-                  }}
-                  className="add-money-btn"
-                >
-                  <i className="fa-solid fa-plus"></i> Add Money
-                </Button>
-                <Button
-                  onClick={() => handleDeletePlan(plan._id, false)}
-                  className="delete-btn"
-                  _hover={{ bg: "red.500", color: "white" }}
-                  bg="gray.200"
-                  color="black"
-                >
-                  <i className="fa-regular fa-circle-pause"></i> Deactivate
-                </Button>
+                    <Button
+                      onClick={() => {
+                        setSelectedPlanId(plan._id);
+                        onOpen();
+                      }}
+                      className="add-money-btn"
+                    >
+                      <i className="fa-solid fa-plus"></i> Add Money
+                    </Button>
+
+                    <Button
+                      onClick={() => handleDeletePlan(plan._id, false)}
+                      className="delete-btn"
+                      _hover={{ bg: "red.500", color: "white" }}
+                      bg="gray.200"
+                      color="black"
+                    >
+                      <i className="fa-regular fa-circle-pause"></i> Deactivate
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           ))}
