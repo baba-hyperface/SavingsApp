@@ -96,10 +96,11 @@ userRouter.delete('/users/:id',protect, async (req, res) => {
   });
 
   userRouter.patch('/user/:id/balance',protect, async (req, res) => {
-    const userId = req.params.id;
+    const userId = req.params.id || req.user.id;
     const {balance} = req.body;
     
     try {
+
         const updateBalance = await User.findByIdAndUpdate(userId, {totalBalance : balance}, {new: true});
         if(updateBalance){
             const user=await User.findOne({email:req.user.email});
