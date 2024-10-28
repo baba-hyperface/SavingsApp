@@ -82,7 +82,7 @@ const savingPotSchema = new mongoose.Schema(
     },
     frequency: {
       type: String,
-      enum:["daily","weekly","monthly"],
+      // enum:["daily","weekly","monthly"],
       required: false,
     },
     dayOfWeek: {

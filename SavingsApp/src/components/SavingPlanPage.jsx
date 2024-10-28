@@ -16,6 +16,7 @@ import {
   Input,
   useToast,
 } from '@chakra-ui/react';
+import EditDeductionModel from './EditDetuctionModel';
 
 export const SavingPlanPage = () => {
   const [data, setData] = useState(null);
@@ -35,6 +36,11 @@ export const SavingPlanPage = () => {
     onOpen: onInputModalOpen,
     onClose: onInputModalClose,
   } = useDisclosure();
+  const {
+    isOpen: isEditDeductionOpen,
+    onOpen: onEditDeductionOpen,
+    onClose: onEditDeductionClose,
+  } = useDisclosure();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,12 +54,21 @@ export const SavingPlanPage = () => {
       }
     };
     fetchData();
-  }, [userid, id, data]);
+  }, [userid, id]);
+
+  useEffect(() => {
+    console.log("savingPLan re rendered")
+  })
 
   const handleOptionClick = (option) => {
     setSelectedOption(option);
-    onOptionsClose(); 
-    onInputModalOpen(); 
+    onOptionsClose();
+
+    if (option === 'Add Money') {
+      onInputModalOpen(); 
+    } else if (option === 'Modify Auto Deduction') {
+      onEditDeductionOpen();
+    }
   };
 
   const handleSubmit = async () => {
@@ -79,15 +94,8 @@ export const SavingPlanPage = () => {
                 duration: 3000,
                 isClosable: true,
             });
-        } else if (selectedOption === 'Modify Auto Deduction') {
-            // baba Logic to modify auto deduction
-            toast({
-                title: "Auto deduction modified successfully",
-                status: "success",
-                duration: 3000,
-                isClosable: true,
-            });
-        } else if (selectedOption === 'Change End Date') {
+        }
+         else if (selectedOption === 'Change End Date') {
             const newEndDate = new Date(inputValue);
             await api.patch(`/user/${userid}/savingplan/${id}`, {
                 endDate: newEndDate.toISOString(),
@@ -224,7 +232,7 @@ export const SavingPlanPage = () => {
       </Modal>
 
       {/* Input Modal */}
-      <Modal isOpen={isInputModalOpen} onClose={onInputModalClose}>
+      {/* <Modal isOpen={isInputModalOpen} onClose={onInputModalClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{selectedOption}</ModalHeader>
@@ -252,7 +260,30 @@ export const SavingPlanPage = () => {
             </Button>
           </ModalFooter>
         </ModalContent>
+      </Modal> */}
+      <Modal isOpen={isInputModalOpen} onClose={onInputModalClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>{selectedOption}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Input
+              placeholder={`Enter amount for ${selectedOption}`}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              type="number"
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="teal" onClick={handleSubmit}>
+              Submit
+            </Button>
+          </ModalFooter>
+        </ModalContent>
       </Modal>
+
+      <EditDeductionModel pot={data} isOpen={isEditDeductionOpen} onClose={onEditDeductionClose} />
+
     </div>
   );
 };
