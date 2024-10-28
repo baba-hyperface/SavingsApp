@@ -12,7 +12,6 @@ import {
   Button,
   Input,
   useToast,
-  
   useBreakpointValue,
   Box,
 } from "@chakra-ui/react";
@@ -22,7 +21,6 @@ import { useNavigate } from "react-router-dom";
 import { usePlans } from "./ContextApi";
 import { DeductionModal } from "./DetuctionModel";
 import { FilterModal } from "./FilterModel";
-
 export const SavingPlans = ({
   totalBalance,
   onBalanceUpdate,
@@ -33,7 +31,6 @@ export const SavingPlans = ({
   const { onClose, onOpen, isOpen } = useDisclosure();
   const [balance, setBalance] = useState(totalBalance);
   const toast = useToast();
-
   const {
     refreshkey,
     handleAutoDeductionStatus,
@@ -51,21 +48,16 @@ export const SavingPlans = ({
     handleFilterApply,
     handleFilterClose,
   } = usePlans();
-
   const userIdFromLocalStorage = localStorage.getItem("userid");
   const userId = userIdFromLocalStorage;
   const nav = useNavigate();
-
   useEffect(() => {
     setBalance(totalBalance || 0);
   }, [totalBalance]);
-
   const handleNav = (potid) => {
     nav(`/savingplan/${potid}`);
   };
-
   const selectWidth = useBreakpointValue({ base: "100%", md: "200px" });
-
   useEffect(() => {
     const fetchPlans = async () => {
       try {
@@ -83,7 +75,6 @@ export const SavingPlans = ({
     };
     fetchPlans();
   }, [userId, refreshkey]);
-
   const handleAddMoney = async () => {
     if (addMoney > totalBalance) {
       toast({
@@ -146,7 +137,17 @@ export const SavingPlans = ({
       });
     }
   };
-
+  const handleClaimAmount = (potid, isActive) => {
+    handleDeletePlan(potid, isActive);
+    toast({
+      title: "Claim Successful",
+      description:
+        "The amount has been claimed successfully. and debited to bank",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
   return (
     <div>
       <div className="saving-plans-container">
@@ -163,7 +164,6 @@ export const SavingPlans = ({
             Filter
           </Button>
         </div>
-
         <div className="plans-list">
           {filteredPlans.map((plan) => (
             <div key={plan._id} className="plan-card">
@@ -193,78 +193,77 @@ export const SavingPlans = ({
                 </div>
               </div>
               <div className="action-buttons-saving">
-                <Button className="add-money-btn">
-                  {plan.autoDeduction ? (
-                    <Box
-                      onClick={() =>
-                        handleAutoDeductionStatus(plan._id, plan.potPurpose)
-                      }
-                      style={{ display: "flex", alignItems: "center" }}
-                    >
-                      {plan.autoDeductionStatus ? (
-                        <span
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            marginLeft: "8px",
-                          }}
+                {plan.currentBalance >= plan.targetAmount ? (
+                  <div className="target-achieved">
+                    <p> Target Achieved!</p>
+                    <Button onClick={() => handleClaimAmount(plan._id, false)}>
+                      <i className="fa-solid fa-hand-holding-dollar"></i> Claim
+                      Amount
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <Button onClick={() => handleDeductOpenModal(plan._id)}>
+                      {plan.autoDeduction ? (
+                        <Box
+                          onClick={() =>
+                            handleAutoDeductionStatus(plan._id, plan.potPurpose)
+                          }
+                          display="flex"
+                          alignItems="center"
                         >
-                          <i
-                            className="fa-solid fa-pause-circle"
-                            style={{ color: "red", marginRight: "4px" }}
-                          ></i>
-                          <span>Pause</span>
-                        </span>
+                          {plan.autoDeductionStatus ? (
+                            <span>
+                              <i
+                                className="fa-solid fa-pause-circle"
+                                style={{ color: "red", marginRight: "4px" }}
+                              ></i>
+                              Pause
+                            </span>
+                          ) : (
+                            <span>
+                              <i
+                                className="fa-solid fa-play-circle"
+                                style={{ color: "green", marginRight: "4px" }}
+                              ></i>
+                              Resume
+                            </span>
+                          )}
+                        </Box>
                       ) : (
-                        <span
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            marginLeft: "8px",
-                          }}
+                        <Box
+                          onClick={() => handleDeductOpenModal(plan._id)}
+                          style={{ display: "flex", alignItems: "center" }}
                         >
-                          <i
-                            className="fa-solid fa-play-circle"
-                            style={{ color: "green", marginRight: "4px" }}
-                          ></i>
-                          <span>Resume</span>
-                        </span>
+                          <span>Set Deduct</span>
+                        </Box>
                       )}
-                    </Box>
-                  ) : (
-                    <Box
-                      onClick={() => handleDeductOpenModal(plan._id)}
-                      style={{ display: "flex", alignItems: "center" }}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setSelectedPlanId(plan._id);
+                        onOpen();
+                      }}
+                      className="add-money-btn"
                     >
-                      <span>Set Deduct</span>
-                    </Box>
-                  )}
-                </Button>
-
-                <Button
-                  onClick={() => {
-                    setSelectedPlanId(plan._id);
-                    onOpen();
-                  }}
-                  className="add-money-btn"
-                >
-                  <i className="fa-solid fa-plus"></i> Add Money
-                </Button>
-                <Button
-                  onClick={() => handleDeletePlan(plan._id, false)}
-                  className="delete-btn"
-                  _hover={{ bg: "red.500", color: "white" }}
-                  bg="gray.200"
-                  color="black"
-                >
-                  <i className="fa-regular fa-circle-pause"></i> Deactivate
-                </Button>
+                      <i className="fa-solid fa-plus"></i> Add Money
+                    </Button>
+                    <Button
+                      onClick={() => handleDeletePlan(plan._id, false)}
+                      className="delete-btn"
+                      _hover={{ bg: "red.500", color: "white" }}
+                      bg="gray.200"
+                      color="black"
+                    >
+                      <i className="fa-regular fa-circle-pause"></i> Deactivate
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           ))}
         </div>
       </div>
-
       <FilterModal
         isOpen={isFilterModalOpen}
         onClose={handleFilterClose}
@@ -275,7 +274,6 @@ export const SavingPlans = ({
         onClose={handleDeductCloseModal}
         onSave={handleSaveDeduction}
       />
-
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
