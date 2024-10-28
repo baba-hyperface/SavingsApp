@@ -3,21 +3,44 @@ import { useParams } from 'react-router-dom';
 import api from './api';
 import '../styles/SavingPage.css';
 import { SavingPlanHistory } from './SavingPlanHistory';
-import { div } from 'framer-motion/client';
+import {
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  Input,
+  useToast,
+} from '@chakra-ui/react';
 
 export const SavingPlanPage = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [inputValue, setInputValue] = useState('');
   const { id } = useParams();
   const userid = localStorage.getItem('userid');
-  console.log(data)
+  const toast = useToast();
+  const {
+    isOpen: isOptionsOpen,
+    onOpen: onOptionsOpen,
+    onClose: onOptionsClose,
+  } = useDisclosure();
+  const {
+    isOpen: isInputModalOpen,
+    onOpen: onInputModalOpen,
+    onClose: onInputModalClose,
+  } = useDisclosure();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await api.get(`/user/${userid}/savingplan/${id}`);
         setData(res.data); 
-        console.log(res.data)
       } catch (error) {
         console.error('Error fetching saving plan data:', error);
       } finally {
@@ -25,14 +48,82 @@ export const SavingPlanPage = () => {
       }
     };
     fetchData();
-  }, [userid, id]);
+  }, [userid, id, data]);
 
+  const handleOptionClick = (option) => {
+    setSelectedOption(option);
+    onOptionsClose(); 
+    onInputModalOpen(); 
+  };
+
+  const handleSubmit = async () => {
+    try {
+        if (selectedOption === 'Add Money') {
+            const addedAmount = parseFloat(inputValue);
+            if (!inputValue || isNaN(addedAmount) || addedAmount <= 0) {
+                toast({
+                    title: "Invalid Amount",
+                    description: "Please enter a valid amount greater than zero.",
+                    status: "warning",
+                    duration: 3000,
+                    isClosable: true,
+                });
+                return;
+            } 
+            await api.patch(`/user/${userid}/savingplan/${id}`, {
+                currentBalance: addedAmount,
+            });
+            toast({
+                title: "Money added successfully",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+            });
+        } else if (selectedOption === 'Modify Auto Deduction') {
+            // baba Logic to modify auto deduction
+            toast({
+                title: "Auto deduction modified successfully",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+            });
+        } else if (selectedOption === 'Change End Date') {
+            const newEndDate = new Date(inputValue);
+            await api.patch(`/user/${userid}/savingplan/${id}`, {
+                endDate: newEndDate.toISOString(),
+            });
+            toast({
+                title: "End date updated successfully",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+            });
+        }
+
+        setData(prevData => ({
+            ...prevData,
+            currentBalance: inputValue,
+        }));
+        setInputValue('');
+        setSelectedOption(null); 
+        onInputModalClose();
+    } catch (error) {
+        console.error('Error updating saving plan:', error);
+        const errorMessage = error.response?.data?.message || "An unexpected error occurred.";
+        toast({
+            title: "Error",
+            description: errorMessage,
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+        });
+    }
+};
 
   if (loading) {
     return <div className="loading-message">Loading...</div>;
   }
 
-  console.log(data.dailyAmount)
   const remainingAmount = data.targetAmount ? (data.targetAmount - data.currentBalance) : 0;
   const daysRequired = data.dailyAmount > 0 ? Math.ceil(remainingAmount / data.dailyAmount) : 'N/A';
   const formatDate = (dateStr) => {
@@ -41,84 +132,127 @@ export const SavingPlanPage = () => {
     return date.toLocaleDateString();
   };
 
+  console.log("current balance", data.currentBalance);
+
   return (
-      <div className='saving-plan-page-main-container'>
-            <div>
-            <div className="app-container">
-      <h1 className='savingpage-header'>Your {data.potPurpose} Saving Plan</h1>
-      <div className="goal-section">
-        <div className='header-container-savepage'>
-          <div>
-            <i className="fas fa-clock"></i>
+    <div className='saving-plan-page-main-container'>
+      <div>
+        <div className="app-container">
+          <h1 className='savingpage-header'>Your {data.potPurpose} Saving Plan</h1>
+          <div className="goal-section">
+            <div className='header-container-savepage'>
+              <div>
+                <i className="fas fa-clock"></i>
+              </div>
+              <div>
+                <h3>₹{data.dailyAmount}</h3>
+                <p>Daily Target</p>
+              </div>
+            </div>
+            <div className='header-container-savepage'>
+              <div>
+                <i className="fas fa-hourglass-half"></i>
+              </div>
+              <div>
+                <h3>₹{remainingAmount}</h3>
+                <p>Remaining</p>
+              </div>
+            </div>
+            <div className="add-goal-card" onClick={onOptionsOpen}>
+            <i className="fas fa-ellipsis-v"></i>
+              <p>Options</p>
+            </div>
           </div>
-          <div>
-            <h3>₹{data.dailyAmount}</h3>
-            <p>Daily Target</p>
-          </div>
-        </div>
-        <div className='header-container-savepage'>
-          <div>
-            <i className="fas fa-hourglass-half"></i>
-          </div>
-          <div>
-            <h3>₹{remainingAmount}</h3>
-            <p>Remaining</p>
-          </div>
-        </div>
-        <div className="add-goal-card">
-          <i className="fa-solid fa-plus"></i>
-          <p> Add Money</p>
-        </div>
-      </div>
 
-      <div className='money-and-date-container'>
-        <div className='money-deails-container'>
-          <div>
-            <h3>₹{data.targetAmount || 'N/A'}</h3>
-            <p>{data.potPurpose} goal set amount</p>
-          </div>
-          <div>
-            <h3>{daysRequired} days</h3>
-            <p>Days to reach target</p>
-          </div>
-          <div>
-            <h3>₹{data.currentBalance}</h3>
-            <p>Current balance</p>
-          </div>
-        </div>
-        <div className='date-deails-container'>
-          <div className='date-child-container'>
-            <div>
-              <i className="fa-solid fa-calendar-days"></i>
+          <div className='money-and-date-container'>
+            <div className='money-deails-container'>
+              <div>
+                <h3>₹{data.targetAmount || 'N/A'}</h3>
+                <p>{data.potPurpose} goal set amount</p>
+              </div>
+              <div>
+                <h3>{daysRequired} days</h3>
+                <p>Days to reach target</p>
+              </div>
+              <div>
+                <h3>₹{data.currentBalance}</h3>
+                <p>Current balance</p>
+              </div>
             </div>
-            <div>
-              <h5>{formatDate(data.startDate)}</h5>
-              <p>Start date</p>
+            <div className='date-deails-container'>
+              <div className='date-child-container'>
+                <div>
+                  <i className="fa-solid fa-calendar-days"></i>
+                </div>
+                <div>
+                  <h5>{formatDate(data.startDate)}</h5>
+                  <p>Start date</p>
+                </div>
+              </div>
+              <div className='date-child-container'>
+                <div>
+                  <i className="fa-solid fa-calendar-days"></i>
+                </div>
+                <div>
+                  <h5>{formatDate(data.endDate)}</h5>
+                  <p>End date</p>
+                </div>
+              </div>
             </div>
           </div>
-          <div className='date-child-container'>
-            <div>
-              <i className="fa-solid fa-calendar-days"></i>
-            </div>
-            <div>
-              <h5>{formatDate(data.endDate)}</h5>
-              <p>End date</p>
-            </div>
-          </div>
-        </div>
-        <div>
-        </div>
-      </div>
-      <div className='saving-page-image'>
+          <div className='saving-page-image'>
             <img src="https://img.freepik.com/premium-vector/saving-money-with-large-jar-concept-illustration_135170-34.jpg" alt="" />
+          </div>
+          <div>
+              <SavingPlanHistory />
+          </div>
+        </div>
       </div>
+
+      {/* Options Modal */}
+      <Modal isOpen={isOptionsOpen} onClose={onOptionsClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Choose an Option</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Button onClick={() => handleOptionClick('Add Money')} width="100%" mb={2}>Add Money</Button>
+            <Button onClick={() => handleOptionClick('Modify Auto Deduction')} width="100%" mb={2}>Modify Auto Deduction</Button>
+            <Button onClick={() => handleOptionClick('Change End Date')} width="100%">Change End Date</Button>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
+      {/* Input Modal */}
+      <Modal isOpen={isInputModalOpen} onClose={onInputModalClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>{selectedOption}</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {selectedOption === 'Change End Date' ? (
+              <Input
+                placeholder="Enter new end date (YYYY-MM-DD)"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                type="date"
+              />
+            ) : (
+              <Input
+                placeholder={`Enter amount for ${selectedOption}`}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                type="number"
+              />
+            )}
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="teal" onClick={handleSubmit}>
+              Submit
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
-            </div>
-            <div>
-                  <SavingPlanHistory />
-            </div>
-
-
-      </div>
   );
 };
