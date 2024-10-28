@@ -195,7 +195,7 @@ export const SavingPlans = ({
               <div className="action-buttons-saving">
                 {plan.currentBalance >= plan.targetAmount ? (
                   <div className="target-achieved">
-                    <p> Target Achieved!</p>
+                    <p>🎉  Target Achieved!</p>
                     <button onClick={() => handleClaimAmount(plan._id, false)} className="claim-amount">
                       <i className="fa-solid fa-hand-holding-dollar"></i> Claim
                       Amount

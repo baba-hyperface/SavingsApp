@@ -1,0 +1,25 @@
+/* Style the datepicker pop-up */
+.custom-datepicker-popper {
+    z-index: 3; /* Ensure it's on top of other elements */
+  }
+  
+  .custom-datepicker-wrapper .react-datepicker__day--selected,
+  .custom-datepicker-wrapper .react-datepicker__day--keyboard-selected {
+    background-color: #38b2ac; /* Change to your desired color */
+    color: white;
+  }
+  
+  .custom-datepicker-wrapper .react-datepicker__header {
+    background-color: #e6fffa;
+    border-bottom: 1px solid #38b2ac;
+  }
+  
+  .custom-datepicker-wrapper .react-datepicker__current-month {
+    font-weight: bold;
+    color: #2c7a7b;
+  }
+  
+  .custom-datepicker-wrapper .react-datepicker__day--today {
+    border: 1px solid #4fd1c5;
+  }
+  
