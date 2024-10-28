@@ -218,9 +218,9 @@ h3 {
 }
 
 
-@media (max-width: 430px) {
+@media (max-width: 420px) {
     .add-money-btn, .delete-btn, .history-btn {
-        font-size: 0.9rem;
+        font-size: 0.5rem;
         padding: 0.5rem;
     }
 

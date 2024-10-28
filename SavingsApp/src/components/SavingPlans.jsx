@@ -21,7 +21,6 @@ import { useNavigate } from "react-router-dom";
 import { usePlans } from "./ContextApi";
 import { DeductionModal } from "./DetuctionModel";
 import { FilterModal } from "./FilterModel";
-
 export const SavingPlans = ({
   totalBalance,
   onBalanceUpdate,
@@ -32,7 +31,6 @@ export const SavingPlans = ({
   const { onClose, onOpen, isOpen } = useDisclosure();
   const [balance, setBalance] = useState(totalBalance);
   const toast = useToast();
-
   const {
     refreshkey,
     handleAutoDeductionStatus,
@@ -50,21 +48,16 @@ export const SavingPlans = ({
     handleFilterApply,
     handleFilterClose,
   } = usePlans();
-
   const userIdFromLocalStorage = localStorage.getItem("userid");
   const userId = userIdFromLocalStorage;
   const nav = useNavigate();
-
   useEffect(() => {
     setBalance(totalBalance || 0);
   }, [totalBalance]);
-
   const handleNav = (potid) => {
     nav(`/savingplan/${potid}`);
   };
-
   const selectWidth = useBreakpointValue({ base: "100%", md: "200px" });
-
   useEffect(() => {
     const fetchPlans = async () => {
       try {
@@ -82,7 +75,6 @@ export const SavingPlans = ({
     };
     fetchPlans();
   }, [userId, refreshkey]);
-
   const handleAddMoney = async () => {
     if (addMoney > totalBalance) {
       toast({
@@ -156,7 +148,6 @@ export const SavingPlans = ({
       isClosable: true,
     });
   };
-
   return (
     <div>
       <div className="saving-plans-container">
@@ -173,7 +164,6 @@ export const SavingPlans = ({
             Filter
           </Button>
         </div>
-
         <div className="plans-list">
           {filteredPlans.map((plan) => (
             <div key={plan._id} className="plan-card">
@@ -249,7 +239,7 @@ export const SavingPlans = ({
                         </Box>
                       )}
                     </Button>
-
+                    
                     <Button
                       onClick={() => {
                         setSelectedPlanId(plan._id);
@@ -260,6 +250,7 @@ export const SavingPlans = ({
                       <i className="fa-solid fa-plus"></i> Add Money
                     </Button>
 
+                    
                     <Button
                       onClick={() => handleDeletePlan(plan._id, false)}
                       className="delete-btn"
@@ -276,7 +267,6 @@ export const SavingPlans = ({
           ))}
         </div>
       </div>
-
       <FilterModal
         isOpen={isFilterModalOpen}
         onClose={handleFilterClose}
@@ -287,7 +277,6 @@ export const SavingPlans = ({
         onClose={handleDeductCloseModal}
         onSave={handleSaveDeduction}
       />
-
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
