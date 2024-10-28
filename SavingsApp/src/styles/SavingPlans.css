@@ -89,7 +89,7 @@ h3 {
     margin-top: 0.625rem;
 }
 
-.add-money-btn, .delete-btn, .history-btn {
+.add-money-btn, .delete-btn, .history-btn, .claim-amount {
     background-color: #E5EBF6;
     padding: 10px ;
     border: none;
@@ -218,9 +218,9 @@ h3 {
 }
 
 
-@media (max-width: 420px) {
+@media (max-width: 425px) {
     .add-money-btn, .delete-btn, .history-btn {
-        font-size: 0.5rem;
+        font-size: 0.9rem;
         padding: 0.5rem;
     }
 

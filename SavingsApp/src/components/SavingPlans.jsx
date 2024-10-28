@@ -195,15 +195,15 @@ export const SavingPlans = ({
               <div className="action-buttons-saving">
                 {plan.currentBalance >= plan.targetAmount ? (
                   <div className="target-achieved">
-                    <p>🎉 Target Achieved!</p>
-                    <Button onClick={() => handleClaimAmount(plan._id, false)}>
+                    <p>🎉  Target Achieved!</p>
+                    <button onClick={() => handleClaimAmount(plan._id, false)} className="claim-amount">
                       <i className="fa-solid fa-hand-holding-dollar"></i> Claim
                       Amount
-                    </Button>
+                    </button>
                   </div>
                 ) : (
                   <>
-                    <Button onClick={() => handleDeductOpenModal(plan._id)}>
+                    <button onClick={() => handleDeductOpenModal(plan._id)} className="add-money-btn">
                       {plan.autoDeduction ? (
                         <Box
                           onClick={() =>
@@ -233,14 +233,12 @@ export const SavingPlans = ({
                       ) : (
                         <Box
                           onClick={() => handleDeductOpenModal(plan._id)}
-                          style={{ display: "flex", alignItems: "center" }}
-                        >
+                          style={{ display: "flex", alignItems: "center" }} >
                           <span>Set Deduct</span>
                         </Box>
                       )}
-                    </Button>
-                    
-                    <Button
+                    </button>
+                    <button
                       onClick={() => {
                         setSelectedPlanId(plan._id);
                         onOpen();
@@ -248,10 +246,8 @@ export const SavingPlans = ({
                       className="add-money-btn"
                     >
                       <i className="fa-solid fa-plus"></i> Add Money
-                    </Button>
-
-                    
-                    <Button
+                    </button>
+                    <button
                       onClick={() => handleDeletePlan(plan._id, false)}
                       className="delete-btn"
                       _hover={{ bg: "red.500", color: "white" }}
@@ -259,7 +255,7 @@ export const SavingPlans = ({
                       color="black"
                     >
                       <i className="fa-regular fa-circle-pause"></i> Deactivate
-                    </Button>
+                    </button>
                   </>
                 )}
               </div>

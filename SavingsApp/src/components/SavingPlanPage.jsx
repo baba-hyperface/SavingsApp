@@ -26,6 +26,7 @@ export const SavingPlanPage = () => {
   const { id } = useParams();
   const userid = localStorage.getItem('userid');
   const toast = useToast();
+  const[balance, setBalance] = useState(null)
   const {
     isOpen: isOptionsOpen,
     onOpen: onOptionsOpen,
@@ -47,6 +48,7 @@ export const SavingPlanPage = () => {
       try {
         const res = await api.get(`/user/${userid}/savingplan/${id}`);
         setData(res.data); 
+        setBalance(res.data.currentBalance);
       } catch (error) {
         console.error('Error fetching saving plan data:', error);
       } finally {
@@ -54,7 +56,7 @@ export const SavingPlanPage = () => {
       }
     };
     fetchData();
-  }, [userid, id]);
+  }, [userid, id, balance]);
 
   useEffect(() => {
     console.log("savingPLan re rendered")
@@ -88,6 +90,7 @@ export const SavingPlanPage = () => {
             await api.patch(`/user/${userid}/savingplan/${id}`, {
                 currentBalance: addedAmount,
             });
+            setBalance(addedAmount);
             toast({
                 title: "Money added successfully",
                 status: "success",
@@ -140,7 +143,9 @@ export const SavingPlanPage = () => {
     return date.toLocaleDateString();
   };
 
-  console.log("current balance", data.currentBalance);
+
+  console.log("main balance", balance);
+  console.log("current balance changed", data.currentBalance);
 
   return (
     <div className='saving-plan-page-main-container'>
@@ -168,7 +173,7 @@ export const SavingPlanPage = () => {
             </div>
             <div className="add-goal-card" onClick={onOptionsOpen}>
             <i className="fas fa-ellipsis-v"></i>
-              <p>Options</p>
+              <p>Manage</p>
             </div>
           </div>
 
@@ -183,7 +188,7 @@ export const SavingPlanPage = () => {
                 <p>Days to reach target</p>
               </div>
               <div>
-                <h3>₹{data.currentBalance}</h3>
+                <h3>₹{balance}</h3>
                 <p>Current balance</p>
               </div>
             </div>
@@ -212,7 +217,7 @@ export const SavingPlanPage = () => {
             <img src="https://img.freepik.com/premium-vector/saving-money-with-large-jar-concept-illustration_135170-34.jpg" alt="" />
           </div>
           <div>
-              <SavingPlanHistory />
+
           </div>
         </div>
       </div>
@@ -245,7 +250,7 @@ export const SavingPlanPage = () => {
                 onChange={(e) => setInputValue(e.target.value)}
                 type="date"
               />
-            ) : (
+            ) : ( 
               <Input
                 placeholder={`Enter amount for ${selectedOption}`}
                 value={inputValue}
