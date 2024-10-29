@@ -29,9 +29,9 @@ export const SavingPlanHistory = () => {
     fetchUserData();
   }, [id]);
 
-  if (!history && history === undefined) {
-    return <div className='no-history-available'>No History Available</div>;
-  }
+  // if (!history && history === undefined) {
+  //   return <div className='no-history-available'>No History Available</div>;
+  // }
 
   return (
     <div>
@@ -51,7 +51,9 @@ export const SavingPlanHistory = () => {
         ) : (
           <div className="transaction-list">
             <h3>Transactions</h3>
-            {history.length > 0 ? (
+            {!history && history === undefined ? (
+              <p>No history available</p>
+            ) : (
               history.map((transaction, index) => (
                 <div key={index} className="transaction-item-container">
                   <div className="transaction-details-container">
@@ -72,8 +74,6 @@ export const SavingPlanHistory = () => {
                   </div>
                 </div>
               ))
-            ) : (
-              <p>No transaction history available.</p>
             )}
           </div>
         )}
