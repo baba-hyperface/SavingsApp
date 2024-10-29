@@ -29,10 +29,6 @@ export const SavingPlanHistory = () => {
     fetchUserData();
   }, [id]);
 
-  // if (!history && history === undefined) {
-  //   return <div className='no-history-available'>No History Available</div>;
-  // }
-
   return (
     <div>
       <div className="transaction-icon-container" onClick={toggleHistory}>

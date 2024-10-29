@@ -237,7 +237,7 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
       >
         <ModalOverlay
           sx={{
-            backdropFilter: { base: "none", lg: "blur(5px)" },
+            backdropFilter: { base: "none", lg: "blur(10px)" },
             height: "100vh",
           }}
         />
