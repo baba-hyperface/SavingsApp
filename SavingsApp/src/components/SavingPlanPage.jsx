@@ -172,7 +172,7 @@ export const SavingPlanPage = () => {
               </div>
             </div>
             <div className="add-goal-card" onClick={onOptionsOpen}>
-            <i className="fas fa-ellipsis-v"></i>
+            <i class="fa-solid fa-bars"></i>
               <p>Manage</p>
             </div>
           </div>
@@ -217,15 +217,27 @@ export const SavingPlanPage = () => {
             <img src="https://img.freepik.com/premium-vector/saving-money-with-large-jar-concept-illustration_135170-34.jpg" alt="" />
           </div>
           <div>
-
+            <SavingPlanHistory />
           </div>
         </div>
       </div>
-
-      {/* Options Modal */}
       <Modal isOpen={isOptionsOpen} onClose={onOptionsClose}>
-        <ModalOverlay />
-        <ModalContent>
+        <ModalOverlay sx={{
+            backdropFilter: { base: "none", lg: "blur(5px)" },
+            height: "100vh",
+          }}/>
+        <ModalContent
+          className="modal-container"
+          sx={{
+            color: "rgb(65, 65, 65)",
+            borderRadius: "10px",
+            fontFamily: "Noto Sans, sans-serif",
+            width: { base: "100%", lg: "60%" },
+            maxWidth: { base: "100vw", lg: "60vw" },
+            height: { base: "100vh", lg: "auto" },
+            overflowY: { base: "auto", lg: "unset" },
+          }}
+        >
           <ModalHeader>Choose an Option</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
@@ -235,37 +247,6 @@ export const SavingPlanPage = () => {
           </ModalBody>
         </ModalContent>
       </Modal>
-
-      {/* Input Modal */}
-      {/* <Modal isOpen={isInputModalOpen} onClose={onInputModalClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>{selectedOption}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            {selectedOption === 'Change End Date' ? (
-              <Input
-                placeholder="Enter new end date (YYYY-MM-DD)"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                type="date"
-              />
-            ) : ( 
-              <Input
-                placeholder={`Enter amount for ${selectedOption}`}
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                type="number"
-              />
-            )}
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="teal" onClick={handleSubmit}>
-              Submit
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal> */}
       <Modal isOpen={isInputModalOpen} onClose={onInputModalClose}>
         <ModalOverlay />
         <ModalContent>
@@ -286,9 +267,7 @@ export const SavingPlanPage = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-
       <EditDeductionModel pot={data} isOpen={isEditDeductionOpen} onClose={onEditDeductionClose} />
-
     </div>
   );
 };

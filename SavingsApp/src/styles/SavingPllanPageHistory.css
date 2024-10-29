@@ -1,127 +1,111 @@
-.icon-container {
-      position: relative;
-      cursor: pointer;
-      display: none;
-  
-    }
-    .icon-container > i{
-      font-size: 10px;
-      margin-top: 60px;
-    }
-    .transaction-history {
-      position: absolute;
-      right: 30px;
-      top: 150px;
-      width: 35%;
-      background-color: #ffffff;
-      border-radius: 8px;
-      z-index: 100;
-      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-      padding: 20px;
-    }
-    
-    .close-container {
-      text-align: right;
-      cursor: pointer;
-    }
+/* Icon container */
+.transaction-icon-container {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  left: 0;
+  padding: 20px;
+  background-color: #eff1ff;
+  cursor: pointer;
+  display: none;
+  z-index: 101;
+}
 
-    .no-history-available {
-      background-color: #f8d7da;  /* Light red background */
-      color: #721c24;              /* Dark red text */
-      border: 1px solid #f5c6cb;  /* Light red border */
-      border-radius: 5px;         /* Rounded corners */
-      padding: 15px;              /* Some padding for spacing */
-      text-align: center;         /* Center the text */
-      font-size: 18px;            /* Slightly larger text */
-      font-weight: bold;          /* Bold text */
-      margin: 20px;
-      margin-bottom: 700px;           /* Margin to separate from other elements */
-  }  
-    
-    .transactions {
-      margin-top: 10px;
-    }
-    
-    .transaction-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #e9f0f4;
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
-    
-    .transaction-details p {
-      margin: 0;
-      color: #333;
-    }
-    
-    .transaction-amount p {
-      margin: 0;
-      font-weight: bold;
-    }
-    
-    .transaction-amount p:nth-child(2) {
-      font-size: 12px;
-      color: #888;
-    }
-    
-  
-    .transaction-history {
-    display: block; /* By default, the history is visible */
-    transition: transform 0.3s ease, opacity 0.3s ease;
+/* Icon styles */
+.transaction-icon-container > i {
+  font-size: 20px; /* Larger size for better visibility */
+  color: #a8a8a8;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 12px 30px 12px 15px;
+  cursor: pointer;
+
+  transition: border-color 0.3s ease;
+  margin-left: 60%;
+}
+
+/* Transaction history - visible by default on larger screens */
+.transaction-history-container {
+  position: absolute;
+  right: 20px;
+  top: 110px;
+  width: 35%;
+  height: 85vh;
+  overflow-y: auto;
+  background-color: #ffffff;
+  border-radius: 8px;
+  z-index: 100;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  padding: 20px;
+  display: block;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Close button container */
+.transaction-close-btn-container {
+  text-align: right;
+  cursor: pointer;
+  display: none;
+}
+
+/* Transactions */
+.transaction-list {
+  margin-top: 10px;
+}
+
+.transaction-item-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #e9f0f4;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.transaction-details-container p {
+  margin: 0;
+  color: #333;
+}
+
+.transaction-amount-container p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.transaction-amount-container p:nth-child(2) {
+  font-size: 12px;
+  color: #888;
+}
+
+/* Mobile screens */
+@media (max-width: 950px) {
+  .transaction-history-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 80%;
+    font-size: 12px;
+    transform: translateY(100%); /* Starts off-screen */
+    opacity: 0;
+    visibility: hidden; /* Makes it invisible initially */
+    transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
   }
-  
-  .transaction-history.open {
-    transform: translateX(0); 
+
+  .transaction-history-container.open {
+    transform: translateY(0); /* Slides up smoothly from the bottom */
+    opacity: 1;
+    visibility: visible; /* Makes it visible when open */
   }
-  
-  .close-container {
-    display: none;
+
+  .transaction-close-btn-container {
+    display: block;
+    margin-bottom: 10px;
   }
-  
-  
-  
-  
-  /* For mobile screens */
-  @media (max-width: 950px) {
-    .icon-container {
-      margin-top: 50px;
-      display: block;
-    }
-  
-  
-    .transaction-history {
-      position: fixed;
-      top: 0;
-      right: 0;
-      width: 100%;
-      height: 100%;
-      background-color: white;
-      transform: translateX(100%);
-      opacity: 0;
-      visibility: hidden;
-    }
-  
-  
-    .transaction-history.open {
-      transform: translateX(0);
-      opacity: 1;
-      visibility: visible;
-    }
-  
-    .close-container {
-      display: block;
-      text-align: right;
-      padding: 10px;
-    }
-  
-    .icon-container {
-      display: block; /* Show the toggle button */
-      position: fixed;
-      top: 10px;
-      right: 10px;
-    }
+
+  .transaction-icon-container {
+    display: block;
+    color: white;
   }
-  
+}
