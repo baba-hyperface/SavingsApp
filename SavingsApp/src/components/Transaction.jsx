@@ -47,13 +47,13 @@ export const Transaction = () => {
   return (
     <div>
       {/* Icon to toggle transaction history */}
-      <div className="transaction-icon-container">
+      <div className="custom-transaction-icon-container">
         <i className="fa-solid fa-clock-rotate-left" onClick={toggleHistory}></i>
       </div>
 
       {/* Transaction history container */}
-      <div className={`transaction-history-container ${isHistoryOpen ? 'open' : ''}`}>
-        <div className="transaction-close-btn-container">
+      <div className={`custom-transaction-history-container ${isHistoryOpen ? 'open' : ''}`}>
+        <div className="custom-transaction-close-btn-container">
           <i className="fa-solid fa-xmark" onClick={toggleHistory}></i>
         </div>
 
@@ -62,7 +62,7 @@ export const Transaction = () => {
         ) : error ? (
           <p>Error loading history.</p>
         ) : (
-          <div className="transaction-list">
+          <div className="custom-transaction-list">
             <h3>Transactions</h3>
             {Object.keys(groupedTransactions).length > 0 ? (
               Object.keys(groupedTransactions).map((date, index) => (
@@ -70,8 +70,8 @@ export const Transaction = () => {
                   <h4>{date}</h4>
 
                   {groupedTransactions[date].map((transaction, index) => (
-                    <div key={index} className="transaction-item-container">
-                      <div className="transaction-details-container">
+                    <div key={index} className="custom-transaction-item-container">
+                      <div className="custom-transaction-details-container">
                         <p>{transaction.type}</p>
                         <p>{new Date(transaction.date).toLocaleString()}</p>
                       </div>
@@ -80,7 +80,7 @@ export const Transaction = () => {
                           <span>{transaction.from}</span> - to - <span>{transaction.to}</span>
                         </p>
                       </div>
-                      <div className="transaction-amount-container">
+                      <div className="custom-transaction-amount-container">
                         <p>{transaction.type === 'Debited' || transaction.type === 'Sent' ? '-' : '+'} ₹{transaction.amount}</p>
                       </div>
                     </div>

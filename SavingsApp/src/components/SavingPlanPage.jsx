@@ -166,7 +166,7 @@ export const SavingPlanPage = () => {
               </div>
             </div>
             <div className="add-goal-card" onClick={onOptionsOpen}>
-            <i className="fas fa-ellipsis-v"></i>
+            <i class="fa-solid fa-bars"></i>
               <p>Manage</p>
             </div>
           </div>
@@ -215,10 +215,23 @@ export const SavingPlanPage = () => {
           </div>
         </div>
       </div>
-               
       <Modal isOpen={isOptionsOpen} onClose={onOptionsClose}>
-        <ModalOverlay />
-        <ModalContent>
+        <ModalOverlay sx={{
+            backdropFilter: { base: "none", lg: "blur(5px)" },
+            height: "100vh",
+          }}/>
+        <ModalContent
+          className="modal-container"
+          sx={{
+            color: "rgb(65, 65, 65)",
+            borderRadius: "10px",
+            fontFamily: "Noto Sans, sans-serif",
+            width: { base: "100%", lg: "60%" },
+            maxWidth: { base: "100vw", lg: "60vw" },
+            height: { base: "100vh", lg: "auto" },
+            overflowY: { base: "auto", lg: "unset" },
+          }}
+        >
           <ModalHeader>Choose an Option</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
@@ -228,7 +241,6 @@ export const SavingPlanPage = () => {
           </ModalBody>
         </ModalContent>
       </Modal>
-
       <Modal isOpen={isInputModalOpen} onClose={onInputModalClose}>
         <ModalOverlay />
         <ModalContent>
@@ -249,9 +261,7 @@ export const SavingPlanPage = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-
       <EditDeductionModel potId={data._id} isOpen={isEditDeductionOpen} onClose={onEditDeductionClose} />
-
     </div>
   );
 };

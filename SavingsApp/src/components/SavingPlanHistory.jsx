@@ -2,54 +2,46 @@ import React, { useEffect, useState } from 'react';
 import '../styles/SavingPllanPageHistory.css';
 import api from './api';
 import { useParams } from 'react-router-dom';
-import { div } from 'framer-motion/client';
 
 export const SavingPlanHistory = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [history, setHistorydata] = useState([]);
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false); 
+  const [history, setHistoryData] = useState([]);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const { id } = useParams();
 
   const toggleHistory = () => {
     setIsHistoryOpen(!isHistoryOpen);
   };
 
-
   useEffect(() => {
-    const fetchUserdata = async () => {
+    const fetchUserData = async () => {
       try {
         setLoading(true);
         const res = await api.get(`/history/${id}`);
-        setHistorydata(res.data.historydata);
-        console.log("Fetched history data:", res.data.historydata);
+        setHistoryData(res.data.historydata);
         setLoading(false);
       } catch (error) {
         setError(error);
-        console.log("Error in history fetching:", error);
         setLoading(false);
       }
     };
-    fetchUserdata();
+    fetchUserData();
   }, [id]);
 
-  if(!history && history === undefined){
-    return (
-      <div className='no-history-available'>No History Available</div>
-    )
+  if (!history && history === undefined) {
+    return <div className='no-history-available'>No History Available</div>;
   }
 
   return (
     <div>
-      <div className='icon-container'>
-        <i className="fa-solid fa-clock-rotate-left"
-           style={{fontSize: '20px'}}
-           onClick={toggleHistory}></i>
+      <div className="transaction-icon-container" onClick={toggleHistory}>
+        <i className="fa-solid fa-clock-rotate-left"></i>
       </div>
 
-      <div className={`transaction-history ${isHistoryOpen ? 'open' : ''}`}>
-        <div className="close-container">
-          <i className="fa-solid fa-xmark" onClick={toggleHistory}></i>
+      <div className={`transaction-history-container ${isHistoryOpen ? 'open' : ''}`}>
+        <div className="transaction-close-btn-container" onClick={toggleHistory}>
+          <i className="fa-solid fa-xmark"></i> Close
         </div>
 
         {loading ? (
@@ -57,12 +49,12 @@ export const SavingPlanHistory = () => {
         ) : error ? (
           <p>Error loading history.</p>
         ) : (
-          <div className="transactions">
+          <div className="transaction-list">
             <h3>Transactions</h3>
             {history.length > 0 ? (
               history.map((transaction, index) => (
-                <div key={index} className="transaction-item">
-                  <div className="transaction-details">
+                <div key={index} className="transaction-item-container">
+                  <div className="transaction-details-container">
                     <p>{transaction.type}</p>
                     <p>{new Date(transaction.date).toLocaleString()}</p>
                   </div>
@@ -71,8 +63,12 @@ export const SavingPlanHistory = () => {
                       <span>{transaction.from}</span> - to - <span>{transaction.to}</span>
                     </p>
                   </div>
-                  <div className="transaction-amount">
-                    <p>{transaction.type === 'withdrawn' || transaction.type === 'Sent' ? '-' : '+'}₹{transaction.amount}</p>
+                  <div className="transaction-amount-container">
+                    <p>
+                      {transaction.type === 'withdrawn' || transaction.type === 'Sent'
+                        ? '-'
+                        : '+'}₹{transaction.amount}
+                    </p>
                   </div>
                 </div>
               ))
