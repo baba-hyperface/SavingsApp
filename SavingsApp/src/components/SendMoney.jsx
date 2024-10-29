@@ -90,14 +90,22 @@ export const SendMoney = ({totalBalance, onBalanceUpdate, updateBalance, onHisto
 
      
       <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent className='modal-container'
+      <ModalOverlay
           sx={{
-            backgroundColor: "#E5EBF6",
+            backdropFilter: { base: "none", lg: "blur(10px)" },
+            height: "100vh",
+          }}
+        />
+        <ModalContent
+          className="modal-container"
+          sx={{
             color: "rgb(65, 65, 65)",
             borderRadius: "10px",
             fontFamily: "Noto Sans, sans-serif",
-           
+            width: { base: "100%", lg: "60%" },
+            maxWidth: { base: "100vw", lg: "60vw" },
+            height: { base: "90vh", lg: "auto" },
+            overflowY: { base: "auto", lg: "unset" },
           }}
         >
           <ModalHeader>Send Money</ModalHeader>
