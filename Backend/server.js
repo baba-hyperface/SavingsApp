@@ -16,6 +16,10 @@ app.use('/api', loginrouter);
 app.use('/api',historyrouter);
 app.use('/api',userRouter)
 app.use('/api', savingPlanRouter);
+app.use('/',(req,res)=>{
+    res.send("this is home Route");
+
+});
 
 
 const PORT = process.env.PORT || 5000;

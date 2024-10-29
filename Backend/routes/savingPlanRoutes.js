@@ -6,6 +6,62 @@ import Transaction from "../models/historymodel.js";
 import { protect } from "../middleware/auth.js";
 
 const savingPlanRouter = express.Router();
+savingPlanRouter.get(
+  "/users/:userId/savingplan/:potId",
+  protect,
+  async (req, res) => {
+    const { potId } = req.params;
+    try {
+      const pot = await SavingPot.findById(potId);
+      if (!pot) {
+        res.send("pot is not There");
+      }
+      res.send(pot);
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(err);
+    }
+  }
+);
+
+savingPlanRouter.patch(
+  "/users/:userId/savingplanupdateplandeduction/:potId",
+  protect,
+  async (req, res) => {
+    const { userId, potId } = req.params;
+    const {
+      autoDeduction,
+      endDate,
+      dailyAmount,
+      frequency,
+      dayOfWeek,
+      dayOfMonth,
+    } = req.body;
+    try {
+      const updatedPlan = await SavingPot.findByIdAndUpdate(
+        potId, 
+        {
+          autoDeduction,
+          endDate,
+          dailyAmount,
+          frequency,
+          dayOfWeek,
+          dayOfMonth,
+        },
+        { new: true } 
+      );
+
+      if (!updatedPlan) {
+        return res.status(404).send("Saving plan not found");
+      }
+
+      res.status(200).json(updatedPlan);
+    } catch (error) {
+      console.error("Error updating saving plan:", error);
+      res.status(500).send("Internal server error");
+    }
+  }
+);
 
 savingPlanRouter.post(`/user/:userId/savingplan`, protect, async (req, res) => {
   let {
@@ -23,18 +79,18 @@ savingPlanRouter.post(`/user/:userId/savingplan`, protect, async (req, res) => {
     dayOfMonth,
   } = req.body;
 
-console.log("potporpose",potPurpose);
-console.log("targetamount",targetAmount);
-console.log("currentBalence",currentBalance);
-console.log(imoji);
-console.log("color",color);
-console.log("category",category);
-console.log("autoDeduction",autoDeduction);
-console.log("dailyamount",dailyAmount);
-console.log("enddate",endDate);
-console.log("frequency",frequency);
-console.log("dayofweek",dayOfWeek);
-console.log("dayofmonth",dayOfMonth);
+  console.log("potporpose", potPurpose);
+  console.log("targetamount", targetAmount);
+  console.log("currentBalence", currentBalance);
+  console.log(imoji);
+  console.log("color", color);
+  console.log("category", category);
+  console.log("autoDeduction", autoDeduction);
+  console.log("dailyamount", dailyAmount);
+  console.log("enddate", endDate);
+  console.log("frequency", frequency);
+  console.log("dayofweek", dayOfWeek);
+  console.log("dayofmonth", dayOfMonth);
 
   // Default currentBalance to 0 if not provided
   if (!currentBalance) {
@@ -42,23 +98,18 @@ console.log("dayofmonth",dayOfMonth);
   }
 
   try {
-    const user = await User.findOne({email:req.user.email});
-    
-    console.log("user",user);
+    const user = await User.findOne({ email: req.user.email });
+
+    console.log("user", user);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
     const startDate = new Date();
-    // let endDate;
-    // if (days) {
-    //   endDate = new Date(startDate);
-    //   endDate.setDate(startDate.getDate() + Number(days));
-    // }
     const newSaving = new SavingPot({
       potPurpose,
       targetAmount,
       currentBalance,
-      
+
       category,
       imoji,
       color,
@@ -66,12 +117,12 @@ console.log("dayofmonth",dayOfMonth);
       dayOfWeek,
       dayOfMonth,
       autoDeduction,
-      dailyAmount, 
-      endDate, 
+      dailyAmount,
+      endDate,
       startDate,
       user: req.params.userId,
     });
-console.log("new pot ceated one",newSaving);
+    console.log("new pot ceated one", newSaving);
     const savedPot = await newSaving.save();
     user.pots.push(savedPot._id);
 
@@ -92,7 +143,7 @@ console.log("new pot ceated one",newSaving);
     res.status(201).json({ message: "Saving plan created", pot: savedPot });
     console.log("posted", newSaving);
   } catch (err) {
-    console.log("err",err);
+    console.log("err", err);
     res.status(500).json({ message: err.message });
   }
 });
@@ -169,12 +220,10 @@ savingPlanRouter.patch(
       await pot.save();
       await user.save();
 
-      res
-        .status(200)
-        .json({
-          message: "Saving plan autodetuctionstatus balance updated",
-          status: pot.autoDeductionStatus,
-        });
+      res.status(200).json({
+        message: "Saving plan autodetuctionstatus balance updated",
+        status: pot.autoDeductionStatus,
+      });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -212,12 +261,10 @@ savingPlanRouter.patch(
       await user.save();
       console.log("user saving", pot);
 
-      res
-        .status(200)
-        .json({
-          message: "Saving plan autodetuction Activeted & Daily-amount updated",
-          status: pot.autoDeduction,
-        });
+      res.status(200).json({
+        message: "Saving plan autodetuction Activeted & Daily-amount updated",
+        status: pot.autoDeduction,
+      });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

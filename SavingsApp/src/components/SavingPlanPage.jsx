@@ -4,17 +4,11 @@ import api from './api';
 import '../styles/SavingPage.css';
 import { SavingPlanHistory } from './SavingPlanHistory';
 import {
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  Button,
-  Input,
-  useToast,
+  useDisclosure,Modal,
+  ModalOverlay,ModalContent,
+  ModalHeader,ModalFooter,
+  ModalBody,ModalCloseButton,
+  Button,Input,useToast,
 } from '@chakra-ui/react';
 import EditDeductionModel from './EditDetuctionModel';
 
@@ -159,7 +153,7 @@ export const SavingPlanPage = () => {
               </div>
               <div>
                 <h3>₹{data.dailyAmount}</h3>
-                <p>Daily Target</p>
+                <p>{data.frequncy? data.frequncy:"Daily"} Target</p>
               </div>
             </div>
             <div className='header-container-savepage'>
@@ -217,12 +211,11 @@ export const SavingPlanPage = () => {
             <img src="https://img.freepik.com/premium-vector/saving-money-with-large-jar-concept-illustration_135170-34.jpg" alt="" />
           </div>
           <div>
-
+          <SavingPlanHistory/>
           </div>
         </div>
       </div>
-
-      {/* Options Modal */}
+               
       <Modal isOpen={isOptionsOpen} onClose={onOptionsClose}>
         <ModalOverlay />
         <ModalContent>
@@ -236,36 +229,6 @@ export const SavingPlanPage = () => {
         </ModalContent>
       </Modal>
 
-      {/* Input Modal */}
-      {/* <Modal isOpen={isInputModalOpen} onClose={onInputModalClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>{selectedOption}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            {selectedOption === 'Change End Date' ? (
-              <Input
-                placeholder="Enter new end date (YYYY-MM-DD)"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                type="date"
-              />
-            ) : ( 
-              <Input
-                placeholder={`Enter amount for ${selectedOption}`}
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                type="number"
-              />
-            )}
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="teal" onClick={handleSubmit}>
-              Submit
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal> */}
       <Modal isOpen={isInputModalOpen} onClose={onInputModalClose}>
         <ModalOverlay />
         <ModalContent>
@@ -287,7 +250,7 @@ export const SavingPlanPage = () => {
         </ModalContent>
       </Modal>
 
-      <EditDeductionModel pot={data} isOpen={isEditDeductionOpen} onClose={onEditDeductionClose} />
+      <EditDeductionModel potId={data._id} isOpen={isEditDeductionOpen} onClose={onEditDeductionClose} />
 
     </div>
   );

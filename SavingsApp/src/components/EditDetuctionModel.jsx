@@ -12,626 +12,305 @@ import {
   Select,
   Button,
   Text,
-  Box,
   Checkbox,
   useDisclosure,
+  Box,
 } from "@chakra-ui/react";
-import "../styles/buttonStyles.css";
-import { usePlans } from "./ContextApi";
+import api from "./api";
 
-const EditDeductionModel = ({pot,isOpen,onClose}) => {
+const EditDeductionModel = ({ potId, isOpen, onClose }) => {
   const [step, setStep] = useState(1);
-  const [currentAmount, setCurrentAmount] = useState(pot.currentBalance);
-  const [goalAmount, setGoalAmount] = useState(pot.targetAmount);
-  const [goalDate, setGoalDate] = useState(pot.endDate);
-  const [frequency, setFrequency] = useState(pot.frequency);
-  const [autoDeduction, setAutoDeduction] = useState(pot.autoDeduction);
-  const [dayOfWeek, setDayOfWeek] = useState(pot.dayOfWeek);
-  const [dayOfMonth, setDayOfMonth] = useState(pot.dayOfMonth);
-  const [requiredAmount, setRequiredAmount] = useState(0);
-  const [completionDate, setCompletionDate] = useState("");
-  const { userId } = usePlans();
-
-  useEffect(() => {
-    calculateRequiredAmount();
-  }, [goalAmount, currentAmount, frequency, goalDate]);
-
-
-  useEffect(() => {
-    if (pot) {
-      setCurrentAmount(pot.currentBalance || 0);
-      setGoalAmount(pot.targetAmount || 0);
-      setGoalDate(pot.endDate || "");
-      setFrequency(pot.frequency || "daily");
-      setAutoDeduction(pot.autoDeduction || false);
-      setDayOfWeek(pot.dayOfWeek || "Monday");
-      setDayOfMonth(pot.dayOfMonth || 1);
-    }
-  }, [pot]);
-
-  const calculateRequiredAmount = () => {
-    const parsedGoal = parseInt(goalAmount);
-    const parsedAmount = parseInt(currentAmount);
-    const daysLeft = calculateDaysLeft(goalDate);
-
-    if (parsedGoal && parsedAmount && daysLeft > 0) {
-      const remainingAmount = parsedGoal - parsedAmount;
-      let requiredAmountPerPeriod = 0;
-      let completionDate;
-
-      switch (frequency) {
-        case "daily":
-          requiredAmountPerPeriod = Math.ceil(remainingAmount / daysLeft);
-          completionDate = new Date(
-            Date.now() + daysLeft * 24 * 60 * 60 * 1000
-          );
-          console.log("completionDate", completionDate);
-          break;
-        case "weekly":
-          const weeksLeft = Math.ceil(daysLeft / 7);
-          requiredAmountPerPeriod = Math.ceil(remainingAmount / weeksLeft);
-          completionDate = new Date(
-            Date.now() + weeksLeft * 7 * 24 * 60 * 60 * 1000
-          );
-          break;
-        case "monthly":
-          const monthsLeft = Math.ceil(daysLeft / 30);
-          requiredAmountPerPeriod = Math.ceil(remainingAmount / monthsLeft);
-          completionDate = new Date(
-            Date.now() + monthsLeft * 30 * 24 * 60 * 60 * 1000
-          );
-          break;
-        default:
-          requiredAmountPerPeriod = 0;
-      }
-
-      setRequiredAmount(requiredAmountPerPeriod);
-      console.log("completion date formate like", completionDate);
-      if (completionDate instanceof Date && !isNaN(completionDate)) {
-        console.log(completionDate);
-        setCompletionDate(completionDate.toDateString());
-      } else {
-        console.error("Invalid completion date:", completionDate);
-      }
-    } else {
-      setRequiredAmount(0);
-      setCompletionDate("");
-    }
-  };
-  const [required, setRequired] = useState({
-    requiredAmountPerPeriodday: 0,
-    requiredAmountPerPeriodweek: 0,
-    requiredAmountPerPeriodmon: 0,
-    completionDateday: "",
-    completionDateweek: "",
-    completionDatemon: "",
+  const [data, setData] = useState({});
+  const [currentAmount, setCurrentAmount] = useState(0);
+  const [goalAmount, setGoalAmount] = useState(0);
+  const [goalDate, setGoalDate] = useState("");
+  const [frequency, setFrequency] = useState("daily");
+  const [autoDeduction, setAutoDeduction] = useState(false);
+  const [dayOfWeek, setDayOfWeek] = useState("Monday");
+  const [dayOfMonth, setDayOfMonth] = useState(1);
+  const [requirements, setRequirements] = useState({
+    daily: { amount: 0, date: "" },
+    weekly: { amount: 0, date: "" },
+    monthly: { amount: 0, date: "" },
   });
+  const userId = localStorage.getItem("userid");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await api.get(`/users/${userId}/savingplan/${potId}`);
+        const fetchedData = res.data;
+        setData(fetchedData);
+        setCurrentAmount(fetchedData.currentBalance || 0);
+        setGoalAmount(fetchedData.targetAmount || 0);
+        setGoalDate(fetchedData.endDate || "");
+        setFrequency(fetchedData.frequency || "daily");
+        setAutoDeduction(fetchedData.autoDeduction || false);
+        setDayOfWeek(fetchedData.dayOfWeek || "Monday");
+        setDayOfMonth(fetchedData.dayOfMonth || 1);
+      } catch (error) {
+        console.error("Error fetching pot details:", error);
+      }
+    };
+    if (potId) fetchData();
+  }, [potId, userId]);
+
+  useEffect(() => {
+    if (goalAmount && currentAmount && goalDate) {
+      calculateRequirements();
+    }
+  }, [goalAmount, currentAmount, goalDate]);
+
+  const calculateDaysLeft = (endDate) => {
+    const end = new Date(endDate);
+    const today = new Date();
+    return Math.ceil((end - today) / (1000 * 60 * 60 * 24));
+  };
 
   const calculateRequirements = () => {
     const remainingAmount = goalAmount - currentAmount;
+    const daysRemaining = calculateDaysLeft(goalDate);
 
-    const goalDateObj = new Date(goalDate);
-    const today = new Date();
-    const daysRemaining = Math.ceil(
-      (goalDateObj - today) / (1000 * 60 * 60 * 24)
-    );
+    if (daysRemaining > 0) {
+      const dailyAmount = remainingAmount / daysRemaining;
+      const weeklyAmount = remainingAmount / Math.ceil(daysRemaining / 7);
+      const monthlyAmount = remainingAmount / Math.ceil(daysRemaining / 30);
 
-    const requiredAmountPerPeriodday = remainingAmount / daysRemaining;
-    const requiredAmountPerPeriodweek =
-      remainingAmount / Math.ceil(daysRemaining / 7);
-    const requiredAmountPerPeriodmon =
-      remainingAmount / Math.ceil(daysRemaining / 30);
-
-    const completionDateday = new Date(
-      today.getTime() + daysRemaining * 24 * 60 * 60 * 1000
-    );
-    const completionDateweek = new Date(
-      today.getTime() + Math.ceil(daysRemaining / 7) * 7 * 24 * 60 * 60 * 1000
-    );
-    const completionDatemon = new Date(
-      today.getTime() + Math.ceil(daysRemaining / 30) * 30 * 24 * 60 * 60 * 1000
-    );
-
-    setRequired({
-      requiredAmountPerPeriodday: requiredAmountPerPeriodday.toFixed(2),
-      requiredAmountPerPeriodweek: requiredAmountPerPeriodweek.toFixed(2),
-      requiredAmountPerPeriodmon: requiredAmountPerPeriodmon.toFixed(2),
-      completionDateday: completionDateday.toISOString().split("T")[0],
-      completionDateweek: completionDateweek.toISOString().split("T")[0],
-      completionDatemon: completionDatemon.toISOString().split("T")[0],
-    });
-  };
-  useEffect(() => {
-    if (currentAmount && goalAmount && goalDate) {
-      calculateRequirements();
+      setRequirements({
+        daily: {
+          amount: dailyAmount.toFixed(2),
+          date: new Date(
+            Date.now() + daysRemaining * 24 * 60 * 60 * 1000
+          ).toDateString(),
+        },
+        weekly: {
+          amount: weeklyAmount.toFixed(2),
+          date: new Date(
+            Date.now() + Math.ceil(daysRemaining / 7) * 7 * 24 * 60 * 60 * 1000
+          ).toDateString(),
+        },
+        monthly: {
+          amount: monthlyAmount.toFixed(2),
+          date: new Date(
+            Date.now() +
+              Math.ceil(daysRemaining / 30) * 30 * 24 * 60 * 60 * 1000
+          ).toDateString(),
+        },
+      });
+    } else {
+      setRequirements({
+        daily: { amount: 0, date: "" },
+        weekly: { amount: 0, date: "" },
+        monthly: { amount: 0, date: "" },
+      });
     }
-  }, [currentAmount, goalAmount, goalDate]);
-
-  const calculateDaysLeft = (goalDate) => {
-    const selectedDate = new Date(goalDate);
-    const currentDate = new Date();
-    const timeDiff = selectedDate - currentDate;
-    return Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
   };
-
-  const nextStep = () => setStep(step + 1);
-  const prevStep = () => setStep(step - 1);
 
   const handleSavePlan = async () => {
-
     const savingPlan = {
-    //   potPurpose: name,
-    //   currentBalance: currentAmount,
-    //   targetAmount: goalAmount,
-    //   category: category,
-    //   color: randomColor,
-    //   emoji: emoji,
       autoDeduction,
-      endDate: completionDate,
-      dailyAmount: autoDeduction ? requiredAmount : 0,
+      endDate: requirements[frequency]?.date || completionDate,
+      dailyAmount: autoDeduction
+        ? requirements[frequency]?.amount || requiredAmount
+        : 0,
       frequency,
       dayOfWeek,
       dayOfMonth,
     };
-    // try {
-    //   const res = await api.post(`/user/${userId}/savingplan`, savingPlan);
-    //   console.log("created", res.data);
-    //   const newBalance = await updateBalance(
-    //     userId,
-    //     totalBalance,
-    //     currentAmount,
-    //     false
-    //   );
-    //   onBalanceUpdate(newBalance);
-    // } catch (error) {
-    //   console.log(error.message);
-    // }
-    console.log(savingPlan);
-    setName("");
-    setAmount("");
-    setGoal("");
-    setEmoji("");
-    setCategory("");
-    setAutoDeduction("no");
-    setDailyAmount("");
-    setDays("");
+
+    console.log("Saving Plan Data:", savingPlan); // Debug output to check values
+
+    try {
+      const res = await api.patch(
+        `/users/${userId}/savingplanupdateplandeduction/${potId}`,
+        savingPlan
+      );
+      console.log("Updated plan:", res.data);
+    } catch (error) {
+      console.error("Error Editing saving plan:", error);
+    }
+    setStep(1);
     onClose();
     window.location.reload();
   };
+  const frequencies=["daily","weekly","monthly"];
+  const handleClick = (value) => {
+    setFrequency(value);
+  };
 
   return (
-    <div>
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        size="md"
-        isCentered
-        closeOnOverlayClick={false}
-        blockScrollOnMount={true}
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="md"
+      isCentered
+      closeOnOverlayClick={false}
+      blockScrollOnMount={true}
+    >
+      <ModalOverlay
+        sx={{
+          backdropFilter: { base: "none", lg: "blur(5px)" },
+          height: "100vh",
+        }}
+      />
+      <ModalContent
+        className="modal-container"
+        sx={{
+          color: "rgb(65, 65, 65)",
+          borderRadius: "10px",
+          fontFamily: "Noto Sans, sans-serif",
+          width: { base: "100%", lg: "60%" },
+          maxWidth: { base: "100vw", lg: "60vw" },
+          height: { base: "100vh", lg: "auto" },
+          overflowY: { base: "auto", lg: "unset" },
+        }}
       >
-        <ModalOverlay
-          sx={{
-            backdropFilter: { base: "none", lg: "blur(5px)" },
-            height: "100vh",
-          }}
-        />
-        <ModalContent
-          className="modal-container"
-          sx={{
-            color: "rgb(65, 65, 65)",
-            borderRadius: "10px",
-            fontFamily: "Noto Sans, sans-serif",
-            width: { base: "100%", lg: "60%" },
-            maxWidth: { base: "100vw", lg: "60vw" },
-            height: { base: "100vh", lg: "auto" },
-            overflowY: { base: "auto", lg: "unset" },
-          }}
-        >
-          <ModalHeader>Editing your Pot AutoDeduction- Step {step}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-
-            {step === 1 && (
-              <>
+        <ModalHeader>Edit Pot Auto Deduction - Step {step}</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          {step === 1 && (
+            <>
+              {goalDate
+                ? "your Current Goal Date" + goalDate
+                : "No Target Date you have"}
+              <FormControl mb={3}>
+                <FormLabel>Goal Date</FormLabel>
+                <Input
+                  type="date"
+                  value={goalDate}
+                  onChange={(e) => setGoalDate(e.target.value)}
+                />
+              </FormControl>
+              {goalDate && (
+                <>
+                  <Text>
+                    Daily: ₹{requirements.daily.amount}, by{" "}
+                    {requirements.daily.date}
+                  </Text>
+                  <Text>
+                    Weekly: ₹{requirements.weekly.amount}, by{" "}
+                    {requirements.weekly.date}
+                  </Text>
+                  <Text>
+                    Monthly: ₹{requirements.monthly.amount}, by{" "}
+                    {requirements.monthly.date}
+                  </Text>
+                </>
+              )}
+            </>
+          )}
+          {step === 2 && (
+            <>
+              <FormControl mb={3}>
+                <FormLabel>Auto Deduction</FormLabel>
+                <Checkbox
+                  isChecked={autoDeduction}
+                  onChange={(e) => setAutoDeduction(e.target.checked)}
+                >
+                  Enable Auto Deduction
+                </Checkbox>
+              </FormControl>
+              {autoDeduction && (
                 <FormControl mb={3}>
-                  <FormLabel>Goal End Date</FormLabel>
+                  <FormLabel>Payment Method</FormLabel>
+                  <Box display="flex" gap={4}>
+                    {frequencies.map((freq) => (
+                      <Box
+                        key={freq}
+                        onClick={() => handleClick(freq)}
+                        cursor="pointer"
+                        p={4}
+                        borderWidth={2}
+                        borderRadius="md"
+                        borderColor={
+                          frequency === freq ? "blue.500" : "gray.300"
+                        }
+                        bg={frequency === freq ? "blue.100" : "white"}
+                        opacity={frequency && frequency !== freq ? 0.5 : 1} // Disable others visually
+                        _hover={{
+                          bg: frequency === freq ? "blue.200" : "gray.100",
+                        }} 
+                      >
+                        <Text textAlign="center">
+                          {freq.charAt(0).toUpperCase() + freq.slice(1)}
+                        </Text>
+                      </Box>
+                    ))}
+                  </Box>
+                </FormControl>
+              )}
+              {autoDeduction && (
+                <>
+                  <Text>
+                    To reach your goal by {goalDate}, you need to save:
+                  </Text>
+                  <Text fontWeight="bold">
+                    ₹{requirements[frequency]?.amount} per {frequency}
+                  </Text>
+                  <Text>
+                    Estimated completion date: {requirements[frequency]?.date}
+                  </Text>
+                </>
+              )}
+            </>
+          )}
+          {step === 3 && (
+            <>
+              {frequency === "weekly" && (
+                <FormControl mb={3}>
+                  <FormLabel>Choose Day of the Week</FormLabel>
+                  <Select
+                    value={dayOfWeek}
+                    onChange={(e) => setDayOfWeek(e.target.value)}
+                  >
+                    <option>Monday</option>
+                    <option>Tuesday</option>
+                    <option>Wednesday</option>
+                    <option>Thursday</option>
+                    <option>Friday</option>
+                    <option>Saturday</option>
+                    <option>Sunday</option>
+                  </Select>
+                </FormControl>
+              )}
+              {frequency === "monthly" && (
+                <FormControl mb={3}>
+                  <FormLabel>Choose Day of the Month</FormLabel>
                   <Input
-                    type="date"
-                    value={goalDate}
-                    onChange={(e) => setGoalDate(e.target.value)}
+                    type="number"
+                    value={dayOfMonth}
+                    onChange={(e) =>
+                      setDayOfMonth(Math.min(30, e.target.value))
+                    }
                   />
                 </FormControl>
-                {goalDate && (
-                  <>
-                    <p>
-                      Daily required amount:
-                      {required.requiredAmountPerPeriodday},Completion Date:{" "}
-                      {required.completionDateday}
-                    </p>
-                    <p>
-                      Weekly required amount:
-                      {required.requiredAmountPerPeriodweek},Completion Date:{" "}
-                      {required.completionDateweek}
-                    </p>
-                    <p>
-                      Monthly required amount:
-                      {required.requiredAmountPerPeriodmon},Completion Date
-                      (Monthly): {required.completionDatemon}
-                    </p>
-                  </>
-                )}
-              </>
-            )}
-            {step === 2 && (
-              <>
-                <FormControl mb={3}>
-                  <FormLabel>Auto Deduction</FormLabel>
-                  <Checkbox
-                    isChecked={autoDeduction}
-                    onChange={(e) => setAutoDeduction(e.target.checked)}
-                  >
-                    Enable Auto Deduction
-                  </Checkbox>
-                </FormControl>
-
-                {autoDeduction && (
-                  <FormControl mb={3}>
-                    <FormLabel>Payment Frequency</FormLabel>
-                    <Select
-                      value={frequency}
-                      onChange={(e) => setFrequency(e.target.value)}
-                    >
-                      <option value="daily">Daily</option>
-                      <option value="weekly">Weekly</option>
-                      <option value="monthly">Monthly</option>
-                    </Select>
-                  </FormControl>
-                )}
-
-                {autoDeduction && (
-                  <>
-                    {requiredAmount > 0 && (
-                      <div>
-                        <p>
-                          To reach your goal by {goalDate}, you need to save:
-                        </p>
-                        <p>
-                          <strong>₹{requiredAmount}</strong> per {frequency}
-                        </p>
-                        <p>
-                          Estimated completion date:{" "}
-                          <strong>{completionDate}</strong>
-                        </p>
-                      </div>
-                    )}
-                  </>
-                )}
-              </>
-            )}
-
-            {step === 3 && (
-              <>
-                {autoDeduction && (
-                  <>
-                    {frequency === "daily" && (
-                      <Text mb={3}>
-                        You will need to pay approximately{" "}
-                        <strong>{requiredAmount}</strong> {frequency} to reach
-                        your goal by {completionDate}.
-                      </Text>
-                    )}
-
-                    {frequency === "weekly" && (
-                      <>
-                        <FormControl mb={3}>
-                          <FormLabel>Choose Day of the Week</FormLabel>
-                          <Select
-                            value={dayOfWeek}
-                            onChange={(e) => setDayOfWeek(e.target.value)}
-                          >
-                            <option value="Monday">Monday</option>
-                            <option value="Tuesday">Tuesday</option>
-                            <option value="Wednesday">Wednesday</option>
-                            <option value="Thursday">Thursday</option>
-                            <option value="Friday">Friday</option>
-                            <option value="Saturday">Saturday</option>
-                            <option value="Sunday">Sunday</option>
-                          </Select>
-                        </FormControl>
-                        <Text mb={3}>
-                          Paying on <strong>{dayOfWeek}</strong> each week will
-                          help you reach your goal by {goalDate}.
-                        </Text>
-                      </>
-                    )}
-
-                    {frequency === "monthly" && (
-                      <>
-                        <FormControl mb={3}>
-                          <FormLabel>Choose Day of the Month</FormLabel>
-                          <Input
-                            type="number"
-                            placeholder="e.g., 15"
-                            value={dayOfMonth}
-                            onChange={(e) =>
-                              setDayOfMonth(
-                                e.target.value > 30 ? 30 : e.target.value
-                              )
-                            }
-                          />
-                        </FormControl>
-                        <Text mb={3}>
-                          Paying on day <strong>{dayOfMonth}</strong> of each
-                          month will help you reach your goal by {goalDate}.
-                        </Text>
-                      </>
-                    )}
-                  </>
-                )}
-              </>
-            )}
-
-            <Box display="flex" justifyContent="space-between" mt={4}>
-              {step > 1 && <Button onClick={prevStep}>Previous</Button>}
-              {step < 3 ? (
-                <Button colorScheme="blue" onClick={nextStep}>
-                  Next
-                </Button>
-              ) : (
-                <Button colorScheme="green" onClick={handleSavePlan}>
-                  Update
-                </Button>
               )}
-            </Box>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-    </div>
+              <Text mb={3}>
+                Paying on the <strong>{dayOfMonth}</strong> of each month will
+                help you reach your goal by {goalDate}.
+              </Text>
+            </>
+          )}
+          <Box display="flex" justifyContent="space-between" mt={4}>
+            {step > 1 && (
+              <Button onClick={() => setStep(step - 1)} colorScheme="blue">
+                Previous
+              </Button>
+            )}
+            {step < 3 ? (
+              <Button onClick={() => setStep(step + 1)} colorScheme="blue">
+                Next
+              </Button>
+            ) : (
+              <Button onClick={handleSavePlan} colorScheme="green">
+                Save
+              </Button>
+            )}
+          </Box>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
 };
 
 export default EditDeductionModel;
-// import React, { useEffect, useState } from "react";
-// import {
-//   Modal,
-//   ModalOverlay,
-//   ModalContent,
-//   ModalHeader,
-//   ModalBody,
-//   ModalCloseButton,
-//   FormControl,
-//   FormLabel,
-//   Input,
-//   Select,
-//   Button,
-//   Text,
-//   Box,
-//   Checkbox,
-//   InputGroup,
-//   InputRightElement,
-// } from "@chakra-ui/react";
-// import "../styles/buttonStyles.css";
-// import { usePlans } from "./ContextApi";
-// import { CalendarIcon } from "@chakra-ui/icons";
-// import DatePicker from "react-datepicker";
-// import '../styles/inputdate.css';
-
-// const EditDeductionModel = ({ pot, isOpen, onClose }) => {
-//   const [step, setStep] = useState(1);
-//   const [currentAmount, setCurrentAmount] = useState("");
-//   const [goalAmount, setGoalAmount] = useState("");
-//   const [goalDate, setGoalDate] = useState("");
-//   const [frequency, setFrequency] = useState("");
-//   const [autoDeduction, setAutoDeduction] = useState(false);
-//   const [dayOfWeek, setDayOfWeek] = useState("");
-//   const [dayOfMonth, setDayOfMonth] = useState("");
-//   const [requiredAmount, setRequiredAmount] = useState(0);
-//   const [completionDate, setCompletionDate] = useState("");
-//   const { userId } = usePlans();
-
-
-//   useEffect(() => {
-//     calculateRequiredAmount();
-//   }, [goalAmount, currentAmount, frequency, goalDate]);
-
-//   const calculateRequiredAmount = () => {
-//     const parsedGoal = parseInt(goalAmount);
-//     const parsedAmount = parseInt(currentAmount);
-//     const daysLeft = calculateDaysLeft(goalDate);
-
-//     if (parsedGoal && parsedAmount && daysLeft > 0) {
-//       const remainingAmount = parsedGoal - parsedAmount;
-//       let requiredAmountPerPeriod = 0;
-//       let completionDate;
-
-//       switch (frequency) {
-//         case "daily":
-//           requiredAmountPerPeriod = Math.ceil(remainingAmount / daysLeft);
-//           completionDate = new Date(
-//             Date.now() + daysLeft * 24 * 60 * 60 * 1000
-//           );
-//           break;
-//         case "weekly":
-//           const weeksLeft = Math.ceil(daysLeft / 7);
-//           requiredAmountPerPeriod = Math.ceil(remainingAmount / weeksLeft);
-//           completionDate = new Date(
-//             Date.now() + weeksLeft * 7 * 24 * 60 * 60 * 1000
-//           );
-//           break;
-//         case "monthly":
-//           const monthsLeft = Math.ceil(daysLeft / 30);
-//           requiredAmountPerPeriod = Math.ceil(remainingAmount / monthsLeft);
-//           completionDate = new Date(
-//             Date.now() + monthsLeft * 30 * 24 * 60 * 60 * 1000
-//           );
-//           break;
-//         default:
-//           requiredAmountPerPeriod = 0;
-//       }
-
-//       setRequiredAmount(requiredAmountPerPeriod);
-//       if (completionDate instanceof Date && !isNaN(completionDate)) {
-//         setCompletionDate(completionDate.toDateString());
-//       } else {
-//         console.error("Invalid completion date:", completionDate);
-//       }
-//     } else {
-//       setRequiredAmount(0);
-//       setCompletionDate("");
-//     }
-//   };
-
-//   const calculateDaysLeft = (goalDate) => {
-//     const selectedDate = new Date(goalDate);
-//     const currentDate = new Date();
-//     const timeDiff = selectedDate - currentDate;
-//     return Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-//   };
-
-//   const nextStep = () => setStep(step + 1);
-//   const prevStep = () => setStep(step - 1);
-
-//   const handleSavePlan = async () => {
-//     const savingPlan = {
-//       autoDeduction,
-//       endDate: completionDate,
-//       dailyAmount: autoDeduction ? requiredAmount : 0,
-//       frequency,
-//       dayOfWeek,
-//       dayOfMonth,
-//     };
-//     console.log(savingPlan);
-//     onClose();
-//     window.location.reload();
-//   };
-
-//   return (
-//     <div>
-//       <Modal
-//         isOpen={isOpen}
-//         onClose={onClose}
-//         size="md"
-//         isCentered
-//         closeOnOverlayClick={false}
-//         blockScrollOnMount={true}
-//       >
-//         <ModalOverlay
-//           sx={{
-//             backdropFilter: { base: "none", lg: "blur(5px)" },
-//             height: "100vh",
-//           }}
-//         />
-//         <ModalContent
-//           className="modal-container"
-//           sx={{
-//             color: "rgb(65, 65, 65)",
-//             borderRadius: "10px",
-//             fontFamily: "Noto Sans, sans-serif",
-//             width: { base: "100%", lg: "60%" },
-//             maxWidth: { base: "100vw", lg: "60vw" },
-//             height: { base: "100vh", lg: "auto" },
-//             overflowY: { base: "auto", lg: "unset" },
-//           }}
-//         >
-//           <ModalHeader>
-//             Editing your Pot AutoDeduction - Step {step}
-//           </ModalHeader>
-//           <ModalCloseButton />
-//           <ModalBody>
-//             {step === 1 && (
-//               <>
-//                 <FormControl mb={3}>
-//                   <FormLabel>Goal End Date</FormLabel>
-//                   <InputGroup>
-//                     <InputRightElement
-//                       pointerEvents="none"
-//                       children={<CalendarIcon color="teal.500" />}
-//                     />
-//                     <DatePicker
-//                       selected={goalDate}
-//                       onChange={(date) => setGoalDate(date)}
-//                       customInput={
-//                         <Input
-//                           placeholder="Select a date"
-//                           bg="gray.50"
-//                           borderColor="teal.400"
-//                           _hover={{ borderColor: "teal.500" }}
-//                           _focus={{
-//                             borderColor: "teal.600",
-//                             boxShadow: "0 0 0 1px teal.600",
-//                           }}
-//                           borderRadius="md"
-//                           padding="0.5rem"
-//                           fontWeight="500"
-//                           cursor="pointer"
-//                         />
-//                       }
-//                       dateFormat="MMMM d, yyyy"
-//                       popperPlacement="bottom"
-//                       popperClassName="custom-datepicker-popper"
-//                       wrapperClassName="custom-datepicker-wrapper"
-//                     />
-//                   </InputGroup>
-//                 </FormControl>
-//                 {goalDate && (
-//                   <>
-//                     <p>Daily required amount: ₹{requiredAmount}</p>
-//                     <p>Estimated completion date: {completionDate}</p>
-//                   </>
-//                 )}
-//               </>
-//             )}
-//             {step === 2 && (
-//               <>
-//                 <FormControl mb={3}>
-//                   <FormLabel>Auto Deduction</FormLabel>
-//                   <Checkbox
-//                     isChecked={autoDeduction}
-//                     onChange={(e) => setAutoDeduction(e.target.checked)}
-//                   >
-//                     Enable Auto Deduction
-//                   </Checkbox>
-//                 </FormControl>
-//                 {autoDeduction && (
-//                   <FormControl mb={3}>
-//                     <FormLabel>Payment Frequency</FormLabel>
-//                     <Select
-//                       value={frequency}
-//                       onChange={(e) => setFrequency(e.target.value)}
-//                     >
-//                       <option value="daily">Daily</option>
-//                       <option value="weekly">Weekly</option>
-//                       <option value="monthly">Monthly</option>
-//                     </Select>
-//                   </FormControl>
-//                 )}
-//               </>
-//             )}
-//             {step === 3 && autoDeduction && (
-//               <>
-//                 <Text mb={3}>
-//                   You will need to pay approximately ₹{requiredAmount}{" "}
-//                   {frequency} to reach your goal by {completionDate}.
-//                 </Text>
-//               </>
-//             )}
-//             <Box display="flex" justifyContent="space-between" mt={4}>
-//               {step > 1 && <Button onClick={prevStep}>Previous</Button>}
-//               {step < 3 ? (
-//                 <Button colorScheme="blue" onClick={nextStep}>
-//                   Next
-//                 </Button>
-//               ) : (
-//                 <Button colorScheme="green" onClick={handleSavePlan}>
-//                   Update
-//                 </Button>
-//               )}
-//             </Box>
-//           </ModalBody>
-//         </ModalContent>
-//       </Modal>
-//     </div>
-//   );
-// };
-
-// export default EditDeductionModel;
