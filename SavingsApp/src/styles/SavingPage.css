@@ -3,6 +3,7 @@
 .saving-plan-page-main-container {
   display: flex;
   justify-content: space-between;
+  width: 100%;
   align-items: center;
   flex-wrap: wrap;
 }
@@ -190,6 +191,25 @@
     font-size: 25px;
   }
 
+  .add-goal-card{
+    position: fixed;
+    border: none;
+    width: 10px;
+    bottom: 2.4%;
+    left: 27%;
+    z-index: 300;
+  }
+  .add-goal-card > i:nth-child(1) {
+    color: rgb(156, 156, 156);
+    border-radius: 0;
+    background-color: white;
+  }
+
+  .add-goal-card > p{
+    display: none;
+  }
+
+
   .header-container-savepage {
     padding: 10px 20px 10px 10px;
   }
@@ -230,6 +250,25 @@
     padding: 5px 10px 5px 5px;
   }
 
+  .add-goal-card{
+    position: fixed;
+    border: none;
+    width: 10px;
+    bottom: 2.4%;
+    left: 27%;
+    z-index: 300;
+  }
+  .add-goal-card > i:nth-child(1) {
+    font-size: 20px;
+    color: rgb(156, 156, 156);
+    border-radius: 0;
+    background-color: white;
+  }
+
+  .add-goal-card > p{
+    display: none;
+  }
+
   .goal-section {
     gap: 10px;
   }
@@ -241,6 +280,10 @@
   .money-deails-container > div > h3 {
     font-size: 14px;
   }
+  .saving-page-image > img{
+    width: 85%;
+    margin-left: 20px;
+}
 
   .money-deails-container > div > p {
     font-size: 8px;
