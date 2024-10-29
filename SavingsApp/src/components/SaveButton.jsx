@@ -40,9 +40,9 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
   const [dayOfMonth, setDayOfMonth] = useState(0);
   const [requiredAmount, setRequiredAmount] = useState(0);
   const [completionDate, setCompletionDate] = useState("");
-  const [emoji,setEmoji]=useState("");
+  const [emoji, setEmoji] = useState("");
   const { userId } = usePlans();
-  const userIdFromLocalStorage=localStorage.getItem("userid");
+  const userIdFromLocalStorage = localStorage.getItem("userid");
 
   useEffect(() => {
     calculateRequiredAmount();
@@ -184,10 +184,13 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
       dayOfWeek,
       dayOfMonth,
     };
-    console.log("savingsplan",savingPlan);
+    console.log("savingsplan", savingPlan);
     try {
-      console.log("savingPlan",savingPlan);
-    const res = await api.post(`/user/${userIdFromLocalStorage}/savingplan`, savingPlan);
+      console.log("savingPlan", savingPlan);
+      const res = await api.post(
+        `/user/${userIdFromLocalStorage}/savingplan`,
+        savingPlan
+      );
       console.log("created", res.data);
       const newBalance = await updateBalance(
         userId,
@@ -212,7 +215,10 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
     onClose();
     window.location.reload();
   };
-
+  const frequencies=["daily","weekly","monthly"];
+  const handleClick = (value) => {
+    setFrequency(value);
+  };
   return (
     <div>
       <button className="action-buttons" onClick={onOpen}>
@@ -335,18 +341,18 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
                   <>
                     <p>
                       Daily required amount:
-                      {required.requiredAmountPerPeriodday},Completion Date:{" "}
+                      {required.requiredAmountPerPeriodday},Till{" "}
                       {required.completionDateday}
                     </p>
                     <p>
                       Weekly required amount:
-                      {required.requiredAmountPerPeriodweek},Completion Date:{" "}
+                      {required.requiredAmountPerPeriodweek},Till{" "}
                       {required.completionDateweek}
                     </p>
                     <p>
                       Monthly required amount:
-                      {required.requiredAmountPerPeriodmon},Completion Date
-                      (Monthly): {required.completionDatemon}
+                      {required.requiredAmountPerPeriodmon},Till{" "}
+                      {required.completionDatemon}
                     </p>
                   </>
                 )}
@@ -366,16 +372,33 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
 
                 {autoDeduction && (
                   <FormControl mb={3}>
-                    <FormLabel>Payment Frequency</FormLabel>
-                    <Select
-                      value={frequency}
-                      placeholder="Enter which plan you want"
-                      onChange={(e) => setFrequency(e.target.value)}
-                    >
-                      <option value="daily">Daily</option>
-                      <option value="weekly">Weekly</option>
-                      <option value="monthly">Monthly</option>
-                    </Select>
+                    <FormLabel>Payment Method</FormLabel>
+                    
+
+                  <Box display="flex" gap={4}>
+                    {frequencies.map((freq) => (
+                      <Box
+                        key={freq}
+                        onClick={() => handleClick(freq)}
+                        cursor="pointer"
+                        p={4}
+                        borderWidth={2}
+                        borderRadius="md"
+                        borderColor={
+                          frequency === freq ? "blue.500" : "gray.300"
+                        }
+                        bg={frequency === freq ? "blue.100" : "white"}
+                        opacity={frequency && frequency !== freq ? 0.5 : 1} // Disable others visually
+                        _hover={{
+                          bg: frequency === freq ? "blue.200" : "gray.100",
+                        }} 
+                      >
+                        <Text textAlign="center">
+                          {freq.charAt(0).toUpperCase() + freq.slice(1)}
+                        </Text>
+                      </Box>
+                    ))}
+                  </Box>
                   </FormControl>
                 )}
 

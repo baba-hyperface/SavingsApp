@@ -5,8 +5,11 @@ import nodemailer from 'nodemailer';
 import Transaction from '../models/historymodel.js';
 
 // // '0 0 * * *'
-cron.schedule('1,15,30,45,59 * * * * *', async () => {
+cron.schedule('0,15,30,45 * * * * *', async () => {
     console.log('Cron job running every minite 1,15,30,45 and 59 seconds');
+}, {
+  scheduled: true,
+  timezone: "Asia/Kolkata"
 });
 
 const transporter = nodemailer.createTransport({
@@ -35,50 +38,59 @@ const sendInsufficientFundsEmail = async (user, pot) => {
   }
 };
   
-cron.schedule('0 1 * * *', async () => {
+cron.schedule('0 1 * * *', async () => {  // every day at 1 AM
   try {
-    const users = await User.find({}).populate({
-      path: 'pots' 
-    });
-
+    const users = await User.find({}).populate('pots');
     console.log("Processing users:", users);
+
+    const interestRate = 0.005; // 0.5% interest rate
     let totalUsersProcessed = 0;
     let totalPotsProcessed = 0;
     let totalPotsUpdated = 0;
 
-    const interestRate = 0.005; // 0.5% interest rate
+    const now = new Date();
+    const currentDayOfWeek = now.toLocaleString('en-US', { weekday: 'long' }); // e.g., "Monday"
+    const currentDayOfMonth = now.getDate();
 
     for (const user of users) {
-      console.log(`Processing user: ${user.name}, Total Balance: ${user.totalBalance}`);
-      
       totalUsersProcessed++;
-
       let potsUpdated = false;
 
       for (const pot of user.pots) {
         totalPotsProcessed++;
-
-        // Calculate interest for every pot regardless of autoDeduction
+        
+        // Calculate interest if the pot has balance
         if (pot.currentBalance > 0) {
           const interest = pot.currentBalance * interestRate;
-          pot.interestAmount += interest; // Add interest to interestAmount only
+          pot.interestAmount += interest;
           console.log(`Interest of ${interest} calculated for pot: ${pot.potPurpose}, Total Interest: ${pot.interestAmount}`);
         }
 
-        // Auto-Deduction Logic (only if autoDeduction is true)
-        const now = new Date();
         const lastDeduction = pot.lastAutoDeductionDate;
+        const autoDeductionDue = !lastDeduction || now.getDate() !== lastDeduction.getDate();
 
-        if (pot.autoDeduction & pot.autoDeductionStatus) {
-          if (!lastDeduction || (now.getDate() !== lastDeduction.getDate())) {
+        // Auto-Deduction Logic based on frequency
+        if (pot.autoDeduction && pot.autoDeductionStatus) {
+          let shouldDeduct = false;
+
+          if (pot.frequency === 'daily') {
+            shouldDeduct = autoDeductionDue;
+          } else if (pot.frequency === 'weekly') {
+            shouldDeduct = autoDeductionDue && pot.dayOfWeek === currentDayOfWeek;
+          } else if (pot.frequency === 'monthly') {
+            shouldDeduct = autoDeductionDue && pot.dayOfMonth === currentDayOfMonth.toString();
+          }
+
+          if (shouldDeduct) {
             if (user.totalBalance >= pot.dailyAmount) {
               user.totalBalance -= pot.dailyAmount;
               pot.currentBalance += pot.dailyAmount;
-              pot.lastAutoDeductionDate = now; 
+              pot.lastAutoDeductionDate = now;
               potsUpdated = true;
 
               totalPotsUpdated++;
               console.log(`Deducted ${pot.dailyAmount} from user: ${user.name} for pot: ${pot.potPurpose}, Current Balance: ${pot.currentBalance}`);
+
               const transaction = new Transaction({
                 email: user.email,
                 type: 'Auto-Deduction',
@@ -87,16 +99,14 @@ cron.schedule('0 1 * * *', async () => {
                 to: pot.potPurpose,
                 potId: pot._id,
               });
-
               await transaction.save();
               user.history.push(transaction._id);
-              await pot.save();
             } else {
               await sendInsufficientFundsEmail(user, pot);
               console.log(`User ${user.name} has insufficient balance for auto-deduction for pot: ${pot.potPurpose}`);
             }
           } else {
-            console.log(`No deduction needed for pot: ${pot.potPurpose}, as deduction was already made today.`);
+            console.log(`No deduction needed for pot: ${pot.potPurpose} at this time.`);
           }
         }
         await pot.save();
@@ -110,8 +120,7 @@ cron.schedule('0 1 * * *', async () => {
 
     console.log(`Auto-deduction and interest calculation process completed for ${totalUsersProcessed} users.`);
     console.log(`${totalPotsProcessed} pots processed in total.`);
-    console.log(`${totalPotsUpdated} pots were successfully updated with daily deduction.`);
-    
+    console.log(`${totalPotsUpdated} pots were successfully updated with deductions.`);
   } catch (error) {
     console.error('Error in auto-deduction and interest calculation process:', error);
   }

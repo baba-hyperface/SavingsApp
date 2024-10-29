@@ -19,8 +19,8 @@ import api from "./api";
 import { FiFilter, FiTrash2 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { usePlans } from "./ContextApi";
-import { DeductionModal } from "./DetuctionModel";
 import { FilterModal } from "./FilterModel";
+import EditDeductionModel from "./EditDetuctionModel";
 export const SavingPlans = ({
   totalBalance,
   onBalanceUpdate,
@@ -38,7 +38,6 @@ export const SavingPlans = ({
     handleDeletePlan,
     isDeductModalOpen,
     handleDeductCloseModal,
-    handleSaveDeduction,
     filteredPlans,
     handleDeductOpenModal,
     setFilteredPlans,
@@ -47,7 +46,30 @@ export const SavingPlans = ({
     isFilterModalOpen,
     handleFilterApply,
     handleFilterClose,
+    selectedPlan
   } = usePlans();
+
+  const handleDeleteHere = (potid, isActive) => {
+    if (!isActive) {
+      const confirmAction = window.confirm(
+        "Are you sure you want to deactivate this plan?"
+      );
+      if (!confirmAction) {
+        return;
+      }
+    }
+    handleDeletePlan(potid, isActive);
+    const colorScheme="red";
+    toast({
+      title: "Plan Deactivated",
+      description: "Your saving plan has been successfully deactivated.",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+      colorScheme
+    });
+  }
+
   const userIdFromLocalStorage = localStorage.getItem("userid");
   const userId = userIdFromLocalStorage;
   const nav = useNavigate();
@@ -203,7 +225,7 @@ export const SavingPlans = ({
                   </div>
                 ) : (
                   <>
-                    <button onClick={() => handleDeductOpenModal(plan._id)} className="add-money-btn">
+                    <button className="add-money-btn">
                       {plan.autoDeduction ? (
                         <Box
                           onClick={() =>
@@ -248,7 +270,7 @@ export const SavingPlans = ({
                       <i className="fa-solid fa-plus"></i> Add Money
                     </button>
                     <button
-                      onClick={() => handleDeletePlan(plan._id, false)}
+                      onClick={() => handleDeleteHere(plan._id, false)}
                       className="delete-btn"
                       _hover={{ bg: "red.500", color: "white" }}
                       bg="gray.200"
@@ -268,10 +290,10 @@ export const SavingPlans = ({
         onClose={handleFilterClose}
         onSave={handleFilterApply}
       />
-      <DeductionModal
+      <EditDeductionModel
         isOpen={isDeductModalOpen}
         onClose={handleDeductCloseModal}
-        onSave={handleSaveDeduction}
+        potId={selectedPlan}
       />
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
