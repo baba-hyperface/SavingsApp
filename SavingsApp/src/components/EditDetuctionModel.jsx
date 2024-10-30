@@ -118,7 +118,7 @@ const EditDeductionModel = ({ potId, isOpen, onClose }) => {
       dayOfMonth,
     };
 
-    console.log("Saving Plan Data:", savingPlan); // Debug output to check values
+    console.log("Saving Plan Data:", savingPlan); 
 
     try {
       const res = await api.patch(
@@ -226,7 +226,7 @@ const EditDeductionModel = ({ potId, isOpen, onClose }) => {
                           frequency === freq ? "blue.500" : "gray.300"
                         }
                         bg={frequency === freq ? "blue.100" : "white"}
-                        opacity={frequency && frequency !== freq ? 0.5 : 1} // Disable others visually
+                        opacity={frequency && frequency !== freq ? 0.5 : 1} 
                         _hover={{
                           bg: frequency === freq ? "blue.200" : "gray.100",
                         }} 
