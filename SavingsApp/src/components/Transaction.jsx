@@ -30,6 +30,10 @@ export const Transaction = () => {
     fetchUserdata();
   }, []);
 
+  if(!historydata && historydata ===undefined){
+    return <p>History is not available</p>
+  }
+
   const groupByDate = (transactions) => {
     return transactions.reduce((groupedTransactions, transaction) => {
       const transactionDate = new Date(transaction.date).toLocaleDateString();
