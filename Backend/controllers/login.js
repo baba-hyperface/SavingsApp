@@ -16,13 +16,13 @@ export const register = async (req, res) => {
         console.log("registration password", password);
 
         if (!name || !email || !password || !accountNumber || !expDate) {
-            return res.status(400).send('Invalid request data');
+            return res.status(400).send({message:'Invalid request data'});
         }
 
         const userExist = await User.findOne({ email });
         console.log(userExist);
         if (!userExist) {
-            const hashedPassword = await bcrypt.hash(password, 10); 
+            const hashedPassword = await bcrypt.hash(password, 10);
             console.log("register hash", hashedPassword);
 
             const data = new User({ name, email, password: hashedPassword,accountNumber,expDate,totalBalance:0,pots:[],history:[] });
@@ -36,7 +36,7 @@ export const register = async (req, res) => {
         }
     } catch (err) {
         console.error(err);
-        res.status(500).send("Internal server error");
+        res.status(500).send({message:"Internal server error"});
     }
 };
 
@@ -64,11 +64,11 @@ export const login = async (req, res) => {
                     res.status(200).json({ message: 'Login successful',userid:userExist._id, accessToken });
                 } else {
                     console.log("incorrect password");
-                    res.status(400).send("Incorrect password");
+                    res.status(400).send({message:"Incorrect password check"});
                 }
             } catch (err) {
                 console.log(err);
-                res.send("password comparing failed");
+                res.send({message:"password comparing failed"});
             }
         } else {
             console.log("user does not exist");

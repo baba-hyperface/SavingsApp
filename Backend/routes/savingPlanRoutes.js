@@ -39,7 +39,7 @@ savingPlanRouter.patch(
     } = req.body;
     try {
       const updatedPlan = await SavingPot.findByIdAndUpdate(
-        potId, 
+        potId,
         {
           autoDeduction,
           endDate,
@@ -48,7 +48,7 @@ savingPlanRouter.patch(
           dayOfWeek,
           dayOfMonth,
         },
-        { new: true } 
+        { new: true }
       );
 
       if (!updatedPlan) {
@@ -96,7 +96,10 @@ savingPlanRouter.post(`/user/:userId/savingplan`, protect, async (req, res) => {
   if (!currentBalance) {
     currentBalance = 0;
   }
-
+  const autoDeductionStatus = false;
+  if (autoDeduction) {
+    autoDeductionStatus = true;
+  }
   try {
     const user = await User.findOne({ email: req.user.email });
 
@@ -109,7 +112,7 @@ savingPlanRouter.post(`/user/:userId/savingplan`, protect, async (req, res) => {
       potPurpose,
       targetAmount,
       currentBalance,
-
+      autoDeductionStatus,
       category,
       imoji,
       color,
@@ -180,6 +183,46 @@ savingPlanRouter.patch(
 
       if (currentBalance !== undefined) {
         pot.currentBalance += currentBalance;
+
+        if (autoDeduction) {
+          let requiredAmountPerPeriod = 0;
+          const calculateRequiredAmount = () => {
+            const parsedGoal = parseInt(pot.targetAmount);
+            const parsedAmount = parseInt(pot.currentBalance);
+            const daysLeft = calculateDaysLeft(pot.endDate);
+
+            if (parsedGoal && parsedAmount && daysLeft > 0) {
+              const remainingAmount = parsedGoal - parsedAmount;
+
+              switch (pot.frequency) {
+                case "daily":
+                  requiredAmountPerPeriod = Math.ceil(
+                    remainingAmount / daysLeft
+                  );
+                  break;
+                case "weekly":
+                  const weeksLeft = Math.ceil(daysLeft / 7);
+                  requiredAmountPerPeriod = Math.ceil(
+                    remainingAmount / weeksLeft
+                  );
+                  break;
+                case "monthly":
+                  const monthsLeft = Math.ceil(daysLeft / 30);
+                  requiredAmountPerPeriod = Math.ceil(
+                    remainingAmount / monthsLeft
+                  );
+                  break;
+                default:
+                  requiredAmountPerPeriod = 0;
+              }
+            }
+          };
+
+          calculateRequiredAmount();
+          if (requiredAmountPerPeriod > 0) {
+            pot.dailyAmount = requiredAmountPerPeriod;
+          }
+        }
       } else {
         return res.status(400).json({ message: "currentBalance is required" });
       }
@@ -236,8 +279,8 @@ savingPlanRouter.patch(
   async (req, res) => {
     const { selectedPlanId, userId } = req.params;
     const { deductionAmount } = req.body;
-    console.log("potid", selectedPlanId);
-    console.log(deductionAmount);
+    // console.log("potid", selectedPlanId);
+    // console.log(deductionAmount);
 
     try {
       const user = await User.findById(userId);
