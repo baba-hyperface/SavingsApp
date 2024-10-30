@@ -60,7 +60,7 @@ export const login = async (req, res) => {
                     const accessToken = generateToken(userExist);
                     await userExist.save();
 
-                    console.log("loginsuccesss");
+                    // console.log("loginsuccesss");
                     res.status(200).json({ message: 'Login successful',userid:userExist._id, accessToken });
                 } else {
                     console.log("incorrect password");

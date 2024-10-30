@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, SimpleGrid, Text, Stack, Button, useColorModeValue, useToast } from '@chakra-ui/react';
-import api from './api'; // Import your API instance
+import api from './api'; 
 import { usePlans } from './ContextApi';
 
 export const DeActivatedPage = () => {

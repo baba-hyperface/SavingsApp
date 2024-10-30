@@ -13,7 +13,7 @@ const Home = () => {
 
         <VStack spacing={6} textAlign="center" pt={10} pb={10}>
           <Heading as="h1" size="2xl">
-            Welcome to Coin Stach
+            Welcome to Coin Stash
           </Heading>
           <Text fontSize={{base:'md',md:'lg'}} >
             Manage your wallet, create saving pots, and track your transactions with ease!
@@ -27,9 +27,7 @@ const Home = () => {
 
           <FeatureCard
             title="Savings Pots"
-            // icon={MdAttachMoney}
             icon={GiCash}
-            // icon={BiRupee}
             description="Create personalized savings pots to reach your financial goals." />
 
           <FeatureCard title="Transaction History" icon={FaHistory} 
