@@ -30,8 +30,10 @@ export const Transaction = () => {
     fetchUserdata();
   }, []);
 
-  if(!historydata && historydata ===undefined){
-    return <p>History is not available</p>
+  if(!historydata && historydata === undefined){
+    return (<>
+    no data 
+    </>)
   }
 
   const groupByDate = (transactions) => {
@@ -47,6 +49,7 @@ export const Transaction = () => {
 
   // Grouping transactions by date
   const groupedTransactions = groupByDate(historydata);
+
 
   return (
     <div>

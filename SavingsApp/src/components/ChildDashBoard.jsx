@@ -78,7 +78,6 @@ const handleTransactionHistoryUpdate = (transaction) => {
         <WithdrawMoney totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance} email={email} onHistoryChange={handleTransactionHistoryUpdate}/>
         <SaveButton totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance} />
         <DeActivated />
-        {/* <Was /> */}
       </div>
       <SavingPlans totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance}/>
     </div>

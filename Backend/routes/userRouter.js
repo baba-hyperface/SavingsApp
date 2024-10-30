@@ -103,7 +103,7 @@ userRouter.delete('/users/:id',protect, async (req, res) => {
 
         const updateBalance = await User.findByIdAndUpdate(userId, {totalBalance : balance}, {new: true});
         if(updateBalance){
-            const user=await User.findOne({email:req.user.email});
+        const user=await User.findOne({email:req.user.email});
         const transaction = new Transaction({
             email:req.user.email,
             type: "transfer", 
@@ -115,7 +115,7 @@ userRouter.delete('/users/:id',protect, async (req, res) => {
         console.log("traansaction pache wallete 5",transaction);
         
         user.history.push(transaction); 
-      await transaction.save();       
+      await transaction.save();      
       await user.save();   
 
             res.status(200).json({ message: 'Balance updated successfully', user: updateBalance });
