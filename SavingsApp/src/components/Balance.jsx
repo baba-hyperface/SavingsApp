@@ -4,24 +4,24 @@ import { useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFoo
 import { DonutChart } from './DonutChart';
 import api from './api';
 
-export const Balance = ({totalBalance, onBalanceUpdate, accNum, expDate, updateBalance, email, onHistoryChange}) => {
+export const Balance = ({ totalBalance, onBalanceUpdate, accNum, expDate, updateBalance, email, onHistoryChange }) => {
   const { onClose, onOpen, isOpen } = useDisclosure();
   const [balance, setBalance] = useState(totalBalance);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [addMoney, setAddMoney] = useState('');
   const toast = useToast();
-  const[potData, setPotData] = useState([]);
-  const userIdFromLocalStorage = localStorage.getItem("userid")
+  const [potData, setPotData] = useState([]);
+  const userIdFromLocalStorage = localStorage.getItem("userid");
+
   useEffect(() => {
     setBalance(totalBalance || 0);
   }, [totalBalance]);
 
   useEffect(() => {
     console.log("rendering....");
-    console.log(totalBalance)
-  })
-
+    console.log(totalBalance);
+  });
 
   function formatDate(expDate) {
     const date = new Date(expDate);
@@ -34,56 +34,57 @@ export const Balance = ({totalBalance, onBalanceUpdate, accNum, expDate, updateB
 
   useEffect(() => {
     const fetchPotData = async () => {
-        try {
-            const res = await api.get(`/user/${userIdFromLocalStorage}/savingplan`)
-            setPotData(res.data);
-            console.log(res.data);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    fetchPotData();
-}, []);
-
-  const handleAddMoney = async () => {
       try {
-        setLoading(true);
-        const newBalance = await updateBalance(userIdFromLocalStorage, balance, addMoney, true)
-        setBalance(newBalance);
-        onBalanceUpdate(newBalance);
-
-        await api.post('/history', {
-          email: email,
-          type: "credited",
-          amount: addMoney,
-          from: "Bank",
-          to: "Wallet",
-          date: new Date()
-      });
-  
-        onHistoryChange({
-          email: email,
-          type : "Credited",
-          amount: addMoney,
-          from: "Bank",
-          to: "wallet",
-          date: new Date()
-        })
-        setAddMoney("");
-        onClose();
-        toast({
-          title: "Amount added successfully",
-          description: `Added ${addMoney} to your wallet`,
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
-        setLoading(false);
+        const res = await api.get(`/user/${userIdFromLocalStorage}/savingplan`);
+        setPotData(res.data);
+        console.log(res.data);
       } catch (error) {
-       console.log(error);
-       setError(error); 
+        console.log(error);
       }
     };
+    fetchPotData();
+  }, []);
+
+  const handleAddMoney = async () => {
+    try {
+      setLoading(true);
+      const newBalance = await updateBalance(userIdFromLocalStorage, balance, addMoney, true);
+      setBalance(newBalance);
+      onBalanceUpdate(newBalance);
+
+      await api.post('/history', {
+        email: email,
+        type: "credited",
+        amount: addMoney,
+        from: "Bank",
+        to: "Wallet",
+        date: new Date()
+      });
+
+      onHistoryChange({
+        email: email,
+        type: "Credited",
+        amount: addMoney,
+        from: "Bank",
+        to: "Wallet",
+        date: new Date()
+      });
+      setAddMoney("");
+      onClose();
+      toast({
+        title: "Amount added successfully",
+        description: `Added ${addMoney} to your wallet`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setError(error);
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -110,39 +111,45 @@ export const Balance = ({totalBalance, onBalanceUpdate, accNum, expDate, updateB
           <button className='add-fund-button' onClick={onOpen}>Add Money</button>
         </div>
         <div className='donut-style'>
-        <DonutChart savingsData={potData} />
+          <DonutChart savingsData={potData} />
         </div>
       </div>
 
-      
       <Modal isOpen={isOpen} onClose={onClose} >
         <ModalOverlay />
         <ModalContent sx={{
-            backgroundColor: "#E5EBF6",
-            color: "rgb(65, 65, 65)",
-            borderRadius: "10px",
-            fontFamily: "Noto Sans, sans-serif"
-          }}>
+          backgroundColor: "#E5EBF6",
+          color: "rgb(65, 65, 65)",
+          borderRadius: "10px",
+          fontFamily: "Noto Sans, sans-serif"
+        }}>
           <ModalHeader>Add Money</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Input 
-              type="number" 
-              value={addMoney} 
-              onChange={(e) => setAddMoney(e.target.value)} 
+            <Input
+              type="number"
+              value={addMoney}
+              onChange={(e) => setAddMoney(e.target.value)}
               placeholder='₹0'
               sx={{
                 fontFamily: "Noto Sans, sans-serif",
                 backgroundColor: "#f0f0f0",
-                color: "#000" 
+                color: "#000"
               }}
             />
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={handleAddMoney}>
-              Add {addMoney ? "₹" + addMoney : ""}
+            <Button
+              colorScheme='blue'
+              mr={3}
+              onClick={handleAddMoney}
+              isLoading={loading}
+              loadingText="Adding..."
+              disabled={!addMoney || loading}
+            >
+              {loading ? "Adding..." : `Add ₹${addMoney}`}
             </Button>
-            <Button variant='ghost' onClick={onClose}>Cancel</Button>
+            <Button variant='ghost' onClick={onClose} disabled={loading}>Cancel</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
