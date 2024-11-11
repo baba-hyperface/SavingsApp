@@ -17,7 +17,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import "../styles/buttonStyles.css";
-import "../styles/saveButton.css"
+import "../styles/saveButton.css";
 import { usePlans } from "./ContextApi";
 import api from "./api";
 
@@ -39,10 +39,10 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
   const [autoDeduction, setAutoDeduction] = useState(false);
   const [dayOfWeek, setDayOfWeek] = useState("");
   const [dayOfMonth, setDayOfMonth] = useState("");
-  const [requiredAmount, setRequiredAmount] = useState(0);
+  const [requiredAmount, setRequiredAmount] = useState("");
   const [completionDate, setCompletionDate] = useState("");
   const [emoji, setEmoji] = useState("");
-  const [icon, setIcon] = useState('');
+  const [icon, setIcon] = useState("");
   const [loading, setLoading] = useState(false);
   const { userId } = usePlans();
   const userIdFromLocalStorage = localStorage.getItem("userid");
@@ -200,7 +200,7 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
       color: randomColor,
       imoji: emoji,
       autoDeduction,
-      endDate: completionDate,
+      endDate: completionDate ? completionDate : "infinite",
       dailyAmount: autoDeduction ? requiredAmount : 0,
       frequency,
       dayOfWeek,
@@ -224,7 +224,7 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
       onBalanceUpdate(newBalance);
     } catch (error) {
       console.log(error.message);
-    }finally{
+    } finally {
       setLoading(false);
     }
     setName("");
@@ -240,7 +240,7 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
     onClose();
     window.location.reload();
   };
-  const frequencies=["daily","weekly","monthly"];
+  const frequencies = ["daily", "weekly", "monthly"];
   const handleClick = (value) => {
     setFrequency(value);
   };
@@ -256,14 +256,13 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
       <p className="send-text">Save</p>
 
       <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      size="full"
-      isCentered
-      blockScrollOnMount={true}
-      
-    >
-      <ModalOverlay
+        isOpen={isOpen}
+        onClose={onClose}
+        size="full"
+        isCentered
+        blockScrollOnMount={true}
+      >
+        <ModalOverlay
           sx={{
             backdropFilter: { base: "none", lg: "blur(10px)" },
             height: "100vh",
@@ -281,283 +280,379 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
             overflowY: { base: "auto", lg: "unset" },
           }}
         >
-        <ModalCloseButton />
-        <ModalBody className="modal-body">
-          {step !== 1 && step !== 3 && (
-            <i className="fa-solid fa-chevron-left back-icon" onClick={prevStep}></i>
-          )}
+          <ModalCloseButton />
+          <ModalBody className="modal-body">
+            {step !== 1 && step !== 3 && (
+              <i
+                className="fa-solid fa-chevron-left back-icon"
+                onClick={prevStep}
+              ></i>
+            )}
 
-          {step === 1 && (
-            <div className="step-container">
-              <h1 className="main-heading">Goals</h1>
-              <div className="nav-container">
-              <h1 className="label">Select a Category</h1>
-              <p className="start-saving-for-it">start saving for it</p>
+            {step === 1 && (
+              <div className="step-container">
+                <h1 className="main-heading">Goals</h1>
+                <div className="nav-container">
+                  <h1 className="label">Select a Category</h1>
+                  <p className="start-saving-for-it">start saving for it</p>
+                </div>
+                <div className="category-container">
+                  {categories.map((cat) => (
+                    <div
+                      key={cat.label}
+                      onClick={() => {
+                        setCategory(cat.label);
+                        nextStep();
+                        setIcon(cat.icon);
+                      }}
+                      className={`category ${
+                        category === cat.label ? "selected" : ""
+                      }`}
+                    >
+                      <div className="category-items-style">
+                        <span className="category-icon">
+                          <i className={cat.icon}></i>
+                        </span>
+                        <p>{cat.label}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="category-container">
-                {categories.map((cat) => (
-                  <div
-                    key={cat.label}
-                    onClick={() => {
-                      setCategory(cat.label);
-                      nextStep();
-                      setIcon(cat.icon);
-                    }}
-                    className={`category ${category === cat.label ? 'selected' : ''}`}
-                  >
-                    <div className="category-items-style">
-                    <span className="category-icon">
-                    <i className={cat.icon}></i>
-                    </span>
-                    <p>{cat.label}</p>
+            )}
+
+            {step === 2 && (
+              <div className="step-container">
+                <div>
+                  <h1 className="label">Enter a Name for Your Plan</h1>
+                </div>
+                <div className="creating-pot-container">
+                  <i
+                    className={`fa ${
+                      category &&
+                      categories.find((cat) => cat.label === category).icon
+                    }`}
+                  ></i>
+                  <p>{category}</p>
+                </div>
+                <div className="input-feld-and-label-container">
+                  <label className="label-for-input">Name your Goal</label>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Plan Name"
+                    className="input-field"
+                  />
+                  <button className="next-button" onClick={nextStep}>
+                    Create
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {step === 3 && (
+              <div className="step3">
+                <div className="creating-pot-container">
+                  <i
+                    className={`fa ${
+                      category &&
+                      categories.find((cat) => cat.label === category).icon
+                    }`}
+                  ></i>
+                  <p>{name}</p>
+                </div>
+                <p className="pot-created-text">
+                  <strong>{name}</strong> Goal Created!
+                </p>
+              </div>
+            )}
+
+            {step === 4 && (
+              <div className="step4">
+                <div className="creating-pot-container">
+                  <i
+                    className={`fa ${
+                      category &&
+                      categories.find((cat) => cat.label === category).icon
+                    }`}
+                  ></i>
+                  <p>{name}</p>
+                </div>
+                <div className="step-verification-container">
+                  <p>1 Step Closer to Your Goal</p>
+                  <p>
+                    Become a verified member to Start adding Money to your goal
+                  </p>
+                </div>
+                <button className="next-button" onClick={nextStep}>
+                  Verify Now
+                </button>
+              </div>
+            )}
+
+            {step === 5 && (
+              <div className="step-container">
+                <h1 className="label">Setting current amount</h1>
+                <div className="creating-pot-container">
+                  <i
+                    className={`fa ${
+                      category &&
+                      categories.find((cat) => cat.label === category).icon
+                    }`}
+                  ></i>
+                  <p>{name}</p>
+                </div>
+                <div className="input-feld-and-label-container">
+                  <label className="label-for-input">
+                    Enter current amount
+                  </label>
+                  <input
+                    type="text"
+                    value={currentAmount}
+                    onChange={(e) => setCurrentAmount(e.target.value)}
+                    placeholder="current amount"
+                    className="input-field"
+                  />
+                  <button className="next-button" onClick={nextStep}>
+                    Set Current Amount
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {step === 6 && (
+              <div className="step-container">
+                <h1 className="label">Setting Goal amount</h1>
+                <div className="creating-pot-container">
+                  <i
+                    className={`fa ${
+                      category &&
+                      categories.find((cat) => cat.label === category).icon
+                    }`}
+                  ></i>
+                  <p>{name}</p>
+                </div>
+                <div className="input-feld-and-label-container">
+                  <label className="label-for-input">
+                    Enter Your Goal Amount
+                  </label>
+                  <input
+                    type="number"
+                    value={goalAmount}
+                    onChange={(e) => setGoalAmount(e.target.value)}
+                    placeholder="Goal Amount"
+                    className="input-field"
+                  />
+                  <button className="next-button" onClick={nextStep}>
+                    Set a Goal Amount
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {step === 7 && (
+              <div className="step-container">
+                <h1 className="label">Setting End Date</h1>
+                <div className="creating-pot-container">
+                  <i
+                    className={`fa ${
+                      category &&
+                      categories.find((cat) => cat.label === category).icon
+                    }`}
+                  ></i>
+                  <p>{name}</p>
+                </div>
+                <div className="input-feld-and-label-container">
+                  <label className="label-for-input">Select a Goal Date</label>
+                  <input
+                    type="date"
+                    value={goalDate}
+                    onChange={(e) => setGoalDate(e.target.value)}
+                    className="input-field"
+                  />
+                  <button className="next-button" onClick={nextStep}>
+                    {goalDate === "" ? "Skip" : "Set end date"}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {step === 8 && (
+              <div className="step-container">
+                <h1 className="label">Setting Auto Deduction</h1>
+
+                <div className="creating-pot-container">
+                  <i
+                    className={`fa ${
+                      category &&
+                      categories.find((cat) => cat.label === category).icon
+                    }`}
+                  ></i>
+                  <p>{name}</p>
+                </div>
+
+                <div className="toggle-container">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={autoDeduction}
+                      onChange={() => setAutoDeduction(!autoDeduction)}
+                      className="checkbox-input-box"
+                    />
+                    Enable Auto Deduction
+                  </label>
+                </div>
+
+                {!autoDeduction && (
+                  <button className="next-button" onClick={nextStep}>
+                    Skip
+                  </button>
+                )}
+
+                {autoDeduction && (
+                  <>
+                    <label className="label">Select Deduction Frequency</label>
+                    <div
+                      className="frequency-container"
+                      style={{
+                        display: "flex",
+                        gap: "10px",
+                        marginTop: "10px",
+                      }}
+                    >
+                      {frequencies.map((freq) => (
+                        <div
+                          key={freq}
+                          onClick={() => handleClick(freq)}
+                          className={`frequency-option ${
+                            frequency === freq ? "selected" : ""
+                          }`}
+                          style={{
+                            cursor: "pointer",
+                            padding: "10px",
+                            border: `2px solid ${
+                              frequency === freq ? "green" : "gray"
+                            }`,
+                            borderRadius: "5px",
+                            backgroundColor:
+                              frequency === freq ? "#e0f7ff" : "#fff",
+                            opacity: frequency && frequency !== freq ? 0.5 : 1,
+                            flex: "1",
+                            textAlign: "center",
+                          }}
+                        >
+                          {freq.charAt(0).toUpperCase() + freq.slice(1)}
+                        </div>
+                      ))}
+                    </div>
+
+
+                    {frequency && (
+                      <div className="frequency-options">
+                        {frequency === "daily" && <></>}
+                        {frequency === "weekly" && (
+                          <select
+                            value={dayOfWeek}
+                            onChange={(e) => setDayOfWeek(e.target.value)}
+                            className="input-field"
+                          >
+                            <option value="">Select Day of Week</option>
+                            <option value="Monday">Monday</option>
+                            <option value="Tuesday">Tuesday</option>
+                            <option value="Wednesday">Wednesday</option>
+                            <option value="Thursday">Thursday</option>
+                            <option value="Friday">Friday</option>
+                            <option value="Saturday">Saturday</option>
+                            <option value="Sunday">Sunday</option>
+                          </select>
+                        )}
+                        {frequency === "monthly" && (
+                          <input
+                            type="number"
+                            value={dayOfMonth}
+                            onChange={(e) =>
+                              setDayOfMonth(Math.min(30, e.target.value))
+                            }
+                            placeholder="Enter date of the month"
+                            className="input-field"
+                          />
+                        )}
+                      </div>
+                    )}
+
+                    { (requiredAmount > 0 && goalDate) && (
+                      <div className="summary">
+                        <p>
+                          To reach your goal by {goalDate}, you need to save
+                          approximately <span>₹{requiredAmount}</span> per{" "}
+                          {frequency}.
+                        </p>
+                        <p>
+                          Estimated completion date:{" "}
+                          <span>{completionDate}</span>
+                        </p>
+                      </div>
+                    )}
+
+                    { !goalDate && 
+                        <div className="input-feld-and-label-container">
+                        <label className="label-for-input">
+                          Enter Auto Deduction Amount {frequency? frequency:"Daily"}
+                        </label>
+                        <input
+                          type="number"
+                          value={requiredAmount==0? "":requiredAmount}
+                          onChange={(e) => setRequiredAmount(e.target.value)}
+                          placeholder="Deduction amount Amount"
+                          className="input-field"
+                        />
+                      </div>
+                    }
+
+                    <button className="next-button" onClick={nextStep}>
+                      Set Auto Deduction
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+            {step === 9 && (
+              <div className="step-container">
+                <div className="creating-pot-container">
+                  <i
+                    className={`fa ${
+                      category &&
+                      categories.find((cat) => cat.label === category).icon
+                    }`}
+                  ></i>
+                  <p>{name}</p>
+                </div>
+
+                <div className="creating-pot-last-step">
+                  <p>Currently in the Pot</p>
+                  <h1>₹{currentAmount.toLocaleString()}</h1>
+
+                  <div className="progress-container">
+                    <div
+                      className="progress"
+                      style={{ width: `${percentage}%` }}
+                    >
+                      <span className="progress-text">
+                        {percentage}% of ₹{goalAmount.toLocaleString()} Goal
+                      </span>
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
+                </div>
 
-          {step === 2 && (
-            <div className="step-container">
-              <div>
-              <h1 className="label">Enter a Name for Your Plan</h1>
+                <button className="lock-button" onClick={handleSavePlan}>
+                  Lock And Load
+                </button>
               </div>
-              <div className="creating-pot-container">
-              <i className={`fa ${category && categories.find(cat => cat.label === category).icon}`}></i>
-              <p>{category}</p>   
-              </div>
-              <div className="input-feld-and-label-container">
-                <label className="label-for-input">Name your Goal</label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Plan Name"
-                className="input-field"
-              />
-              <button className="next-button" onClick={nextStep}>Create</button>
-              </div>
-            </div>
-          )}
-
-{step === 3 && (
-            <div className="step3">
-              <div className="creating-pot-container">
-                <i className={`fa ${category && categories.find(cat => cat.label === category).icon}`}></i>
-                <p>{name}</p>
-              </div>
-              <p className="pot-created-text"><strong>{name}</strong> Goal Created!</p>
-            </div>
-          )}
-
-          {step === 4 && (
-            <div className="step4">
-              <div className="creating-pot-container">
-                <i className={`fa ${category && categories.find(cat => cat.label === category).icon}`}></i>
-                <p>{name}</p>
-              </div>
-              <div className="step-verification-container">
-              <p>1 Step Closer to Your Goal</p>
-              <p>Become a verified member to Start adding Money to your goal</p>
-              </div>
-              <button className="next-button" onClick={nextStep}>Verify Now</button>
-            </div>
-          )}
-
-          {step === 5 && (
-            <div className="step-container">
-              <h1 className="label">Setting current amount</h1>
-              <div className="creating-pot-container">
-                <i className={`fa ${category && categories.find(cat => cat.label === category).icon}`}></i>
-                <p>{name}</p>
-              </div>
-              <div className="input-feld-and-label-container">
-                <label className="label-for-input">Enter current amount</label>
-              <input
-                type="text"
-                value={currentAmount}
-                onChange={(e) => setCurrentAmount(e.target.value)}
-                placeholder="Plan Name"
-                className="input-field"
-              />
-              <button className="next-button" onClick={nextStep}>Set Current Amount</button>
-              </div>
-            </div>
-          )}
-
-          {step === 6 && (
-            <div className="step-container">
-              <h1 className="label">Setting Goal amount</h1>
-              <div className="creating-pot-container">
-                <i className={`fa ${category && categories.find(cat => cat.label === category).icon}`}></i>
-                <p>{name}</p>
-              </div>
-              <div className="input-feld-and-label-container">
-              <label className="label-for-input">Enter Your Goal Amount</label>
-              <input
-                type="number"
-                value={goalAmount}
-                onChange={(e) => setGoalAmount(e.target.value)}
-                placeholder="Goal Amount"
-                className="input-field"
-              />
-              <button className="next-button" onClick={nextStep}>Set a Goal Amount</button>
-              </div>
-            </div>
-          )}
-
-          {step === 7 && (
-            <div className="step-container">
-              <h1 className="label">Setting End Date</h1>
-              <div className="creating-pot-container">
-                <i className={`fa ${category && categories.find(cat => cat.label === category).icon}`}></i>
-                <p>{name}</p>
-              </div>
-              <div className="input-feld-and-label-container">
-              <label className="label-for-input">Select a Goal Date</label>
-              <input
-                type="date"
-                value={goalDate}
-                onChange={(e) => setGoalDate(e.target.value)}
-                className="input-field"
-              />
-              <button className="next-button" onClick={nextStep}>{goalDate === "" ? "Skip" : "Set end date"}</button>
-              </div>
-            </div>
-          )}
-
-{step === 8 && (
-  <div className="step-container">
-  <h1 className="label">Setting Auto Deduction</h1>
-
-  <div className="creating-pot-container">
-    <i className={`fa ${category && categories.find(cat => cat.label === category).icon}`}></i>
-    <p>{name}</p>
-  </div>
-
-  <div className="toggle-container">
-    <label>
-      <input
-        type="checkbox"
-        checked={autoDeduction}
-        onChange={() => setAutoDeduction(!autoDeduction)}
-        className="checkbox-input-box"
-      />
-      Enable Auto Deduction
-    </label>
-  </div>
-
-  {!autoDeduction && (
-    <button className="next-button" onClick={nextStep}>
-      Skip
-    </button>
-  )}
-
-  {autoDeduction && (
-    <>
-      <label className="label">Select Deduction Frequency</label>
-      <div className="frequency-container" style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-        {frequencies.map((freq) => (
-          <div
-            key={freq}
-            onClick={() => handleClick(freq)}
-            className={`frequency-option ${frequency === freq ? "selected" : ""}`}
-            style={{
-              cursor: "pointer",
-              padding: "10px",
-              border: `2px solid ${frequency === freq ? "green" : "gray"}`,
-              borderRadius: "5px",
-              backgroundColor: frequency === freq ? "#e0f7ff" : "#fff",
-              opacity: frequency && frequency !== freq ? 0.5 : 1,
-              flex: "1",
-              textAlign: "center",
-            }}
-          >
-            {freq.charAt(0).toUpperCase() + freq.slice(1)}
-          </div>
-        ))}
-      </div>
-
-      {frequency && (
-        <div className="frequency-options">
-          {frequency === 'daily' && (
-            <></>
-          )}
-          {frequency === 'weekly' && (
-            <select
-              value={dayOfWeek}
-              onChange={(e) => setDayOfWeek(e.target.value)}
-              className="input-field"
-            >
-              <option value="">Select Day of Week</option>
-              <option value="Monday">Monday</option>
-              <option value="Tuesday">Tuesday</option>
-              <option value="Wednesday">Wednesday</option>
-              <option value="Thursday">Thursday</option>
-              <option value="Friday">Friday</option>
-              <option value="Saturday">Saturday</option>
-              <option value="Sunday">Sunday</option>
-            </select>
-          )}
-          {frequency === 'monthly' && (
-            <input
-              type="number"
-              value={dayOfMonth}
-               onChange={(e) => setDayOfMonth(Math.min(30, e.target.value))}
-              placeholder="Enter date of the month"
-              className="input-field"
-            />
-          )}
-        </div>
-      )}
-
-      {requiredAmount > 0 && (
-        <div className="summary">
-          <p>
-            To reach your goal by {goalDate}, you need to save approximately <span>₹{requiredAmount}</span> per {frequency}.
-          </p>
-          <p>
-            Estimated completion date: <span>{completionDate}</span>
-          </p>
-        </div>
-      )}
-
-      <button className="next-button" onClick={nextStep}>
-        Set Auto Deduction
-      </button>
-    </>
-  )}
-</div>
-)}
-          {step === 9 && (
-          <div className="step-container">
-          <div className="creating-pot-container">
-                <i className={`fa ${category && categories.find(cat => cat.label === category).icon}`}></i>
-                <p>{name}</p>
-            </div>
-    
-          <div className="creating-pot-last-step">
-            <p>Currently in the Pot</p>
-            <h1>₹{currentAmount.toLocaleString()}</h1>
-    
-            <div className="progress-container">
-              <div
-                className="progress"
-                style={{ width: `${percentage}%` }}
-              >
-                <span className="progress-text">{percentage}% of ₹{goalAmount.toLocaleString()} Goal</span>
-              </div>
-            </div>
-          </div>
-    
-          <button className="lock-button" onClick={handleSavePlan}>
-            Lock And Load
-          </button>
-        </div>
-          )}
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+            )}
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

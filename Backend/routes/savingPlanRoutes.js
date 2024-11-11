@@ -96,7 +96,7 @@ savingPlanRouter.post(`/user/:userId/savingplan`, protect, async (req, res) => {
   if (!currentBalance) {
     currentBalance = 0;
   }
-  const autoDeductionStatus = false;
+  let autoDeductionStatus = false;
   if (autoDeduction) {
     autoDeductionStatus = true;
   }
