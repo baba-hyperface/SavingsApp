@@ -8,11 +8,8 @@ historyrouter.get('/history',protect, async (req, res) => {
     try {
         const historydata = await Transaction.find({ email: req.user.email });
 
-        if (!historydata.length) {
-            return res.json({ message: 'No transaction history found for this user' });
-        }
         
-        res.status(200).json({ historydata });
+        res.status(200).json({ historydata:historydata });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

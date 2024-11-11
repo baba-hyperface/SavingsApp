@@ -60,7 +60,8 @@ useEffect(() => {
 }, []);
 
 const handleTransactionHistoryUpdate = (transaction) => {
-  setHistory((prevHistory) => [...prevHistory, transaction]);
+  setHistory((prevHistory) => [...(prevHistory || []), transaction]);
+
 };
 
 
