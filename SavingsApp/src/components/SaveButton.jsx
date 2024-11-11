@@ -289,7 +289,7 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
 
           {step === 1 && (
             <div className="step-container">
-              <h1 className="main-heading">Pots</h1>
+              <h1 className="main-heading">Goals</h1>
               <div className="nav-container">
               <h1 className="label">Select a Category</h1>
               <p className="start-saving-for-it">start saving for it</p>
@@ -327,7 +327,7 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
               <p>{category}</p>   
               </div>
               <div className="input-feld-and-label-container">
-                <label className="label-for-input">Name your pot</label>
+                <label className="label-for-input">Name your Goal</label>
               <input
                 type="text"
                 value={name}
@@ -346,7 +346,7 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
                 <i className={`fa ${category && categories.find(cat => cat.label === category).icon}`}></i>
                 <p>{name}</p>
               </div>
-              <p className="pot-created-text"><strong>{name}</strong> Pot Created!</p>
+              <p className="pot-created-text"><strong>{name}</strong> Goal Created!</p>
             </div>
           )}
 
@@ -401,7 +401,7 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
                 placeholder="Goal Amount"
                 className="input-field"
               />
-              <button className="next-button" onClick={nextStep}>Set a Goal</button>
+              <button className="next-button" onClick={nextStep}>Set a Goal Amount</button>
               </div>
             </div>
           )}
@@ -421,7 +421,7 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
                 onChange={(e) => setGoalDate(e.target.value)}
                 className="input-field"
               />
-              <button className="next-button" onClick={nextStep}>Set end date</button>
+              <button className="next-button" onClick={nextStep}>{goalDate === "" ? "Skip" : "Set end date"}</button>
               </div>
             </div>
           )}
