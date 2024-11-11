@@ -17,6 +17,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import "../styles/buttonStyles.css";
+import "../styles/saveButton.css"
 import { usePlans } from "./ContextApi";
 import api from "./api";
 
@@ -37,16 +38,37 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
   const [frequency, setFrequency] = useState("");
   const [autoDeduction, setAutoDeduction] = useState(false);
   const [dayOfWeek, setDayOfWeek] = useState("");
-  const [dayOfMonth, setDayOfMonth] = useState(0);
+  const [dayOfMonth, setDayOfMonth] = useState("");
   const [requiredAmount, setRequiredAmount] = useState(0);
   const [completionDate, setCompletionDate] = useState("");
   const [emoji, setEmoji] = useState("");
+  const [icon, setIcon] = useState('');
+  const [loading, setLoading] = useState(false);
   const { userId } = usePlans();
   const userIdFromLocalStorage = localStorage.getItem("userid");
 
   useEffect(() => {
     calculateRequiredAmount();
   }, [goalAmount, currentAmount, frequency, goalDate]);
+
+  const categories = [
+    { label: "Holiday", icon: "fa-solid fa-plane" },
+    { label: "Health", icon: "fa-solid fa-heart-pulse" },
+    { label: "Home", icon: "fa-solid fa-house" },
+    { label: "Business", icon: "fa-solid fa-briefcase" },
+    { label: "Education", icon: "fa-solid fa-graduation-cap" },
+    { label: "Gadgets", icon: "fa-solid fa-mobile" },
+    { label: "Gifts", icon: "fa-solid fa-gift" },
+    { label: "Emergency", icon: "fa-solid fa-ambulance" },
+  ];
+
+  useEffect(() => {
+    if (step === 3) {
+      setTimeout(() => {
+        setStep(4);
+      }, 3000);
+    }
+  }, [step]);
 
   const calculateRequiredAmount = () => {
     const parsedGoal = parseInt(goalAmount);
@@ -187,6 +209,7 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
     console.log("savingsplan", savingPlan);
     try {
       console.log("savingPlan", savingPlan);
+      setLoading(true);
       const res = await api.post(
         `/user/${userIdFromLocalStorage}/savingplan`,
         savingPlan
@@ -201,6 +224,8 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
       onBalanceUpdate(newBalance);
     } catch (error) {
       console.log(error.message);
+    }finally{
+      setLoading(false);
     }
     setName("");
     setCurrentAmount("");
@@ -219,6 +244,9 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
   const handleClick = (value) => {
     setFrequency(value);
   };
+
+  const percentage = ((currentAmount / goalAmount) * 100).toFixed(1);
+
   return (
     <div>
       <button className="action-buttons" onClick={onOpen}>
@@ -228,14 +256,14 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
       <p className="send-text">Save</p>
 
       <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        size="md"
-        isCentered
-        closeOnOverlayClick={false}
-        blockScrollOnMount={true}
-      >
-        <ModalOverlay
+      isOpen={isOpen}
+      onClose={onClose}
+      size="full"
+      isCentered
+      blockScrollOnMount={true}
+      
+    >
+      <ModalOverlay
           sx={{
             backdropFilter: { base: "none", lg: "blur(10px)" },
             height: "100vh",
@@ -247,260 +275,289 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
             color: "rgb(65, 65, 65)",
             borderRadius: "10px",
             fontFamily: "Noto Sans, sans-serif",
-            width: { base: "100%", lg: "60%" },
+            width: { base: "100%", lg: "30%" },
             maxWidth: { base: "100vw", lg: "60vw" },
-            height: { base: "100vh", lg: "auto" },
+            height: { base: "70vh", lg: "auto" },
             overflowY: { base: "auto", lg: "unset" },
           }}
         >
-          <ModalHeader>Create a New Saving Pot - Step {step}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            {step === 1 && (
-              <>
-                <FormControl mb={3}>
-                  <FormLabel>Category</FormLabel>
-                  <Select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
+        <ModalCloseButton />
+        <ModalBody className="modal-body">
+          {step !== 1 && step !== 3 && (
+            <i className="fa-solid fa-chevron-left back-icon" onClick={prevStep}></i>
+          )}
+
+          {step === 1 && (
+            <div className="step-container">
+              <h1 className="main-heading">Goals</h1>
+              <div className="nav-container">
+              <h1 className="label">Select a Category</h1>
+              <p className="start-saving-for-it">start saving for it</p>
+              </div>
+              <div className="category-container">
+                {categories.map((cat) => (
+                  <div
+                    key={cat.label}
+                    onClick={() => {
+                      setCategory(cat.label);
+                      nextStep();
+                      setIcon(cat.icon);
+                    }}
+                    className={`category ${category === cat.label ? 'selected' : ''}`}
                   >
-                    <option value="">Select a category</option>
-                    <option value="travel">Travel & Vacations</option>
-                    <option value="health">Health & Wellness</option>
-                    <option value="home">Home & Property</option>
-                    <option value="business">
-                      Business & Entrepreneurship
-                    </option>
-                    <option value="education">Education & Learning</option>
-                    <option value="gadgets">Gadgets & Electronics</option>
-                    <option value="vehicle">Vehicle & Transportation</option>
-                    <option value="gifts">Gifts & Celebrations</option>
-                    <option value="emergency">Emergency Fund</option>
-                    <option value="retirement">Retirement & Long-term</option>
-                    <option value="hobbies">Hobbies & Entertainment</option>
-                    <option value="clothing">Clothing & Fashion</option>
-                    <option value="charity">Charity & Giving</option>
-                    <option value="misc">Miscellaneous</option>
-                  </Select>
-                </FormControl>
+                    <div className="category-items-style">
+                    <span className="category-icon">
+                    <i className={cat.icon}></i>
+                    </span>
+                    <p>{cat.label}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
-                <FormControl mb={3}>
-                  <FormLabel>Pot Name</FormLabel>
-                  <Input
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </FormControl>
+          {step === 2 && (
+            <div className="step-container">
+              <div>
+              <h1 className="label">Enter a Name for Your Plan</h1>
+              </div>
+              <div className="creating-pot-container">
+              <i className={`fa ${category && categories.find(cat => cat.label === category).icon}`}></i>
+              <p>{category}</p>   
+              </div>
+              <div className="input-feld-and-label-container">
+                <label className="label-for-input">Name your Goal</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Plan Name"
+                className="input-field"
+              />
+              <button className="next-button" onClick={nextStep}>Create</button>
+              </div>
+            </div>
+          )}
 
-                <FormControl mb={3}>
-                  <FormLabel>Choose Emoji (Icon)</FormLabel>
-                  <Input
-                    placeholder="E.g., 🎧"
-                    value={emoji}
-                    onChange={(e) => setEmoji(e.target.value)}
-                    sx={{ fontFamily: "Noto Sans, sans-serif" }}
-                  />
-                </FormControl>
-              </>
-            )}
+{step === 3 && (
+            <div className="step3">
+              <div className="creating-pot-container">
+                <i className={`fa ${category && categories.find(cat => cat.label === category).icon}`}></i>
+                <p>{name}</p>
+              </div>
+              <p className="pot-created-text"><strong>{name}</strong> Goal Created!</p>
+            </div>
+          )}
 
-            {step === 2 && (
-              <>
-                <FormControl mb={3}>
-                  <FormLabel>Current Amount</FormLabel>
-                  <Input
-                    type="number"
-                    value={currentAmount}
-                    onChange={(e) => setCurrentAmount(e.target.value)}
-                  />
-                </FormControl>
-                {currentAmount > totalBalance && (
-                  <Text color={"red"}>
-                    You can't add more than {totalBalance}{" "}
-                  </Text>
-                )}
+          {step === 4 && (
+            <div className="step4">
+              <div className="creating-pot-container">
+                <i className={`fa ${category && categories.find(cat => cat.label === category).icon}`}></i>
+                <p>{name}</p>
+              </div>
+              <div className="step-verification-container">
+              <p>1 Step Closer to Your Goal</p>
+              <p>Become a verified member to Start adding Money to your goal</p>
+              </div>
+              <button className="next-button" onClick={nextStep}>Verify Now</button>
+            </div>
+          )}
 
-                <FormControl mb={3}>
-                  <FormLabel>Goal Amount</FormLabel>
-                  <Input
-                    type="number"
-                    value={goalAmount}
-                    onChange={(e) => setGoalAmount(e.target.value)}
-                  />
-                </FormControl>
+          {step === 5 && (
+            <div className="step-container">
+              <h1 className="label">Setting current amount</h1>
+              <div className="creating-pot-container">
+                <i className={`fa ${category && categories.find(cat => cat.label === category).icon}`}></i>
+                <p>{name}</p>
+              </div>
+              <div className="input-feld-and-label-container">
+                <label className="label-for-input">Enter current amount</label>
+              <input
+                type="text"
+                value={currentAmount}
+                onChange={(e) => setCurrentAmount(e.target.value)}
+                placeholder="Plan Name"
+                className="input-field"
+              />
+              <button className="next-button" onClick={nextStep}>Set Current Amount</button>
+              </div>
+            </div>
+          )}
 
-                <FormControl mb={3}>
-                  <FormLabel>Goal End Date</FormLabel>
-                  <Input
-                    type="date"
-                    value={goalDate}
-                    onChange={(e) => setGoalDate(e.target.value)}
-                  />
-                </FormControl>
-                {goalDate && (
-                  <>
-                    <p>
-                      Daily required amount:
-                      {required.requiredAmountPerPeriodday},Till{" "}
-                      {required.completionDateday}
-                    </p>
-                    <p>
-                      Weekly required amount:
-                      {required.requiredAmountPerPeriodweek},Till{" "}
-                      {required.completionDateweek}
-                    </p>
-                    <p>
-                      Monthly required amount:
-                      {required.requiredAmountPerPeriodmon},Till{" "}
-                      {required.completionDatemon}
-                    </p>
-                  </>
-                )}
-              </>
-            )}
-            {step === 3 && (
-              <>
-                <FormControl mb={3}>
-                  <FormLabel>Auto Deduction</FormLabel>
-                  <Checkbox
-                    isChecked={autoDeduction}
-                    onChange={(e) => setAutoDeduction(e.target.checked)}
-                  >
-                    Enable Auto Deduction
-                  </Checkbox>
-                </FormControl>
+          {step === 6 && (
+            <div className="step-container">
+              <h1 className="label">Setting Goal amount</h1>
+              <div className="creating-pot-container">
+                <i className={`fa ${category && categories.find(cat => cat.label === category).icon}`}></i>
+                <p>{name}</p>
+              </div>
+              <div className="input-feld-and-label-container">
+              <label className="label-for-input">Enter Your Goal Amount</label>
+              <input
+                type="number"
+                value={goalAmount}
+                onChange={(e) => setGoalAmount(e.target.value)}
+                placeholder="Goal Amount"
+                className="input-field"
+              />
+              <button className="next-button" onClick={nextStep}>Set a Goal Amount</button>
+              </div>
+            </div>
+          )}
 
-                {autoDeduction && (
-                  <FormControl mb={3}>
-                    <FormLabel>Payment Method</FormLabel>
-                    
+          {step === 7 && (
+            <div className="step-container">
+              <h1 className="label">Setting End Date</h1>
+              <div className="creating-pot-container">
+                <i className={`fa ${category && categories.find(cat => cat.label === category).icon}`}></i>
+                <p>{name}</p>
+              </div>
+              <div className="input-feld-and-label-container">
+              <label className="label-for-input">Select a Goal Date</label>
+              <input
+                type="date"
+                value={goalDate}
+                onChange={(e) => setGoalDate(e.target.value)}
+                className="input-field"
+              />
+              <button className="next-button" onClick={nextStep}>{goalDate === "" ? "Skip" : "Set end date"}</button>
+              </div>
+            </div>
+          )}
 
-                  <Box display="flex" gap={4}>
-                    {frequencies.map((freq) => (
-                      <Box
-                        key={freq}
-                        onClick={() => handleClick(freq)}
-                        cursor="pointer"
-                        p={4}
-                        borderWidth={2}
-                        borderRadius="md"
-                        borderColor={
-                          frequency === freq ? "blue.500" : "gray.300"
-                        }
-                        bg={frequency === freq ? "blue.100" : "white"}
-                        opacity={frequency && frequency !== freq ? 0.5 : 1} // Disable others visually
-                        _hover={{
-                          bg: frequency === freq ? "blue.200" : "gray.100",
-                        }} 
-                      >
-                        <Text textAlign="center">
-                          {freq.charAt(0).toUpperCase() + freq.slice(1)}
-                        </Text>
-                      </Box>
-                    ))}
-                  </Box>
-                  </FormControl>
-                )}
+{step === 8 && (
+  <div className="step-container">
+  <h1 className="label">Setting Auto Deduction</h1>
 
-                {autoDeduction && (
-                  <>
-                    {requiredAmount > 0 && (
-                      <div>
-                        <p>
-                          To reach your goal by {goalDate}, you need to save:
-                        </p>
-                        <p>
-                          <strong>₹{requiredAmount}</strong> per {frequency}
-                        </p>
-                        <p>
-                          Estimated completion date:{" "}
-                          <strong>{completionDate}</strong>
-                        </p>
-                      </div>
-                    )}
-                  </>
-                )}
-              </>
-            )}
+  <div className="creating-pot-container">
+    <i className={`fa ${category && categories.find(cat => cat.label === category).icon}`}></i>
+    <p>{name}</p>
+  </div>
 
-            {step === 4 && (
-              <>
-                {autoDeduction && (
-                  <>
-                    {frequency === "daily" && (
-                      <Text mb={3}>
-                        You will need to pay approximately{" "}
-                        <strong>{requiredAmount}</strong> {frequency} to reach
-                        your goal by {completionDate}.
-                      </Text>
-                    )}
+  <div className="toggle-container">
+    <label>
+      <input
+        type="checkbox"
+        checked={autoDeduction}
+        onChange={() => setAutoDeduction(!autoDeduction)}
+        className="checkbox-input-box"
+      />
+      Enable Auto Deduction
+    </label>
+  </div>
 
-                    {frequency === "weekly" && (
-                      <>
-                        <FormControl mb={3}>
-                          <FormLabel>Choose Day of the Week</FormLabel>
-                          <Select
-                            value={dayOfWeek}
-                            placeholder="select which day you want"
-                            onChange={(e) => setDayOfWeek(e.target.value)}
-                          >
-                            <option value="Monday">Monday</option>
-                            <option value="Tuesday">Tuesday</option>
-                            <option value="Wednesday">Wednesday</option>
-                            <option value="Thursday">Thursday</option>
-                            <option value="Friday">Friday</option>
-                            <option value="Saturday">Saturday</option>
-                            <option value="Sunday">Sunday</option>
-                          </Select>
-                        </FormControl>
-                        <Text mb={3}>
-                          Paying on <strong>{dayOfWeek}</strong> each week will
-                          help you reach your goal by {goalDate}.
-                        </Text>
-                      </>
-                    )}
+  {!autoDeduction && (
+    <button className="next-button" onClick={nextStep}>
+      Skip
+    </button>
+  )}
 
-                    {frequency === "monthly" && (
-                      <>
-                        <FormControl mb={3}>
-                          <FormLabel>Choose Day of the Month</FormLabel>
-                          <Input
-                            type="number"
-                            placeholder="e.g., 15"
-                            value={dayOfMonth}
-                            onChange={(e) =>
-                              setDayOfMonth(
-                                e.target.value > 30 ? 30 : e.target.value
-                              )
-                            }
-                          />
-                        </FormControl>
-                        <Text mb={3}>
-                          Paying on day <strong>{dayOfMonth}</strong> of each
-                          month will help you reach your goal by {goalDate}.
-                        </Text>
-                      </>
-                    )}
-                  </>
-                )}
-              </>
-            )}
+  {autoDeduction && (
+    <>
+      <label className="label">Select Deduction Frequency</label>
+      <div className="frequency-container" style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+        {frequencies.map((freq) => (
+          <div
+            key={freq}
+            onClick={() => handleClick(freq)}
+            className={`frequency-option ${frequency === freq ? "selected" : ""}`}
+            style={{
+              cursor: "pointer",
+              padding: "10px",
+              border: `2px solid ${frequency === freq ? "green" : "gray"}`,
+              borderRadius: "5px",
+              backgroundColor: frequency === freq ? "#e0f7ff" : "#fff",
+              opacity: frequency && frequency !== freq ? 0.5 : 1,
+              flex: "1",
+              textAlign: "center",
+            }}
+          >
+            {freq.charAt(0).toUpperCase() + freq.slice(1)}
+          </div>
+        ))}
+      </div>
 
-            <Box display="flex" justifyContent="space-between" mt={4}>
-              {step > 1 && <Button onClick={prevStep}>Previous</Button>}
-              {step < 4 ? (
-                <Button colorScheme="blue" onClick={nextStep}>
-                  Next
-                </Button>
-              ) : (
-                <Button colorScheme="green" onClick={handleSavePlan}>
-                  Create Pot
-                </Button>
-              )}
-            </Box>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+      {frequency && (
+        <div className="frequency-options">
+          {frequency === 'daily' && (
+            <></>
+          )}
+          {frequency === 'weekly' && (
+            <select
+              value={dayOfWeek}
+              onChange={(e) => setDayOfWeek(e.target.value)}
+              className="input-field"
+            >
+              <option value="">Select Day of Week</option>
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+              <option value="Sunday">Sunday</option>
+            </select>
+          )}
+          {frequency === 'monthly' && (
+            <input
+              type="number"
+              value={dayOfMonth}
+               onChange={(e) => setDayOfMonth(Math.min(30, e.target.value))}
+              placeholder="Enter date of the month"
+              className="input-field"
+            />
+          )}
+        </div>
+      )}
+
+      {requiredAmount > 0 && (
+        <div className="summary">
+          <p>
+            To reach your goal by {goalDate}, you need to save approximately <span>₹{requiredAmount}</span> per {frequency}.
+          </p>
+          <p>
+            Estimated completion date: <span>{completionDate}</span>
+          </p>
+        </div>
+      )}
+
+      <button className="next-button" onClick={nextStep}>
+        Set Auto Deduction
+      </button>
+    </>
+  )}
+</div>
+)}
+          {step === 9 && (
+          <div className="step-container">
+          <div className="creating-pot-container">
+                <i className={`fa ${category && categories.find(cat => cat.label === category).icon}`}></i>
+                <p>{name}</p>
+            </div>
+    
+          <div className="creating-pot-last-step">
+            <p>Currently in the Pot</p>
+            <h1>₹{currentAmount.toLocaleString()}</h1>
+    
+            <div className="progress-container">
+              <div
+                className="progress"
+                style={{ width: `${percentage}%` }}
+              >
+                <span className="progress-text">{percentage}% of ₹{goalAmount.toLocaleString()} Goal</span>
+              </div>
+            </div>
+          </div>
+    
+          <button className="lock-button" onClick={handleSavePlan}>
+            Lock And Load
+          </button>
+        </div>
+          )}
+        </ModalBody>
+      </ModalContent>
+    </Modal>
     </div>
   );
 };

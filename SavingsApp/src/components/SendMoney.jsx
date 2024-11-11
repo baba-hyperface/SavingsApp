@@ -3,7 +3,7 @@ import { useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFoo
 import '../styles/buttonStyles.css';
 import api from './api';
 
-export const SendMoney = ({totalBalance, onBalanceUpdate, updateBalance, onHistoryChange, email, accountNum}) => {
+export const SendMoney = ({ totalBalance, onBalanceUpdate, updateBalance, onHistoryChange, email, accountNum }) => {
   const { onClose, onOpen, isOpen } = useDisclosure();
   const [accountNumber, setAccountNumber] = useState('');
   const [ifsc, setIfsc] = useState('');
@@ -11,48 +11,47 @@ export const SendMoney = ({totalBalance, onBalanceUpdate, updateBalance, onHisto
   const [holderName, setHolderName] = useState('');
   const [amount, setAmount] = useState('');
   const toast = useToast();
-  const userIdFromLocalStorage = localStorage.getItem("userid")
+  const[loading, setLoading] = useState(false);
+  const userIdFromLocalStorage = localStorage.getItem("userid");
 
   useEffect(() => {
-    setBalance(totalBalance)
-  }, [totalBalance])
+    setBalance(totalBalance);
+  }, [totalBalance]);
 
   const handleSendMoney = async () => {
     if (amount > totalBalance) {
       toast({
         title: "Insufficient balance.",
-        description: `You cannot Send more than your available balance of ₹${totalBalance}.`,
+        description: `You cannot send more than your available balance of ₹${totalBalance}.`,
         status: "error",
         duration: 3000,
         isClosable: true,
       });
       return;
     }
-    
-
-
 
     try {
-      const newBalance = await updateBalance(userIdFromLocalStorage, balance, amount, false)
+      setLoading(true);
+      const newBalance = await updateBalance(userIdFromLocalStorage, balance, amount, false);
       onBalanceUpdate(newBalance);
 
       await api.post('/history', {
         email: email,
-        type: "transfer",
+        type: "Transfer",
         amount: amount,
         from: accountNum,
         to: holderName,
-        date: new Date()
-    });
+        date: new Date(),
+      });
 
       onHistoryChange({
         email: email,
-        type : "transfer",
+        type: "Transfer",
         amount: amount,
         from: accountNum,
         to: holderName,
-        date: new Date()
-      })
+        date: new Date(),
+      });
 
       toast({
         title: "Transaction successful.",
@@ -67,30 +66,29 @@ export const SendMoney = ({totalBalance, onBalanceUpdate, updateBalance, onHisto
       setAmount('');
       onClose();
     } catch (error) {
-     console.log(error);
-     toast({
-      title: "Transaction failed",
-      description: "An error occurred while processing your Transaction. Please try again.",
-      status: "error",
-      duration: 3000,
-      isClosable: true,
-    });
+      console.error(error);
+      toast({
+        title: "Transaction failed",
+        description: "An error occurred while processing your transaction. Please try again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div>
-    <div>
-  <button className='action-buttons' onClick={onOpen}>
-    <i className="fa-solid fa-paper-plane"></i>
-    <span className='button-text'>Send it</span>
-  </button>
-  <p className='send-text'>Send</p>
-</div>
+      <button className='action-buttons' onClick={onOpen}>
+        <i className="fa-solid fa-paper-plane"></i>
+        <span className='button-text'>Send it</span>
+      </button>
+      <p className='send-text'>Send</p>
 
-     
       <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay
+        <ModalOverlay
           sx={{
             backdropFilter: { base: "none", lg: "blur(10px)" },
             height: "100vh",
@@ -115,7 +113,7 @@ export const SendMoney = ({totalBalance, onBalanceUpdate, updateBalance, onHisto
               placeholder="Account Number" 
               value={accountNumber} 
               onChange={(e) => setAccountNumber(e.target.value)} 
-              mb={3} // Margin for spacing
+              mb={3}
               sx={{ fontFamily: "Noto Sans, sans-serif" }}
             />
             <Input 
@@ -141,8 +139,8 @@ export const SendMoney = ({totalBalance, onBalanceUpdate, updateBalance, onHisto
             />
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={handleSendMoney}>
-              Pay {amount ? "₹" + amount : ""}
+            <Button colorScheme='blue' mr={3} onClick={handleSendMoney} isLoading={loading} >
+              Pay {amount ? `₹${amount}` : ""}
             </Button>
             <Button variant='ghost' onClick={onClose}>Cancel</Button>
           </ModalFooter>
