@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import api from './api';
 import '../styles/Admin.css';
 import { Link, useNavigate } from 'react-router-dom';
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Input, Text } from '@chakra-ui/react';
 
 export const Admin = () => {
     const [users, setUsers] = useState([]);
     const [editUser, setEditUser] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
     const nav = useNavigate();
 
 const handleNav = (userid) => {
@@ -55,17 +56,29 @@ const handleNav = (userid) => {
             console.error("Error updating user:", error);
         }
     };
+    const filteredUsers = users.filter(user => 
+        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     if(loading) return <p>Loading...</p>
 
     return (
         <div className="admin-container">
-            <Flex justify="space-between" align="center" mb="4">
+            <Flex  justify="space-between" align="center" verticalAlign={"center"} mb="4"py={4}>
                 <Text 
                 fontWeight={"900"}
                 as={"h1"}
                 fontSize={'28px'} 
                  >User Management</Text>
+
+                <Input
+                    placeholder="Search by email"
+                    value={searchTerm}
+                    border={"1px solid"}
+                    width={"30%"}
+                    borderRadius={"20px"}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
                 <Button 
                     as={Link} 
                     to="/createuser" 
@@ -73,9 +86,11 @@ const handleNav = (userid) => {
                     size="sm"
                     borderRadius="md"
                 >
-                    + Create User
+                    + Create
+
                 </Button>
             </Flex>
+
 
             {/* <h1>User Management</h1> */}
             <table className="user-table">
@@ -91,7 +106,7 @@ const handleNav = (userid) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {users.map((user) => (
+                    {filteredUsers.map((user) => (
                         <tr key={user._id}>
                             <td>{user._id}</td>
                             <td>{user.name}</td>
