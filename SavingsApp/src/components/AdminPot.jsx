@@ -31,16 +31,6 @@ export const AdminPot = () => {
     fetchPlan();
   }, [id]);
 
-  const handleDelete = async (potId) => {
-      console.log(potId);
-    try {
-      await api.delete(`/user/${id}/savingplandeactivate/${potId}`);
-      setPotData(potData.filter((pot) => pot._id !== potId));
-    } catch (error) {
-      console.error("Error deleting pot", error);
-    }
-  };
-
  if(loading){
       return <p>Loading....</p>
  }
@@ -89,7 +79,6 @@ export const AdminPot = () => {
                 <td>
                   <div className="actions">
                     <i className="fa fa-pen-to-square" onClick={() => openEditModal(pot)}></i>
-                    <i className="fa fa-trash" onClick={() => handleDelete(pot._id)}></i>
                   </div>
                 </td>
               </tr>
