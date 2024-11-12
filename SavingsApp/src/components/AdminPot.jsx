@@ -52,7 +52,7 @@ export const AdminPot = () => {
 
   return (
     <div className="admin-container">
-      <h1>Manage User Saving Plan</h1>
+      <h1>Manage User Saving Plans</h1>
       <table className="user-table">
         <thead>
           <tr>
