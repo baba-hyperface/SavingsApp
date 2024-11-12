@@ -1,0 +1,172 @@
+/* Container for the admin panel */
+.admin-container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+      color: #333;
+  }
+
+  .admin-container > h1 {
+      text-align: center;
+      font-size: 25px;
+      font-weight: 700;
+  }
+  
+  /* Table styling */
+  .user-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .user-table th,
+  .user-table td {
+      padding: 15px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+  }
+  
+  .user-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      color: #555;
+  }
+  
+  .user-table td {
+      background-color: #fff;
+  }
+  
+  .user-table tr:hover td {
+      background-color: #f1f5f8;
+  }
+  
+  /* Action icons styling */
+  .actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+  }
+  
+  .actions i {
+      cursor: pointer;
+      font-size: 18px;
+      padding: 5px;
+      border-radius: 5px;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+  
+  .actions .fa-trash {
+      color: #d9534f;
+  }
+  
+  .actions .fa-pen-to-square {
+      color: #5bc0de;
+  }
+  
+  .actions .fa-trash:hover {
+      background-color: rgba(217, 83, 79, 0.1);
+      transform: scale(1.1);
+  }
+  
+  .actions .fa-pen-to-square:hover {
+      background-color: rgba(91, 192, 222, 0.1);
+      transform: scale(1.1);
+  }
+  
+  /* Modal styling */
+  .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  
+  .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+  }
+  
+  .modal-content {
+      background-color: #f9f9f9;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      position: relative;
+  }
+  
+  .modal-content h3 {
+      margin-bottom: 20px;
+  }
+  
+  .modal-content label {
+      display: flex;
+      text-align: left;
+      flex-direction: column;
+      margin-bottom: 10px;
+  }
+  
+  .modal-content input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-top: 5px;
+  }
+  
+  /* Modal buttons */
+  .modal-content button {
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+  }
+  
+  .modal-content button:first-of-type {
+      background-color: #5cb85c;
+      color: white;
+      margin-right: 5px;
+  }
+  
+  .modal-content button:last-of-type {
+      background-color: #d9534f;
+      color: white;
+  }
+  
+  .close-button {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 18px;
+      cursor: pointer;
+      color: #333;
+  }
+  
+  @media (max-width: 768px) {
+      .user-table th,
+      .user-table td {
+          padding: 10px;
+          font-size: 12px;
+      }
+  
+      .modal-content {
+          width: 90%;
+      }
+  }
+  
