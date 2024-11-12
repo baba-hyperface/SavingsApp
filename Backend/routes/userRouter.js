@@ -83,13 +83,12 @@ userRouter.patch('/user/:id', protect ,authorize(["user","admin"]), async (req, 
 
 userRouter.delete('/users/:id',protect,authorize(["user","admin"]), async (req, res) => {
     try {
-      const user = await User.findById(req.params.id);
-  
+      const user = await User.findByIdAndDelete(req.params.id);
       if (!user) return res.status(404).json({ message: 'User not found' });
-  
-      await user.remove();
+    //   await user.save();
       res.json({ message: 'User deleted successfully' });
     } catch (err) {
+        console.log(err)
       res.status(500).json({ message: err.message });
     }
   });

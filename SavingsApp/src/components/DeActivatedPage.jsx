@@ -8,7 +8,7 @@ export const DeActivatedPage = () => {
   const { handleDeletePlan} = usePlans();
   const userId=localStorage.getItem("userid");
   const toast = useToast();
- 
+
 
   useEffect(() => {
     const fetchPlans = async () => {
