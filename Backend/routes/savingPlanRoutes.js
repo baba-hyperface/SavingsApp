@@ -379,5 +379,15 @@ savingPlanRouter.put('/user/:userId/savingplandeactivate/:potId', async (req, re
   }
 });
 
+savingPlanRouter.delete('/user/:userId/savingplandeactivate/:potId', async (req, res) => {
+  try {
+    
+    const updatePot = await SavingPot.findByIdAndDelete(req.params.potId)
+    if (!updatePot) return res.status(404).json({ message: 'User not found' });
+      res.json({ message: 'User updated successfully', updatePot });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
 
 export default savingPlanRouter;
