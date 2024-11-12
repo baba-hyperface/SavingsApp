@@ -37,22 +37,6 @@ const savingPotSchema = new mongoose.Schema(
     lastInterestAddedDate: { type: Date, default: null },
     category: {
       type: String,
-      enum: [
-        "travel",
-        "health",
-        "home",
-        "business",
-        "education",
-        "gadgets",
-        "vehicle",
-        "gifts",
-        "emergency",
-        "retirement",
-        "hobbies",
-        "clothing",
-        "charity",
-        "misc",
-      ],
     },
     currentBalance: {
       type: Number,

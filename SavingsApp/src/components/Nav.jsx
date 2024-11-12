@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Nav.css';
+import api from './api';
 
 const Nav = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -12,12 +13,18 @@ const Nav = () => {
     setIsAuthenticated(!!token);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('userid');
-    setIsAuthenticated(false);
-    navigate('/');
-  };
+  const handleLogout = async () => {
+    try {
+        await api.post('/logout', {});
+
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('userid');
+        setIsAuthenticated(false); 
+        navigate('/'); 
+    } catch (error) {
+        console.error('Logout failed:', error);
+    }
+  }
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen); 

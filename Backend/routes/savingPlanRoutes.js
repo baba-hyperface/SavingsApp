@@ -3,7 +3,7 @@ import User from "../models/usermodel.js";
 import SavingPot from "../models/potsmodel.js";
 import mongoose from "mongoose";
 import Transaction from "../models/historymodel.js";
-import { protect } from "../middleware/auth.js";
+import { authorize, protect } from "../middleware/auth.js";
 
 const savingPlanRouter = express.Router();
 savingPlanRouter.get(
@@ -27,6 +27,7 @@ savingPlanRouter.get(
 savingPlanRouter.patch(
   "/users/:userId/savingplanupdateplandeduction/:potId",
   protect,
+  authorize(["user","admin"]),
   async (req, res) => {
     const { userId, potId } = req.params;
     const {
@@ -63,7 +64,7 @@ savingPlanRouter.patch(
   }
 );
 
-savingPlanRouter.post(`/user/:userId/savingplan`, protect, async (req, res) => {
+savingPlanRouter.post(`/user/:userId/savingplan`, protect,authorize(["user","admin"]), async (req, res) => {
   let {
     potPurpose,
     targetAmount,
@@ -108,7 +109,7 @@ savingPlanRouter.post(`/user/:userId/savingplan`, protect, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     const startDate = new Date();
-    const newSaving = new SavingPot({
+    const savingPotData = {
       potPurpose,
       targetAmount,
       currentBalance,
@@ -121,10 +122,16 @@ savingPlanRouter.post(`/user/:userId/savingplan`, protect, async (req, res) => {
       dayOfMonth,
       autoDeduction,
       dailyAmount,
-      endDate,
       startDate,
       user: req.params.userId,
-    });
+    };
+
+    // Add endDate only if it's provided
+    if (endDate) {
+      savingPotData.endDate = endDate;
+    }
+
+    const newSaving = new SavingPot({savingPotData});
     console.log("new pot ceated one", newSaving);
     const savedPot = await newSaving.save();
     user.pots.push(savedPot._id);
@@ -153,7 +160,7 @@ savingPlanRouter.post(`/user/:userId/savingplan`, protect, async (req, res) => {
 
 savingPlanRouter.patch(
   "/user/:userId/savingplan/:potId",
-  protect,
+  protect,authorize(["user","admin"]),
   async (req, res) => {
     const { potId, userId } = req.params;
     const { currentBalance } = req.body;
@@ -245,7 +252,7 @@ savingPlanRouter.patch(
 
 savingPlanRouter.patch(
   "/user/:userId/savingplanstatus/:potId",
-  protect,
+  protect,authorize(["user","admin"]),
   async (req, res) => {
     const { potId, userId } = req.params;
     try {
@@ -275,7 +282,7 @@ savingPlanRouter.patch(
 
 savingPlanRouter.patch(
   "/user/:userId/savingsplanActivatingAutodeduct/:selectedPlanId",
-  protect,
+  protect,authorize(["user","admin"]),
   async (req, res) => {
     const { selectedPlanId, userId } = req.params;
     const { deductionAmount } = req.body;
@@ -314,7 +321,7 @@ savingPlanRouter.patch(
   }
 );
 
-savingPlanRouter.get("/user/:userId/savingplan", protect, async (req, res) => {
+savingPlanRouter.get("/user/:userId/savingplan", protect,authorize(["user","admin"]), async (req, res) => {
   // const { userId } = req.params;
   const userId = req.user._id;
   try {
@@ -333,7 +340,7 @@ savingPlanRouter.get("/user/:userId/savingplan", protect, async (req, res) => {
 
 savingPlanRouter.get(
   "/user/:userId/savingplan/:potId",
-  protect,
+  protect,authorize(["user","admin"]),
   async (req, res) => {
     const { userId, potId } = req.params;
 
@@ -361,7 +368,7 @@ savingPlanRouter.get(
 
 savingPlanRouter.patch(
   "/user/:userId/savingplandeactivate/:potId",
-  protect,
+  protect,authorize(["user","admin"]),
   async (req, res) => {
     const { potId, userId } = req.params;
 

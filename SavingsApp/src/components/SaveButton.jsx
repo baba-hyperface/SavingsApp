@@ -200,12 +200,14 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
       color: randomColor,
       imoji: emoji,
       autoDeduction,
-      endDate: completionDate ? completionDate : "infinite",
       dailyAmount: autoDeduction ? requiredAmount : 0,
       frequency,
       dayOfWeek,
       dayOfMonth,
     };
+    if (completionDate) {
+      savingPlan.endDate = completionDate;
+    }
     console.log("savingsplan", savingPlan);
     try {
       console.log("savingPlan", savingPlan);
