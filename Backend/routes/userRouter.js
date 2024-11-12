@@ -6,7 +6,7 @@ import { authorize, protect } from '../middleware/auth.js';
 
 const userRouter = express.Router();
 
-userRouter.get('/user',protect,authorize(["user","admin"]), async (req, res) => {
+userRouter.get('/user',protect,authorize(["admin"]), async (req, res) => {
     try {
         const users = await User.find().populate('pots').populate('history');
         res.json(users);
@@ -81,7 +81,7 @@ userRouter.patch('/user/:id', protect ,authorize(["user","admin"]), async (req, 
     }
 })
 
-userRouter.delete('/users/:id',protect,authorize(["user","admin"]), async (req, res) => {
+userRouter.delete('/users/:id',protect,authorize(["admin"]), async (req, res) => {
     try {
       const user = await User.findByIdAndDelete(req.params.id);
       if (!user) return res.status(404).json({ message: 'User not found' });
@@ -128,7 +128,7 @@ userRouter.delete('/users/:id',protect,authorize(["user","admin"]), async (req, 
   })
   
   
-  userRouter.put('/user/:id', protect, async (req, res) => {
+  userRouter.put('/user/:id', protect,authorize(["admin"]), async (req, res) => {
     try {
         const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updatedUser) return res.status(404).json({ message: 'User not found' });
