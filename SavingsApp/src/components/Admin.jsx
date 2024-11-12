@@ -37,10 +37,10 @@ const handleNav = (userid) => {
         }
     };
 
-    const openEditModal = (user) => {
-        setEditUser(user);
-        setIsModalOpen(true);
-    };
+      const openEditModal = (user) => {
+            setEditUser(user);
+            setIsModalOpen(true);
+      };
 
     const handleUpdate = async () => {
         try {
