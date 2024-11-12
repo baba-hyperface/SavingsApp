@@ -4,7 +4,7 @@ import User from '../models/usermodel.js';
 
 const generateToken = (user) => {
     return jwt.sign(
-        { id: user._id, email: user.email, name: user.name },
+        { id: user._id,role:user.role, email: user.email, name: user.name },
         process.env.JWT_SECRET,
         { expiresIn: '12h' }
     );  
@@ -60,6 +60,13 @@ export const login = async (req, res) => {
                     const accessToken = generateToken(userExist);
                     await userExist.save();
 
+                    res.cookie('authToken', accessToken, {
+                        httpOnly: true, // Ensures cookie is not accessible via JavaScript
+                        secure: process.env.NODE_ENV === 'production', // Only use HTTPS in production
+                        sameSite: 'strict', // Prevents the cookie from being sent in cross-origin requests
+                        maxAge: 12 * 60 * 60 * 1000, // Expires in 12 hours
+                     });
+                    
                     // console.log("loginsuccesss");
                     res.status(200).json({ message: 'Login successful',userid:userExist._id, accessToken });
                 } else {
@@ -79,3 +86,17 @@ export const login = async (req, res) => {
         res.status(500).send("Server error");
     }
 };
+
+
+export const logout = (req, res) => {
+    
+    res.clearCookie('authToken', {
+        httpOnly: true,  // Ensures cookie is not accessible via JavaScript
+        secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
+        sameSite: 'strict', // Cookie is sent only from the same domain
+        path: '/', // Path where the cookie is set (root of the domain)
+    });
+ 
+    res.status(200).send("Logged out successfully");
+ };
+ 

@@ -1,10 +1,10 @@
 import Router from 'express';
-import { protect } from '../middleware/auth.js';
+import { authorize, protect } from '../middleware/auth.js';
 import Transaction from '../models/historymodel.js';
 import User from '../models/usermodel.js';
 
 const historyrouter=Router();
-historyrouter.get('/history',protect, async (req, res) => {
+historyrouter.get('/history',protect, authorize(["user","admin"]), async (req, res) => {
     try {
         const historydata = await Transaction.find({ email: req.user.email });
 
@@ -16,7 +16,7 @@ historyrouter.get('/history',protect, async (req, res) => {
 });
 
 
-historyrouter.post('/history',protect, async (req, res) => {
+historyrouter.post('/history',protect,authorize(["user","admin"]), async (req, res) => {
     try {
       const { email, type, amount, from, to, date} = req.body;
       const newTransaction = new Transaction({
@@ -42,7 +42,7 @@ historyrouter.post('/history',protect, async (req, res) => {
 
   
 
-  historyrouter.get('/history/:potId', async (req, res) => {
+  historyrouter.get('/history/:potId',authorize(["user","admin"]), async (req, res) => {
         const {potId} = req.params;
     try {
         const historydata = await Transaction.find({potId});
