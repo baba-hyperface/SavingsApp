@@ -157,78 +157,85 @@
   
   /* Modal Overlay Transition */
   /* Modal Styling */
-.modal-overlay {
+/* Modal Overlay */
+.modal-overlay.show {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: rgba(0, 0, 0, 0.5);
+      background-color: rgba(0, 0, 0, 0.4);
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 1000;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
     }
     
-    .modal-overlay.show {
-      opacity: 1;
-      visibility: visible;
-    }
-    
+    /* Modal Content */
     .modal-content {
-      background-color: #fff;
+      background-color: white;
       padding: 20px;
-      border-radius: 10px;
-      width: 80%;
-      max-width: 600px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      max-width: 600px; /* Decrease the width of the modal */
+      width: 90%; /* Responsive width */
+      max-height: 80vh; /* Limit the max height */
+      overflow-y: auto; /* Make the content scrollable */
+      box-sizing: border-box;
     }
     
+    /* Modal Heading */
     .modal-content h2 {
-      text-align: center;
+      font-size: 24px;
+      margin-bottom: 20px;
     }
     
+    /* Modal Form Fields */
     .form-field {
       margin-bottom: 15px;
     }
     
     .form-field label {
       display: block;
+      font-weight: bold;
       margin-bottom: 5px;
     }
     
     .form-field input {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
+      padding: 8px;
+      font-size: 16px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
     }
     
-    button {
+    /* Modal Actions */
+    .modal-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    
+    .modal-actions button {
       padding: 10px 20px;
-      margin-top: 10px;
+      font-size: 16px;
       cursor: pointer;
       border: none;
+      border-radius: 4px;
+    }
+    
+    .modal-actions button[type="submit"] {
       background-color: #4caf50;
       color: white;
-      font-size: 16px;
-      border-radius: 5px;
     }
     
-    button[type="button"] {
+    .modal-actions button[type="button"] {
       background-color: #f44336;
+      color: white;
     }
     
-    button[type="button"]:hover,
-    button[type="submit"]:hover {
-      opacity: 0.9;
-    }
     
   
-  /* Responsiveness */
   @media (max-width: 768px) {
       .user-table th,
       .user-table td {

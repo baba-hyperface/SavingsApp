@@ -6,15 +6,22 @@ import '../styles/AdminPot.css';
 export const AdminPot = () => {
   const [potData, setPotData] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const [editUser, setEditUser] = useState(null);
   const [selectedPot, setSelectedPot] = useState(null);
   const [formData, setFormData] = useState({
+    potPurpose: '',
+    targetAmount: 0,
+    currentBalance: 0,
+    potStatus: true,
     autoDeduction: false,
     endDate: '',
     dailyAmount: 0,
     frequency: '',
     dayOfWeek: '',
     dayOfMonth: '',
+    interestAmount: 0,
+    imoji: '',
+    color: '',
+    startDate: '',
   });
 
   const { id } = useParams();
@@ -23,12 +30,20 @@ export const AdminPot = () => {
   const openEditModal = (pot) => {
     setSelectedPot(pot);
     setFormData({
+      potPurpose: pot.potPurpose || '',
+      targetAmount: pot.targetAmount || 0,
+      currentBalance: pot.currentBalance || 0,
+      potStatus: pot.potStatus || true,
       autoDeduction: pot.autoDeduction || false,
       endDate: pot.endDate || '',
       dailyAmount: pot.dailyAmount || 0,
       frequency: pot.frequency || '',
       dayOfWeek: pot.dayOfWeek || '',
       dayOfMonth: pot.dayOfMonth || '',
+      interestAmount: pot.interestAmount || 0,
+      imoji: pot.imoji || '',
+      color: pot.color || '',
+      startDate: pot.startDate || '',
     });
     setModalOpen(true); // Open modal when editing a pot
   };
@@ -83,6 +98,9 @@ export const AdminPot = () => {
             <th>Target Amount</th>
             <th>Current Balance</th>
             <th>Status</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Auto Deduction</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -95,6 +113,9 @@ export const AdminPot = () => {
                 <td>{pot.targetAmount}</td>
                 <td>{pot.currentBalance}</td>
                 <td>{pot.potStatus ? 'Active' : 'Inactive'}</td>
+                <td>{new Date(pot.startDate).toLocaleDateString()}</td>
+                <td>{pot.endDate ? new Date(pot.endDate).toLocaleDateString() : 'N/A'}</td>
+                <td>{pot.autoDeduction ? 'Enabled' : 'Disabled'}</td>
                 <td>
                   <div className="actions">
                     <i className="fa fa-pen-to-square" onClick={() => openEditModal(pot)}></i>
@@ -112,6 +133,38 @@ export const AdminPot = () => {
           <div className="modal-content">
             <h2>Edit Saving Plan</h2>
             <form onSubmit={handleFormSubmit}>
+              <div className="form-field">
+                <label>Pot Purpose</label>
+                <input
+                  type="text"
+                  value={formData.potPurpose}
+                  onChange={(e) => setFormData({ ...formData, potPurpose: e.target.value })}
+                />
+              </div>
+              <div className="form-field">
+                <label>Target Amount</label>
+                <input
+                  type="number"
+                  value={formData.targetAmount}
+                  onChange={(e) => setFormData({ ...formData, targetAmount: e.target.value })}
+                />
+              </div>
+              <div className="form-field">
+                <label>Current Balance</label>
+                <input
+                  type="number"
+                  value={formData.currentBalance}
+                  onChange={(e) => setFormData({ ...formData, currentBalance: e.target.value })}
+                />
+              </div>
+              <div className="form-field">
+                <label>Status</label>
+                <input
+                  type="checkbox"
+                  checked={formData.potStatus}
+                  onChange={(e) => setFormData({ ...formData, potStatus: e.target.checked })}
+                />
+              </div>
               <div className="form-field">
                 <label>Auto Deduction</label>
                 <input
@@ -160,10 +213,44 @@ export const AdminPot = () => {
                   onChange={(e) => setFormData({ ...formData, dayOfMonth: e.target.value })}
                 />
               </div>
-              <button type="submit">Update Plan</button>
-              <button type="button" onClick={() => setModalOpen(false)}>
-                Cancel
-              </button>
+              <div className="form-field">
+                <label>Interest Amount</label>
+                <input
+                  type="number"
+                  value={formData.interestAmount}
+                  onChange={(e) => setFormData({ ...formData, interestAmount: e.target.value })}
+                />
+              </div>
+              <div className="form-field">
+                <label>Emoji</label>
+                <input
+                  type="text"
+                  value={formData.imoji}
+                  onChange={(e) => setFormData({ ...formData, imoji: e.target.value })}
+                />
+              </div>
+              <div className="form-field">
+                <label>Color</label>
+                <input
+                  type="text"
+                  value={formData.color}
+                  onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                />
+              </div>
+              <div className="form-field">
+                <label>Start Date</label>
+                <input
+                  type="date"
+                  value={formData.startDate}
+                  onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                />
+              </div>
+              <div className="modal-actions">
+                <button type="submit">Update</button>
+                <button type="button" onClick={() => setModalOpen(false)}>
+                  Close
+                </button>
+              </div>
             </form>
           </div>
         </div>
@@ -171,5 +258,3 @@ export const AdminPot = () => {
     </div>
   );
 };
-
-export default AdminPot;

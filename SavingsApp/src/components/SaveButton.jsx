@@ -278,7 +278,7 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
             width: { base: "100%", lg: "30%" },
             maxWidth: { base: "100vw", lg: "60vw" },
             height: { base: "70vh", lg: "auto" },
-            overflowY: { base: "auto", lg: "unset" },
+            overflowY: "auto",
           }}
         >
         <ModalCloseButton />
