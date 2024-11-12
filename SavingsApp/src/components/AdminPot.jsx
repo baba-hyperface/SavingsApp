@@ -28,8 +28,9 @@ export const AdminPot = () => {
   }, [id]);
 
   const handleDelete = async (potId) => {
+      console.log(potId);
     try {
-      await api.delete(`/api/savingpot/${potId}`);
+      await api.delete(`/user/${id}/savingplandeactivate/${potId}`);
       setPotData(potData.filter((pot) => pot._id !== potId));
     } catch (error) {
       console.error("Error deleting pot", error);
@@ -88,8 +89,7 @@ export const AdminPot = () => {
             ))}
         </tbody>
       </table>
-
-      {/* Modal for editing the saving pot */}
+ 
       {isModalOpen && (
         <div className="modal-overlay show">
           <div className="modal-content">
