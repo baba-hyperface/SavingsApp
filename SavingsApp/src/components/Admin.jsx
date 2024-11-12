@@ -7,6 +7,7 @@ export const Admin = () => {
     const [users, setUsers] = useState([]);
     const [editUser, setEditUser] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
     const nav = useNavigate();
 
 const handleNav = (userid) => {
@@ -18,10 +19,13 @@ const handleNav = (userid) => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
+                setLoading(true);
                 const res = await api.get(`/user`);
                 setUsers(res.data);
             } catch (error) {
                 console.log("Error fetching users:", error);
+            }finally{
+                setLoading(false);
             }
         };
         fetchUsers();
@@ -52,6 +56,8 @@ const handleNav = (userid) => {
             console.error("Error updating user:", error);
         }
     };
+
+    if(loading) return <p>Loading...</p>
 
     return (
         <div className="admin-container">

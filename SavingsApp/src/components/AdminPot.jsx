@@ -7,6 +7,7 @@ export const AdminPot = () => {
   const [potData, setPotData] = useState([]);
   const [editPot, setEditPot] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { id } = useParams();
   
   const openEditModal = (pot) => {
@@ -17,11 +18,14 @@ export const AdminPot = () => {
   useEffect(() => {
     const fetchPlan = async () => {
       try {
+            setLoading(true);
         const res = await api.get(`/user/${id}/savingplan`);
         console.log(res.data);
         setPotData(res.data);
       } catch (error) {
         console.log("Error fetching saving pots:", error);
+      }finally{
+            setLoading(false);
       }
     };
     fetchPlan();
@@ -37,6 +41,9 @@ export const AdminPot = () => {
     }
   };
 
+ if(loading){
+      return <p>Loading....</p>
+ }
 
 
   const handleUpdate = async () => {
