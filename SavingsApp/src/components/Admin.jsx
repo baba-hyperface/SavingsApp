@@ -30,16 +30,6 @@ const handleNav = (userid) => {
         fetchUsers();
     }, []);
 
-    const deleteUser = async (userId) => {
-        try {
-            await api.delete(`/users/${userId}`);
-            setUsers(users.filter(user => user._id !== userId));
-            alert('User deleted successfully');
-        } catch (error) {
-            console.error("Error deleting user:", error);
-        }
-    };
-
       const openEditModal = (user) => {
             setEditUser(user);
             setIsModalOpen(true);
@@ -55,6 +45,8 @@ const handleNav = (userid) => {
             console.error("Error updating user:", error);
         }
     };
+
+   
 
     if(loading) return <p>Loading...</p>
 
@@ -75,6 +67,7 @@ const handleNav = (userid) => {
                 >
                     + Create User
                 </Button>
+                
             </Flex>
 
             {/* <h1>User Management</h1> */}
@@ -100,7 +93,6 @@ const handleNav = (userid) => {
                             <td>{user.totalBalance}</td>
                             <td onClick={() => handleNav(user._id)}>{user.pots?.length || 0}</td>
                             <td className="actions">
-                                <i className="fa-solid fa-trash" onClick={() => deleteUser(user._id)}></i>
                                 <i className="fa-solid fa-pen-to-square" onClick={() => openEditModal(user)}></i>
                             </td>
                         </tr>
