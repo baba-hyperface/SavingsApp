@@ -12,9 +12,9 @@ const generateToken = (user) => {
 
 export const register = async (req, res) => {
     try {
-        const { name, email, password, accountNumber, expDate } = req.body;
+        const { name, email, password, accountNumber, expDate,role } = req.body;
         console.log("registration password", password);
-
+        
         if (!name || !email || !password || !accountNumber || !expDate) {
             return res.status(400).send({message:'Invalid request data'});
         }
@@ -24,8 +24,11 @@ export const register = async (req, res) => {
         if (!userExist) {
             const hashedPassword = await bcrypt.hash(password, 10);
             console.log("register hash", hashedPassword);
-
-            const data = new User({ name, email, password: hashedPassword,accountNumber,expDate,totalBalance:0,pots:[],history:[] });
+            const newuser={name,email,password:hashedPassword,accountNumber,expDate,totalBalance:0,pots:[],history:[]};
+            if(role){
+                newuser.role=role;
+            }
+            const data = new User( newuser );
             
             console.log("Data check",data);
             await data.save();
@@ -58,14 +61,23 @@ export const login = async (req, res) => {
 
                 if (passCheck) {
                     const accessToken = generateToken(userExist);
+
+                    const role=userExist.role;
                     await userExist.save();
 
                     res.cookie('authToken', accessToken, {
                         httpOnly: true, // Ensures cookie is not accessible via JavaScript
-                        secure: process.env.NODE_ENV === 'production', // Only use HTTPS in production
-                        sameSite: 'strict', // Prevents the cookie from being sent in cross-origin requests
+                        secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
+                        sameSite: 'strict', // Prevents cookie from being sent in cross-origin requests
                         maxAge: 12 * 60 * 60 * 1000, // Expires in 12 hours
-                     });
+                    });
+                    
+                    res.cookie('role', role, {
+                        httpOnly: false, // Allows JavaScript to access this cookie if needed
+                        secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
+                        sameSite: 'strict', // Prevents cookie from being sent in cross-origin requests
+                        maxAge: 12 * 60 * 60 * 1000, // Expires in 12 hours
+                    });
                     
                     // console.log("loginsuccesss");
                     res.status(200).json({ message: 'Login successful',userid:userExist._id, accessToken });

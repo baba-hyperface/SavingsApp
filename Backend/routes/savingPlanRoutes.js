@@ -322,8 +322,7 @@ savingPlanRouter.patch(
 );
 
 savingPlanRouter.get("/user/:userId/savingplan", protect,authorize(["user","admin"]), async (req, res) => {
-  // const { userId } = req.params;
-  const userId = req.user._id;
+  const { userId } = req.params;
   try {
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid user ID" });

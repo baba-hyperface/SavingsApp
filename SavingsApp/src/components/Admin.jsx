@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import api from './api';
 import '../styles/Admin.css';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { Box, Button, Flex, Text } from '@chakra-ui/react';
 
 export const Admin = () => {
     const [users, setUsers] = useState([]);
@@ -13,8 +14,6 @@ const handleNav = (userid) => {
       nav(`/admin/${userid}`); 
     };
     
-    
-
     useEffect(() => {
         const fetchUsers = async () => {
             try {
@@ -55,7 +54,24 @@ const handleNav = (userid) => {
 
     return (
         <div className="admin-container">
-            <h1>User Management</h1>
+            <Flex justify="space-between" align="center" mb="4">
+                <Text 
+                fontWeight={"900"}
+                as={"h1"}
+                fontSize={'28px'} 
+                 >User Management</Text>
+                <Button 
+                    as={Link} 
+                    to="/createuser" 
+                    colorScheme="teal" 
+                    size="sm"
+                    borderRadius="md"
+                >
+                    + Create User
+                </Button>
+            </Flex>
+
+            {/* <h1>User Management</h1> */}
             <table className="user-table">
                 <thead>
                     <tr>

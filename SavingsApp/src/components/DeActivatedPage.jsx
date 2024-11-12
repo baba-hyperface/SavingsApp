@@ -5,12 +5,10 @@ import { usePlans } from './ContextApi';
 
 export const DeActivatedPage = () => {
   const [deactivatedPlans, setDeactivatedPlans] = useState([]);
-  const { handleDeletePlan, userId } = usePlans();
+  const { handleDeletePlan} = usePlans();
+  const userId=localStorage.getItem("userid");
   const toast = useToast();
-  const bgGradient = useColorModeValue(
-    'linear(to-br, teal.100, blue.50)',
-    'linear(to-br, teal.700, blue.900)'
-  );
+ 
 
   useEffect(() => {
     const fetchPlans = async () => {

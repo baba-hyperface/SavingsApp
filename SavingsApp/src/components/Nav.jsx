@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Nav.css';
 import api from './api';
+import Cookies from 'js-cookie';
 
 const Nav = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -26,6 +27,10 @@ const Nav = () => {
     }
   }
 
+const role = Cookies.get('role');
+console.log("role",role);
+
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen); 
   };
@@ -45,6 +50,13 @@ const Nav = () => {
               <li>
                 <Link className="nav-link" to="/dashboard">DashBoard</Link>
               </li>
+              
+              { role=="admin" &&
+              <li>
+                <Link className="nav-link" to="/admin">Admin</Link>
+                
+              </li>
+          }
               <li>
                 <Link className="nav-link logout-btn" to="/" onClick={handleLogout}>
                   Logout
@@ -77,6 +89,10 @@ const Nav = () => {
             {isAuthenticated ? (
               <>
                 <li><Link to="/dashboard" onClick={toggleMenu}>Dashboard</Link></li>
+
+                { role=="admin" &&
+                <li><Link to="/admin" onClick={toggleMenu}>Admin panel</Link></li>
+}
                 <li><Link to="/" onClick={() => { handleLogout(); toggleMenu(); }}>Logout</Link></li>
               </>
             ) : (
