@@ -366,4 +366,77 @@ savingPlanRouter.patch(
   }
 );
 
+savingPlanRouter.put(
+  "/user/:userId/savingplan/:potId",
+  protect,
+  async (req, res) => {
+    const { userId, potId } = req.params;
+    const {
+      potPurpose,
+      targetAmount,
+      currentBalance,
+      imoji,
+      color,
+      category,
+      autoDeduction,
+      dailyAmount,
+      endDate,
+      frequency,
+      dayOfWeek,
+      dayOfMonth,
+    } = req.body;
+
+    try {
+      // Check if the user exists
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Find the saving pot by its ID
+      const pot = await SavingPot.findById(potId);
+      if (!pot) {
+        return res.status(404).json({ message: "Saving pot not found" });
+      }
+
+      // Update the pot details
+      pot.potPurpose = potPurpose || pot.potPurpose;
+      pot.targetAmount = targetAmount || pot.targetAmount;
+      pot.currentBalance = currentBalance || pot.currentBalance;
+      pot.imoji = imoji || pot.imoji;
+      pot.color = color || pot.color;
+      pot.category = category || pot.category;
+      pot.autoDeduction = autoDeduction !== undefined ? autoDeduction : pot.autoDeduction;
+      pot.dailyAmount = dailyAmount || pot.dailyAmount;
+      pot.endDate = endDate || pot.endDate;
+      pot.frequency = frequency || pot.frequency;
+      pot.dayOfWeek = dayOfWeek || pot.dayOfWeek;
+      pot.dayOfMonth = dayOfMonth || pot.dayOfMonth;
+      await pot.save();
+      const transaction = new Transaction({
+        email: req.user.email,
+        type: "saving plan updated",
+        amount: currentBalance || 0,
+        from: "wallet",
+        to: "saving_pot",
+        potId: potId,
+        date: new Date(),
+      });
+      await transaction.save();
+      user.history.push(transaction);
+      await user.save();
+
+      res.status(200).json({
+        message: "Saving plan updated successfully",
+        pot,
+        transaction,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+);
+
+
 export default savingPlanRouter;

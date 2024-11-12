@@ -14,6 +14,8 @@ import { Transaction } from './components/Transaction'
 import { DonutChart } from './components/DonutChart'
 import { useEffect, useState } from 'react'
 import api from './components/api'
+import Admin from './components/Admin'
+import { AdminPot } from './components/AdminPot'
 
 function App() {
   const [potData, setPotData] = useState([]);
@@ -46,6 +48,8 @@ function App() {
           <Route path='/deactivated' element={<DeActivatedPage />}></Route>
           <Route path='/history' element={<Transaction />} />
           <Route path='/chart' element={<DonutChart savingsData={potData} />} />
+          <Route path='/admin' element={<Admin />} />
+          <Route path='/admin/:id' element={<AdminPot />} />
         </Routes>
       </Box>
   )

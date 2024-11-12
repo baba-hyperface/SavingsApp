@@ -40,7 +40,6 @@ userRouter.post('/user',protect, async (req, res) => {
     try{    
         const savedUser = await newUser.save();
         res.status(201).json(savedUser);
-
     }catch(err){
         res.status(400).json({ message: err.message });
     }
@@ -128,5 +127,17 @@ userRouter.delete('/users/:id',protect, async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
   })
+  
+  
+  userRouter.put('/user/:id', protect, async (req, res) => {
+    try {
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedUser) return res.status(404).json({ message: 'User not found' });
+        res.json({ message: 'User updated successfully', updatedUser });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
 
   export default userRouter;
