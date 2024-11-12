@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react'
 import api from './components/api'
 import Admin from './components/Admin'
 import { AdminPot } from './components/AdminPot'
+import AdminCreateUser from './components/AdminCreateuser'
 
 function App() {
   const [potData, setPotData] = useState([]);
@@ -50,6 +51,7 @@ function App() {
           <Route path='/chart' element={<DonutChart savingsData={potData} />} />
           <Route path='/admin' element={<Admin />} />
           <Route path='/admin/:id' element={<AdminPot />} />
+          <Route path='createuser' element={<AdminCreateUser/>}/>
         </Routes>
       </Box>
   )
