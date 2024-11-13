@@ -13,7 +13,7 @@ const Nav = () => {
   useEffect(() => {
     const token = Cookies.get("accessToken");
     const userRole = Cookies.get("role");
-    setIsAuthenticated(!!token);
+    setIsAuthenticated(!token);
     setRole(userRole);
   }, []);
 

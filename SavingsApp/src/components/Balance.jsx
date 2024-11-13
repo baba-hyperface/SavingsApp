@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/balance.css';
-import { useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, useToast } from '@chakra-ui/react';
+import { useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, Input, useToast, Skeleton } from '@chakra-ui/react';
 import { DonutChart } from './DonutChart';
 import api from './api';
 
@@ -8,6 +8,7 @@ export const Balance = ({ totalBalance, onBalanceUpdate, accNum, expDate, update
   const { onClose, onOpen, isOpen } = useDisclosure();
   const [balance, setBalance] = useState(totalBalance);
   const [loading, setLoading] = useState(false);
+  const [chartLoading, setChartLoading] = useState(false); 
   const [error, setError] = useState(null);
   const [addMoney, setAddMoney] = useState('');
   const toast = useToast();
@@ -35,11 +36,14 @@ export const Balance = ({ totalBalance, onBalanceUpdate, accNum, expDate, update
   useEffect(() => {
     const fetchPotData = async () => {
       try {
+        setChartLoading(true); 
         const res = await api.get(`/user/${userIdFromLocalStorage}/savingplan`);
         setPotData(res.data);
         console.log(res.data);
       } catch (error) {
         console.log(error);
+      } finally {
+        setChartLoading(false); 
       }
     };
     fetchPotData();
@@ -111,18 +115,40 @@ export const Balance = ({ totalBalance, onBalanceUpdate, accNum, expDate, update
           <button className='add-fund-button' onClick={onOpen}>Add Money</button>
         </div>
         <div className='donut-style'>
-          <DonutChart savingsData={potData} />
+          {chartLoading ? (
+            <Skeleton
+            mt={"9"}
+            startColor="gray.200"
+            endColor="gray.100"
+            height="300px"
+            width="300px"
+            borderRadius="full"
+          />
+          ) : (
+            <DonutChart savingsData={potData} />
+          )}
         </div>
       </div>
 
-      <Modal isOpen={isOpen} onClose={onClose} >
-        <ModalOverlay />
-        <ModalContent sx={{
-          backgroundColor: "#E5EBF6",
-          color: "rgb(65, 65, 65)",
-          borderRadius: "10px",
-          fontFamily: "Noto Sans, sans-serif"
-        }}>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay
+          sx={{
+            backdropFilter: { base: "none", lg: "blur(10px)" },
+            height: "100vh",
+          }}
+        />
+        <ModalContent
+          className="modal-container"
+          sx={{
+            color: "rgb(65, 65, 65)",
+            borderRadius: "10px",
+            fontFamily: "Noto Sans, sans-serif",
+            width: { base: "100%", lg: "30%" },
+            maxWidth: { base: "100vw", lg: "60vw" },
+            height: { base: "90vh", lg: "auto" },
+            overflowY: { base: "auto", lg: "unset" },
+          }}
+        >
           <ModalHeader>Add Money</ModalHeader>
           <ModalCloseButton />
           <ModalBody>

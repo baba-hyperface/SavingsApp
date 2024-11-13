@@ -167,7 +167,6 @@
       width: 90%;
 }
 
-/* Responsive Design */
 @media (max-width: 1200px) {
   .goal-section {
     flex-direction: column;

@@ -37,7 +37,8 @@ function App() {
   }, []);
 
   return (
-    <Box>
+    <div className="container"> 
+       <Box>
       <Nav />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -78,6 +79,7 @@ function App() {
         />
       </Routes>
     </Box>
+    </div>
   );
 }
 

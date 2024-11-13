@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import axios from './api';
 import { Box, Button, FormControl, FormLabel, Input, Text, VStack, useToast } from '@chakra-ui/react';
 import api from './api';
+import '../styles/login.css'
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -51,36 +52,54 @@ const Login = () => {
   };
 
   return (
-    <Box maxW="sm" mx="auto" mt="10" p="6" boxShadow="md" borderRadius="md" bg="white">
-      <Text fontSize="2xl">Login</Text>
+    <div className='login-page-container'>
+        <div className='login-main-container'>
+      <h2>Login</h2>
       <form onSubmit={handleSubmit}>
-        <VStack spacing={4}>
-          <FormControl id="email" isRequired>
-            <FormLabel>Email</FormLabel>
-            <Input
+        <div>
+          <div>
+            <label htmlFor="email" className='label-for-input-login'>Email</label>
+            <input
               type="email"
+              id="email"
               placeholder="Enter Email or Username"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              className='input-field-login'
             />
-          </FormControl>
-          <FormControl id="password" mt="4" isRequired>
-            <FormLabel>Password</FormLabel>
-            <Input
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <label htmlFor="password" className='label-for-input-login '>Password</label>
+            <input
               type="password"
+              id="password"
               placeholder="Enter Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              className='input-field-login'
             />
-          </FormControl>
-          <Button type="submit" bg={"green.400"}>Login</Button>
-        </VStack>
+          </div>
+          <button
+            type="submit"
+            
+          >
+            Login
+          </button>
+        </div>
       </form>
       <br />
-      <p>Create an Account <Text color={"blue"} as={Link} to="/register" size="md">Register</Text></p>
-    </Box>
+      <p>
+        <Link to="/register" className='signup-text'>
+          Sign up
+        </Link>
+      </p>
+    </div>
+    <div className='login-image-container'>
+      <img src="https://static.vecteezy.com/system/resources/thumbnails/001/829/844/small_2x/saving-into-a-piggy-bank-depicts-people-putting-money-into-banking-to-copy-save-and-bank-interest-for-return-on-investment-roi-character-concept-illustration-for-web-landing-page-mobile-apps-free-vector.jpg" alt="" />
+    </div>
+    </div>
   );
 };
 

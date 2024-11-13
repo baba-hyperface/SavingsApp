@@ -4,15 +4,11 @@
   cursor: pointer;
   display: block;
 }
-
-/* Icon styles */
 .custom-transaction-icon-container > i {
-  font-size: 20px; /* Larger size for better visibility */
-  margin-top: 40px;
+  font-size: 20px; 
   display: block;
 }
 
-/* Transaction history - hidden by default */
 .custom-transaction-history-container {
   position: absolute;
   right: 30px;
@@ -25,27 +21,23 @@
   z-index: 100;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   padding: 20px;
-  display: none; /* Hidden by default */
+  display: none; 
 }
 
-/* Show transaction history when open */
 .custom-transaction-history-container.open {
-  display: block; /* Show when 'open' class is added */
+  display: block; 
 }
 
-/* Close container - initially hidden */
+
 .custom-transaction-close-btn-container {
   text-align: right;
   cursor: pointer;
   display: none;
 }
-
-/* Show close button when transaction history is open */
 .custom-transaction-history-container.open .custom-transaction-close-btn-container {
   display: block;
 }
 
-/* Transactions */
 .custom-transaction-list {
   margin-top: 10px;
 }
@@ -74,8 +66,6 @@
   font-size: 12px;
   color: #888;
 }
-
-/* Mobile screens */
 @media (max-width: 950px) {
   .custom-transaction-history-container {
     top: 0;
@@ -87,7 +77,7 @@
   }
 
   .custom-transaction-icon-container > i {
-    font-size: 20px; /* Larger size for better visibility */
+    font-size: 20px; 
     display: block;
   }
 
@@ -111,7 +101,7 @@
   }
 
   .custom-transaction-icon-container > i {
-    font-size: 20px; /* Larger size for better visibility */
+    font-size: 20px; 
     display: block;
   }
 
