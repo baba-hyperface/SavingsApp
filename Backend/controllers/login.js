@@ -65,7 +65,7 @@ export const login = async (req, res) => {
                     const role=userExist.role;
                     await userExist.save();
 
-                    res.cookie('authToken', accessToken, {
+                    res.cookie('accessToken', accessToken, {
                         httpOnly: true, // Ensures cookie is not accessible via JavaScript
                         secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
                         sameSite: 'strict', // Prevents cookie from being sent in cross-origin requests
@@ -101,7 +101,7 @@ export const login = async (req, res) => {
 
 export const logout = (req, res) => {
     
-    res.clearCookie('authToken', {
+    res.clearCookie('accessToken', {
         httpOnly: true,  // Ensures cookie is not accessible via JavaScript
         secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
         sameSite: 'strict', // Cookie is sent only from the same domain
