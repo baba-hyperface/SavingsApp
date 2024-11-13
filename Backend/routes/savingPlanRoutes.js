@@ -131,7 +131,7 @@ savingPlanRouter.post(`/user/:userId/savingplan`, protect,authorize(["user","adm
       savingPotData.endDate = endDate;
     }
 
-    const newSaving = new SavingPot({savingPotData});
+    const newSaving = new SavingPot(savingPotData);
     console.log("new pot ceated one", newSaving);
     const savedPot = await newSaving.save();
     user.pots.push(savedPot._id);
@@ -191,7 +191,7 @@ savingPlanRouter.patch(
       if (currentBalance !== undefined) {
         pot.currentBalance += currentBalance;
 
-        if (autoDeduction) {
+        if (pot.autoDeduction) {
           let requiredAmountPerPeriod = 0;
           const calculateRequiredAmount = () => {
             const parsedGoal = parseInt(pot.targetAmount);
