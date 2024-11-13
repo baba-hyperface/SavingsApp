@@ -152,6 +152,22 @@ h3 {
     background-color: rgb(29, 29, 252);
     color: white;
 }
+.no-saving-plan-container{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+}
+.no-saving-plan-container > h1{
+    font-size: 25px;
+    font-weight: 600;
+    margin-bottom: 2%;
+}
+.no-saving-plan-container > div{
+    margin: auto;
+}
+
 
 @media (max-width: 1300px) {
     .plans-list {
@@ -226,6 +242,9 @@ h3 {
 
     .plan-card {
         padding: 0.75rem;
+    }
+    .no-saving-plan-container{
+        margin-top: 50px;
     }
 }
 

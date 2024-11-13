@@ -27,7 +27,7 @@ const generateRandomColor = () => {
     .padStart(6, "0")}`;
 };
 
-const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
+export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [step, setStep] = useState(1);
   const [category, setCategory] = useState("");
@@ -659,4 +659,4 @@ const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
   );
 };
 
-export default SaveButton;
+

@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { usePlans } from "./ContextApi";
 import { FilterModal } from "./FilterModel";
 import EditDeductionModel from "./EditDetuctionModel";
+import { SaveButton } from "./SaveButton";
 export const SavingPlans = ({
   totalBalance,
   onBalanceUpdate,
@@ -170,6 +171,19 @@ export const SavingPlans = ({
       isClosable: true,
     });
   };
+
+  if(filteredPlans.length === 0){
+    return (
+      <div className="no-saving-plan-container saving-plans-container">
+        <h1>Start Saving</h1>
+        <div>
+            <SaveButton />
+        </div>
+      </div>
+    )
+  }
+
+
   return (
     <div>
       <div className="saving-plans-container">
