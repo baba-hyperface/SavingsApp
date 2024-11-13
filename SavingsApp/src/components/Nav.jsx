@@ -10,8 +10,8 @@ const Nav = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    setIsAuthenticated(!!token);
+    const token = Cookies.get('accessToken');
+    setIsAuthenticated(!token);
   }, []);
 
   const handleLogout = async () => {

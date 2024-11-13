@@ -6,7 +6,7 @@ const generateToken = (user) => {
     return jwt.sign(
         { id: user._id,role:user.role, email: user.email, name: user.name },
         process.env.JWT_SECRET,
-        { expiresIn: '12h' }
+        { expiresIn: '30d' }
     );  
 };
 
@@ -69,17 +69,16 @@ export const login = async (req, res) => {
                         httpOnly: true, // Ensures cookie is not accessible via JavaScript
                         secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
                         sameSite: 'strict', // Prevents cookie from being sent in cross-origin requests
-                        maxAge: 12 * 60 * 60 * 1000, // Expires in 12 hours
+                        maxAge: 30 * 24 * 60 * 60 * 1000, // Expires in 12 hours
                     });
                     
                     res.cookie('role', role, {
                         httpOnly: false, // Allows JavaScript to access this cookie if needed
                         secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
                         sameSite: 'strict', // Prevents cookie from being sent in cross-origin requests
-                        maxAge: 12 * 60 * 60 * 1000, // Expires in 12 hours
+                        maxAge: 30 * 24 * 60 * 60 * 1000, // Expires in 30days
                     });
                     
-                    // console.log("loginsuccesss");
                     res.status(200).json({ message: 'Login successful',userid:userExist._id, accessToken });
                 } else {
                     console.log("incorrect password");
