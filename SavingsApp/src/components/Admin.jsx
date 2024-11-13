@@ -67,7 +67,6 @@ const handleNav = (userid) => {
                 >
                     + Create User
                 </Button>
-                
             </Flex>
 
             {/* <h1>User Management</h1> */}
