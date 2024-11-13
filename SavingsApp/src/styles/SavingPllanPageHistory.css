@@ -1,4 +1,3 @@
-/* Icon container */
 .transaction-icon-container {
   position: fixed;
   bottom: 0;
@@ -11,20 +10,16 @@
   z-index: 101;
 }
 
-/* Icon styles */
 .transaction-icon-container > i {
-  font-size: 20px; /* Larger size for better visibility */
+  font-size: 20px; 
   color: #a8a8a8;
   background-color: #ffffff;
   border-radius: 10px;
   padding: 12px 30px 12px 15px;
   cursor: pointer;
-
   transition: border-color 0.3s ease;
   margin-left: 60%;
 }
-
-/* Transaction history - visible by default on larger screens */
 .transaction-history-container {
   position: absolute;
   right: 20px;
@@ -40,15 +35,11 @@
   display: block;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
-
-/* Close button container */
 .transaction-close-btn-container {
   text-align: right;
   cursor: pointer;
   display: none;
 }
-
-/* Transactions */
 .transaction-list {
   margin-top: 10px;
 }
@@ -77,8 +68,6 @@
   font-size: 12px;
   color: #888;
 }
-
-/* Mobile screens */
 @media (max-width: 950px) {
   .transaction-history-container {
     position: fixed;
@@ -87,16 +76,16 @@
     width: 100%;
     height: 80%;
     font-size: 12px;
-    transform: translateY(100%); /* Starts off-screen */
+    transform: translateY(100%);
     opacity: 0;
-    visibility: hidden; /* Makes it invisible initially */
+    visibility: hidden; 
     transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
   }
 
   .transaction-history-container.open {
-    transform: translateY(0); /* Slides up smoothly from the bottom */
+    transform: translateY(0); 
     opacity: 1;
-    visibility: visible; /* Makes it visible when open */
+    visibility: visible; 
   }
 
   .transaction-close-btn-container {

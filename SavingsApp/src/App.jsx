@@ -35,7 +35,8 @@ function App() {
   }, []);
 
   return (
-    <Box>
+    <div className="container"> 
+       <Box>
       <Nav />
       <Routes>
         {/* Public Routes */}
@@ -115,6 +116,7 @@ function App() {
         />
       </Routes>
     </Box>
+    </div>
   );
 }
 

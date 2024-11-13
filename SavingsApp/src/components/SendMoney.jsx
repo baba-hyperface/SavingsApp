@@ -100,7 +100,7 @@ export const SendMoney = ({ totalBalance, onBalanceUpdate, updateBalance, onHist
             color: "rgb(65, 65, 65)",
             borderRadius: "10px",
             fontFamily: "Noto Sans, sans-serif",
-            width: { base: "100%", lg: "60%" },
+            width: { base: "100%", lg: "30%" },
             maxWidth: { base: "100vw", lg: "60vw" },
             height: { base: "90vh", lg: "auto" },
             overflowY: { base: "auto", lg: "unset" },

@@ -1,0 +1,122 @@
+.login-page-container{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+}
+
+.login-main-container {
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+      width: 90%;
+      max-width: 450px;
+      margin-top: 10%;
+      margin-left: 5%;
+      padding: 30px;
+      border-radius: 20px;
+      background-color: #fff;
+      transition: box-shadow 0.3s ease;
+    }
+    
+    .login-main-container:hover {
+      box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    }
+    
+    .login-main-container > h2 {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    
+    .label-for-input-login {
+      margin: 10px 0 5px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #555;
+    }
+    
+    .input-field-login {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin: 5px 0 15px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      transition: border-color 0.3s ease;
+    }
+    
+    .input-field:focus {
+      border-color: #38a169;
+      outline: none;
+    }
+    
+    button[type="submit"] {
+      background-color: #380080;
+      width: 100%;
+      color: #fff;
+      padding: 13px 20px;
+      font-size: 18px;
+      font-weight: 600;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 15px;
+    }
+    
+    button[type="submit"]:hover {
+      background-color: #2f855a;
+    }
+    
+    .login-main-container p {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 20px;
+      color: #333;
+    }
+    
+    .login-main-container p a {
+      color: #3182ce;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+    
+    .login-main-container p a:hover {
+      color: #2b6cb0;
+    }
+
+    .signup-text {
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .login-image-container{
+      display: block;
+    }
+    .login-image-container > img {
+      width: 1000px;
+      margin-top: 10%;
+    }
+    
+    @media (max-width: 768px) {
+      .login-main-container {
+        width: 90%;
+        padding: 20px;
+        margin: auto;
+        margin-top: 3%;
+      }
+      .login-main-container > h2 {
+        font-size: 24px;
+      }
+      .input-field {
+        font-size: 14px;
+      }
+      button[type="submit"] {
+        font-size: 16px;
+      }
+      .login-image-container {
+            display: none;
+      }
+    }
+    

@@ -92,17 +92,17 @@ export const WithdrawMoney = ({totalBalance, onBalanceUpdate, updateBalance, ema
                     }}
                 />
                 <ModalContent
-                    className="modal-container"
-                    sx={{
-                        color: "rgb(65, 65, 65)",
-                        borderRadius: "10px",
-                        fontFamily: "Noto Sans, sans-serif",
-                        width: { base: "100%", lg: "60%" },
-                        maxWidth: { base: "100vw", lg: "60vw" },
-                        height: { base: "90vh", lg: "auto" },
-                        overflowY: { base: "auto", lg: "unset" },
-                    }}
-                >
+          className="modal-container"
+          sx={{
+            color: "rgb(65, 65, 65)",
+            borderRadius: "10px",
+            fontFamily: "Noto Sans, sans-serif",
+            width: { base: "100%", lg: "30%" },
+            maxWidth: { base: "100vw", lg: "60vw" },
+            height: { base: "90vh", lg: "auto" },
+            overflowY: { base: "auto", lg: "unset" },
+          }}
+        >
                     <ModalHeader>Withdraw Money</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>

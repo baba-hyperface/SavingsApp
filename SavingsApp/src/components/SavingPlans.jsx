@@ -98,6 +98,7 @@ export const SavingPlans = ({
     };
     fetchPlans();
   }, [userId, refreshkey]);
+  console.log("ooodnninid")
   const handleAddMoney = async () => {
     if (addMoney > totalBalance) {
       toast({
