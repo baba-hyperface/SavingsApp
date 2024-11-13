@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/usermodel.js';
+import {} from "dotenv/config";
 
 const generateToken = (user) => {
     return jwt.sign(
@@ -66,20 +67,27 @@ export const login = async (req, res) => {
                     await userExist.save();
 
                     res.cookie('accessToken', accessToken, {
-                        httpOnly: true, // Ensures cookie is not accessible via JavaScript
-                        secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
-                        sameSite: 'strict', // Prevents cookie from being sent in cross-origin requests
-                        maxAge: 30 * 24 * 60 * 60 * 1000, // Expires in 12 hours
+                        httpOnly: false,
+                        secure: process.env.NODE_ENV === 'production', // true in production
+                        sameSite: 'None',
+                        maxAge: 30 * 24 * 60 * 60 * 1000, // Expires in 30 days
+                        path: '/',
                     });
-                    
+
                     res.cookie('role', role, {
-                        httpOnly: false, // Allows JavaScript to access this cookie if needed
-                        secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
-                        sameSite: 'strict', // Prevents cookie from being sent in cross-origin requests
-                        maxAge: 30 * 24 * 60 * 60 * 1000, // Expires in 30days
+                        httpOnly: false, // Accessible to JavaScript if needed
+                        secure: process.env.NODE_ENV === 'production', // true in production
+                        sameSite: 'None',
+                        maxAge: 30 * 24 * 60 * 60 * 1000, // Expires in 30 days
+                        path: '/',
                     });
-                    
-                    res.status(200).json({ message: 'Login successful',userid:userExist._id, accessToken });
+
+                    res.status(200).json({
+                        message: 'Login successful',
+                        userid: userExist._id,
+                        accessToken,
+                        role: userExist.role
+                    });
                 } else {
                     console.log("incorrect password");
                     res.status(400).send({message:"Incorrect password check"});

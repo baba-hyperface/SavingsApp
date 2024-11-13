@@ -13,8 +13,8 @@ const app = express();
 app.use(express.json());
 
 const corsOptions = {
-    origin: 'http://localhost:5173', 
-    credentials: true,  
+    origin: 'http://localhost:5173',  // Frontend URL
+    credentials: true,  // Allow cookies to be sent in cross-origin requests
 };
 
 app.use(cors(corsOptions)); 
@@ -26,8 +26,9 @@ app.use('/api',historyrouter);
 app.use('/api',userRouter)
 app.use('/api', savingPlanRouter);
 app.use('/',(req,res)=>{
-    res.send("this is home Route");
-
+    // res.send("this is home Route");
+    console.log('Cookies:', req.cookies);  // Check if cookies are present
+    res.send('Check cookies in console');
 });
 
 
