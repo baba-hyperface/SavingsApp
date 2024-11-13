@@ -9,7 +9,7 @@ import { DonutChart } from './DonutChart';
 import '../App.css'
 import { Transaction } from './Transaction';
 import { DeActivated } from './DeActivated';
-import SaveButton from './SaveButton';
+import { SaveButton } from './SaveButton';
 
 export const ChildDashBoard = ({data, setUser}) => {
     let {name,email, totalBalance, accountNumber, expDate} = data;
