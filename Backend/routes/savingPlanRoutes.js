@@ -191,7 +191,7 @@ savingPlanRouter.patch(
       if (currentBalance !== undefined) {
         pot.currentBalance += currentBalance;
 
-        if (autoDeduction) {
+        if (pot.autoDeduction) {
           let requiredAmountPerPeriod = 0;
           const calculateRequiredAmount = () => {
             const parsedGoal = parseInt(pot.targetAmount);
