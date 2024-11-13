@@ -42,7 +42,7 @@ historyrouter.post('/history',protect,authorize(["user","admin"]), async (req, r
 
   
 
-  historyrouter.get('/history/:potId',authorize(["user","admin"]), async (req, res) => {
+  historyrouter.get('/history/:potId',protect,authorize(["user","admin"]), async (req, res) => {
         const {potId} = req.params;
     try {
         const historydata = await Transaction.find({potId});
