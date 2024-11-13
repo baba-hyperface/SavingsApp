@@ -42,8 +42,6 @@ const Nav = () => {
     <nav className="nav">
       <div className="nav-content">
         <h1 className="nav-logo">Coins Stash</h1>
-
-        {/* Links for larger screens */}
         <ul className={`nav-links ${isMenuOpen ? "open" : ""}`}>
           <li>
             <Link className="nav-link" to="/">
