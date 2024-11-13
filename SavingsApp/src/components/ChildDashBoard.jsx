@@ -11,7 +11,6 @@ import { Transaction } from './Transaction';
 import { DeActivated } from './DeActivated';
 import { SaveButton } from './SaveButton';
 
-
 export const ChildDashBoard = ({data, setUser}) => {
     let {name,email, totalBalance, accountNumber, expDate} = data;
     const [currentBalance, setCurrentBalance] = useState(totalBalance);
