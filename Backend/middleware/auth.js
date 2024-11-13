@@ -5,9 +5,8 @@ import User from '../models/usermodel.js';
 export const protect = async(req, res, next) => {
 
   let token;
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    token = req.cookies.authToken || req.headers.authorization.split(' ')[1];
-    // console.log(token);
+  if (req.cookies.accessToken) {
+    token = req.cookies.accessToken || req.headers.authorization.split(' ')[1];
     if (!token) {
         console.log("is not defined token",token);
         return res.status(401).json({ message: 'No token provided, authorization denied' });
