@@ -84,8 +84,8 @@ const Register = () => {
             />
           </div>
           <FormControl>
-          <FormHelperText mt={2} fontSize="sm">
-              <HStack wrap="wrap" spacing={6} align="center">
+          <FormHelperText mt={1} fontSize="sm">
+              <HStack wrap="wrap" spacing={4} align="center">
                 <HStack align="center" >
                   <Icon
                     as={passwordCriteria.minLength ? CheckIcon : CloseIcon}
@@ -95,7 +95,7 @@ const Register = () => {
                     6+ characters
                   </Text>
                 </HStack>
-                <HStack align="center" spacing={2}>
+                <HStack align="center" >
                   <Icon
                     as={passwordCriteria.hasUpperCase ? CheckIcon : CloseIcon}
                     color={passwordCriteria.hasUpperCase ? 'green.500' : 'red.500'}
@@ -104,7 +104,7 @@ const Register = () => {
                     Uppercase
                   </Text>
                 </HStack>
-                <HStack align="center" spacing={2}>
+                <HStack align="center" >
                   <Icon
                     as={passwordCriteria.hasLowerCase ? CheckIcon : CloseIcon}
                     color={passwordCriteria.hasLowerCase ? 'green.500' : 'red.500'}
@@ -113,7 +113,7 @@ const Register = () => {
                     Lowercase
                   </Text>
                 </HStack>
-                <HStack align="center" spacing={2}>
+                <HStack align="center" >
                   <Icon
                     as={passwordCriteria.hasNumber ? CheckIcon : CloseIcon}
                     color={passwordCriteria.hasNumber ? 'green.500' : 'red.500'}
@@ -122,7 +122,7 @@ const Register = () => {
                     Number
                   </Text>
                 </HStack>
-                <HStack align="center" spacing={2}>
+                <HStack align="center" >
                   <Icon
                     as={passwordCriteria.hasSpecialChar ? CheckIcon : CloseIcon}
                     color={passwordCriteria.hasSpecialChar ? 'green.500' : 'red.500'}
@@ -132,7 +132,8 @@ const Register = () => {
                   </Text>
                 </HStack>
               </HStack>
-            </FormHelperText></FormControl>
+            </FormHelperText>
+            </FormControl>
           <button type="submit">
             Add Account
           </button>
