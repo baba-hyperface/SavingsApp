@@ -3,6 +3,7 @@ import '../styles/login.css'
 import { Link } from "react-router-dom";
 import React, { useState } from "react";
 import api from "./api";
+import Cookies from 'js-cookie';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -17,6 +18,10 @@ const Login = () => {
 
       if (response.data && response.data.accessToken) {
         // const { accessToken } = response.data;
+        const {accessToken,role}=response.data;
+        // Cookies.set("accessToken",accessToken);
+        // Cookies.set("role",role);
+        
         localStorage.setItem("userid", response.data.userid);
         // localStorage.setItem('accessToken', accessToken);
         // const user = email;

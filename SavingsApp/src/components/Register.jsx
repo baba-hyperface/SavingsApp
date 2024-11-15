@@ -83,6 +83,7 @@ const Register = () => {
               className='input-field-login'
             />
           </div>
+          <FormControl>
           <FormHelperText mt={2} fontSize="sm">
               <HStack wrap="wrap" spacing={6} align="center">
                 <HStack align="center" >
@@ -131,7 +132,7 @@ const Register = () => {
                   </Text>
                 </HStack>
               </HStack>
-            </FormHelperText>
+            </FormHelperText></FormControl>
           <button type="submit">
             Add Account
           </button>
