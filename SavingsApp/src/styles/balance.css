@@ -25,16 +25,20 @@
 }
 .add-fund-button{
     position: absolute;
-    bottom: -23%;
+    bottom: -25.5%;
     font-family: "Noto Sans", sans-serif;
-    font-size: 1rem;
-    left: 3%;
+    font-size: 1.2rem;
+    height: 10vh;
+    left: 2%;
     color: rgb(218, 218, 218);
     background-color: #1A1A1A;
     border: none;
     padding: 25px;
+    font-weight: 900;
     width: 95%;
-    border-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
     font-weight: 300;
     letter-spacing: 1px;
 }
@@ -152,19 +156,20 @@
     }
     .add-fund-button{
         position: absolute;
-        bottom: -20%;
+        bottom: -25.5%;
         font-family: "Noto Sans", sans-serif;
-        font-size: 0.8rem;
-        left: 3%;
+        font-size: 1rem;
+        height: 5vh;
+        left: 2%;
         color: rgb(218, 218, 218);
         background-color: #1A1A1A;
         border: none;
-        padding: 10px;
         width: 95%;
-        border-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
         font-weight: 300;
         letter-spacing: 1px;
-    
     }
     .amount-container{
         margin-left: 40px;
@@ -220,19 +225,20 @@
     }
     .add-fund-button{
         position: absolute;
-        bottom: -19%;
+        bottom: -21%;
         font-family: "Noto Sans", sans-serif;
-        font-size: 0.8rem;
+        font-size: 0.7rem;
         left: 3%;
         color: rgb(218, 218, 218);
         background-color: #1A1A1A;
         border: none;
-        padding: 10px;
+        padding: 8px;
         width: 95%;
-        border-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
         font-weight: 300;
         letter-spacing: 1px;
-    
     }
     .amount-container{
         margin-left: 40px;
