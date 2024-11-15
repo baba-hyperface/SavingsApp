@@ -22,9 +22,9 @@ export const PlanProvider = ({ children }) => {
 
   const [categories, setCategories] = useState([]);
   const [filteredPlans, setFilteredPlans] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [filterByAutoDeduction, setFilterByAutoDeduction] = useState("all");
-  const [autoDeductionStatus, setAutoDeductionStatus] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [filterByAutoDeduction, setFilterByAutoDeduction] = useState("");
+  const [autoDeductionStatus, setAutoDeductionStatus] = useState("");
   const [sortOption, setSortOption] = useState("");
 
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
@@ -41,14 +41,14 @@ export const PlanProvider = ({ children }) => {
   useEffect(() => {
     let filtered = plans.filter((plan) => {
       const categoryMatch =
-        selectedCategory === "all" ||
+        selectedCategory === "" ||
         (plan.category || "Others") === selectedCategory;
       const autoDeductionMatch =
-        filterByAutoDeduction === "all" ||
+        filterByAutoDeduction === "" ||
         (filterByAutoDeduction === "active" && plan.autoDeduction) ||
         (filterByAutoDeduction === "inactive" && !plan.autoDeduction);
       const autoDeductionStatusMatch =
-        autoDeductionStatus === "all" ||
+        autoDeductionStatus === "" ||
         (autoDeductionStatus === "paused" && !plan.autoDeductionStatus) ||
         (autoDeductionStatus === "running" && plan.autoDeductionStatus);
       return (
@@ -57,7 +57,7 @@ export const PlanProvider = ({ children }) => {
         autoDeductionStatusMatch &&
         plan.potStatus
       );
-    });
+    },[plans]);
 
     if (sortOption) {
       filtered = filtered.sort((a, b) => {
@@ -105,9 +105,10 @@ export const PlanProvider = ({ children }) => {
   const handleAutoDeductionStatus = async (planId, potPurpose) => {
     try {
       const response = await api.patch(
-        `/user/${userId}/savingplanstatus/${planId}`
+        `/user/${userId}/savingplanautodeductionstatus/${planId}`
       );
-
+      // setPlans(response.data.pots);
+      console.log("updatating pot status",response.data.pots);
       const isPaused = !response.data.status;
       const colorScheme = isPaused ? "blue" : "green";
 
@@ -141,6 +142,7 @@ export const PlanProvider = ({ children }) => {
       const res = await api.patch(
         `/user/${userId}/savingplandeactivate/${planId}`
       );
+      // setPlans(res.data.pots);
       const potStatus = !res.data.potStatus;
       const colorScheme = potStatus ? "red" : "green";
       if (potStatus) {

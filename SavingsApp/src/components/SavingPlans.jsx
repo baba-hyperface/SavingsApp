@@ -46,8 +46,8 @@ export const SavingPlans = ({
     handleFilterOpen,
     isFilterModalOpen,
     handleFilterApply,
-    handleFilterClose,
-    selectedPlan
+    handleFilterClose,plans,
+    selectedPlan,selectedCategory,filterByAutoDeduction,autoDeductionStatus
   } = usePlans();
 
   const handleDeleteHere = (potid, isActive) => {
@@ -173,7 +173,7 @@ export const SavingPlans = ({
     });
   };
 
-  if(filteredPlans.length === 0){
+    if(filteredPlans.length === 0 && !selectedCategory && !filterByAutoDeduction && !autoDeductionStatus){
     return (
       <div className="no-saving-plan-container saving-plans-container">
         <h1>Start Saving</h1>
