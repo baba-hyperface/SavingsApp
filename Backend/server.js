@@ -26,9 +26,7 @@ app.use('/api',historyrouter);
 app.use('/api',userRouter)
 app.use('/api', savingPlanRouter);
 app.use('/',(req,res)=>{
-    // res.send("this is home Route");
-    console.log('Cookies:', req.cookies);  // Check if cookies are present
-    res.send('Check cookies in console');
+    res.send("this is home Route");
 });
 
 

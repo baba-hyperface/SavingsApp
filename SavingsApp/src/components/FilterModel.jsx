@@ -51,7 +51,7 @@ export function FilterModal({ isOpen, onClose, onSave }) {
           >
             {categories.map((category, index) => (
               <option key={index} value={category}>
-                {category === "all" ? "All Categories" : category}
+                {category === "" ? "All Categories" : category}
               </option>
             ))}
           </Select>
@@ -63,7 +63,7 @@ export function FilterModal({ isOpen, onClose, onSave }) {
             variant="filled"
             mb={4}
           >
-            <option value="all">All</option>
+            <option value="">All</option>
             <option value="active">Auto Deduction Active</option>
             <option value="inactive">Auto Deduction Inactive</option>
           </Select>
@@ -75,7 +75,7 @@ export function FilterModal({ isOpen, onClose, onSave }) {
             variant="filled"
             mb={4}
           >
-            <option value="all">All</option>
+            <option value="">All</option>
             <option value="paused">Paused</option>
             <option value="running">Running</option>
           </Select>

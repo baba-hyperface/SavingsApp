@@ -188,6 +188,13 @@ savingPlanRouter.patch(
       await transaction.save();
       await user.save();
 
+      const calculateDaysLeft = (goalDate) => {
+        const selectedDate = new Date(goalDate);
+        const currentDate = new Date();
+        const timeDiff = selectedDate - currentDate;
+        return Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+      };
+
       if (currentBalance !== undefined) {
         pot.currentBalance += currentBalance;
 
@@ -251,7 +258,7 @@ savingPlanRouter.patch(
 );
 
 savingPlanRouter.patch(
-  "/user/:userId/savingplanstatus/:potId",
+  "/user/:userId/savingplanautodeductionstatus/:potId",
   protect,authorize(["user","admin"]),
   async (req, res) => {
     const { potId, userId } = req.params;
@@ -273,6 +280,7 @@ savingPlanRouter.patch(
       res.status(200).json({
         message: "Saving plan autodetuctionstatus balance updated",
         status: pot.autoDeductionStatus,
+        pots:user.pots,
       });
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -409,6 +417,7 @@ savingPlanRouter.patch(
         message: "Saving plan status updated successfully",
         transaction,
         potStatus: pot.potStatus,
+        pots:user.pots,
       });
     } catch (error) {
       res.status(500).json({ message: error.message });
