@@ -21,7 +21,6 @@ const Register = () => {
   const handlePasswordChange = (e) => {
     const value = e.target.value;
     setPassword(value);
-
     setPasswordCriteria({
       minLength: value.length >= 6,
       hasUpperCase: /[A-Z]/.test(value),

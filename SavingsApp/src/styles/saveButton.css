@@ -27,12 +27,12 @@
       font-size: 16px !important;
       margin-bottom: 30px !important;
     }
-
     .step-container {
-      /* text-align: center; */
       margin: 20px 0;
       margin-bottom: 200px;
     }
+    
+    
     
     .label {
       font-weight: bold;
@@ -59,7 +59,7 @@
       justify-content: center;
       align-items: center;
       padding: 20px;
-      margin-left: 4%;
+      margin-left: 10%;
       gap: 10%;
       margin-top: 20px;
     }
@@ -228,7 +228,16 @@
 }
 
 
-.creating-pot-last-step {
+.creating-pot-last-st .category-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); 
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  margin-left: 10%;
+  gap: 10%;
+  margin-top: 20px;
+}p {
   margin-top: 10%;
   text-align: center;
 }
@@ -278,4 +287,22 @@
 .summary > p > span{
   font-size: 16px;
   font-weight: 700;
+}
+.modal-close-button {
+  padding-top: 10px;
+  text-align: right;
+  font-size: 23px;
+}
+
+.current-amount-while-creating {
+  text-align: center;
+  margin-top: 5px;
+}
+
+
+
+@media (max-width: 500px) {
+  .category-container {
+    margin-left: 0%;
+  }
 }

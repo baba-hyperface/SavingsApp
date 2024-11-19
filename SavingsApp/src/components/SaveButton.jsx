@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -15,7 +15,10 @@ import {
   Box,
   Checkbox,
   useDisclosure,
+  Toast,
+  useToast,
 } from "@chakra-ui/react";
+import gsap from "gsap";
 import "../styles/buttonStyles.css";
 import "../styles/saveButton.css";
 import { usePlans } from "./ContextApi";
@@ -45,6 +48,8 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
   const [icon, setIcon] = useState("");
   const [loading, setLoading] = useState(false);
   const { userId } = usePlans();
+  const toast = useToast()
+  const modalRef = useRef(null);
   const userIdFromLocalStorage = localStorage.getItem("userid");
 
   useEffect(() => {
@@ -60,7 +65,10 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
     { label: "Gadgets", icon: "fa-solid fa-mobile" },
     { label: "Gifts", icon: "fa-solid fa-gift" },
     { label: "Emergency", icon: "fa-solid fa-ambulance" },
+    { label: "Vehicle", icon: "fa-solid fa-car" },
+    { label: "Others", icon: "fa-solid fa-ellipsis" },
   ];
+  
 
   useEffect(() => {
     if (step === 3) {
@@ -175,8 +183,46 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
     return Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
   };
 
-  const nextStep = () => setStep(step + 1);
-  const prevStep = () => setStep(step - 1);
+  const animateExit = (onComplete) => {
+    gsap.to(modalRef.current, {
+      opacity: 0,
+      x: -100,
+      rotateY: -90,
+      scale: 0.9,
+      filter: "blur(10px)", 
+      duration: 0.8,
+      ease: "back.in(1.7)",
+      onComplete,
+    });
+  };
+  
+  const nextStep = () => {
+    animateExit(() => setStep((prev) => prev + 1));
+  };
+  
+  const prevStep = () => {
+    animateExit(() => setStep((prev) => prev - 1));
+  };
+  
+  useEffect(() => {
+    if (!modalRef.current) return;
+    gsap.fromTo(
+      modalRef.current,
+      { opacity: 0, x: 100, rotateY: 90, scale: 0.9, filter: "blur(10px)" },
+      {
+        opacity: 1,
+        x: 0,
+        rotateY: 0,
+        scale: 1,
+        filter: "blur(0px)", 
+        duration: 0.8,
+        ease: "power3.out",
+      }
+    );
+  }, [step]);
+  
+  
+
 
   const handleSavePlan = async () => {
     const randomColor = generateRandomColor();
@@ -282,8 +328,10 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
             overflowY: "auto",
           }}
         >
-          <ModalCloseButton />
-          <ModalBody className="modal-body">
+          <ModalBody className="modal-body" ref={modalRef}>
+          <div className="modal-close-button" onClick={onClose}>
+          <i class="fa-solid fa-xmark"></i>
+          </div>
             {step !== 1 && step !== 3 && (
               <i
                 className="fa-solid fa-chevron-left back-icon"
@@ -293,10 +341,10 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
 
             {step === 1 && (
               <div className="step-container">
-                <h1 className="main-heading">Goals</h1>
+                <h1 className="main-heading">Define Your Goal</h1>
                 <div className="nav-container">
-                  <h1 className="label">Select a Category</h1>
-                  <p className="start-saving-for-it">start saving for it</p>
+                  <h1 className="label">Choose a Category</h1>
+                  <p className="start-saving-for-it">Start saving towards your dream today!</p>
                 </div>
                 <div className="category-container">
                   {categories.map((cat) => (
@@ -326,7 +374,7 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
             {step === 2 && (
               <div className="step-container">
                 <div>
-                  <h1 className="label">Enter a Name for Your Plan</h1>
+                  <h1 className="label">Personalize Your Goal</h1>
                 </div>
                 <div className="creating-pot-container">
                   <i
@@ -338,12 +386,12 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
                   <p>{category}</p>
                 </div>
                 <div className="input-feld-and-label-container">
-                  <label className="label-for-input">Name your Goal</label>
+                  <label className="label-for-input">Goal Name</label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Plan Name"
+                    placeholder="Enter Goal Name"
                     className="input-field"
                   />
                   <button className="next-button" onClick={nextStep}>
@@ -365,7 +413,7 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
                   <p>{name}</p>
                 </div>
                 <p className="pot-created-text">
-                  <strong>{name}</strong> Goal Created!
+                  <strong>{name}</strong> Goal Successfully Created!
                 </p>
               </div>
             )}
@@ -395,7 +443,7 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
 
             {step === 5 && (
               <div className="step-container">
-                <h1 className="label">Setting current amount</h1>
+                <h1 className="label">Set Your Starting Point</h1>
                 <div className="creating-pot-container">
                   <i
                     className={`fa ${
@@ -407,13 +455,13 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
                 </div>
                 <div className="input-feld-and-label-container">
                   <label className="label-for-input">
-                    Enter current amount
+                    Enter Current Amount
                   </label>
                   <input
                     type="text"
                     value={currentAmount}
                     onChange={(e) => setCurrentAmount(e.target.value)}
-                    placeholder="current amount"
+                    placeholder="Enter your current amount"
                     className="input-field"
                   />
                   <button className="next-button" onClick={nextStep}>
@@ -425,7 +473,7 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
 
             {step === 6 && (
               <div className="step-container">
-                <h1 className="label">Setting Goal amount</h1>
+                <h1 className="label">Define Your Target</h1>
                 <div className="creating-pot-container">
                   <i
                     className={`fa ${
@@ -437,13 +485,13 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
                 </div>
                 <div className="input-feld-and-label-container">
                   <label className="label-for-input">
-                    Enter Your Goal Amount
+                  Goal Amount
                   </label>
                   <input
                     type="number"
                     value={goalAmount}
                     onChange={(e) => setGoalAmount(e.target.value)}
-                    placeholder="Goal Amount"
+                    placeholder="Enter the total amount you'd like to save"
                     className="input-field"
                   />
                   <button className="next-button" onClick={nextStep}>
@@ -455,7 +503,7 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
 
             {step === 7 && (
               <div className="step-container">
-                <h1 className="label">Setting End Date</h1>
+                <h1 className="label">Timeline for Your Goal</h1>
                 <div className="creating-pot-container">
                   <i
                     className={`fa ${
@@ -466,11 +514,12 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
                   <p>{name}</p>
                 </div>
                 <div className="input-feld-and-label-container">
-                  <label className="label-for-input">Select a Goal Date</label>
+                  <label className="label-for-input">End Date</label>
                   <input
                     type="date"
                     value={goalDate}
                     onChange={(e) => setGoalDate(e.target.value)}
+                    placeholder="Select a date to achieve your goal"
                     className="input-field"
                   />
                   <button className="next-button" onClick={nextStep}>
@@ -482,7 +531,7 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
 
             {step === 8 && (
               <div className="step-container">
-                <h1 className="label">Setting Auto Deduction</h1>
+                <h1 className="label">Automate Your Savings</h1>
 
                 <div className="creating-pot-container">
                   <i
@@ -502,7 +551,7 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
                       onChange={() => setAutoDeduction(!autoDeduction)}
                       className="checkbox-input-box"
                     />
-                    Enable Auto Deduction
+                    Choose Deduction Frequency
                   </label>
                 </div>
 
@@ -559,7 +608,7 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
                             onChange={(e) => setDayOfWeek(e.target.value)}
                             className="input-field"
                           >
-                            <option value="">Select Day of Week</option>
+                            <option value="">Select a Day of the Week</option>
                             <option value="Monday">Monday</option>
                             <option value="Tuesday">Tuesday</option>
                             <option value="Wednesday">Wednesday</option>
@@ -633,7 +682,7 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
 
                 <div className="creating-pot-last-step">
                   <p>Currently in the Pot</p>
-                  <h1>₹{currentAmount.toLocaleString()}</h1>
+                  <h1 className="current-amount-while-creating">₹{currentAmount.toLocaleString()}</h1>
 
                   <div className="progress-container">
                     <div
@@ -648,7 +697,7 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
                 </div>
 
                 <button className="lock-button" onClick={handleSavePlan}>
-                  Lock And Load
+                  {loading ? "Loading..." :  "Lock And Load"}
                 </button>
               </div>
             )}
