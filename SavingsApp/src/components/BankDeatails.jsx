@@ -5,13 +5,16 @@ import '../styles/login.css';
 
 const BankDetails = () => {
   const [accountNumber, setAccountNumber] = useState('');
+
   const [expDate, setExpDate] = useState('');
   const location = useLocation();
+  const [loading, setLoading] = useState(false);
   const { email, name, password } = location.state || {};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const response = await api.post('/register', { name, email, password, accountNumber, expDate });
       console.log('API response:', response);
 
@@ -26,6 +29,8 @@ const BankDetails = () => {
     } catch (err) {
       console.error('Registration error:', err);
       alert('Registration failed. Please check your credentials.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -58,7 +63,7 @@ const BankDetails = () => {
             className='input-field-login'
           />
         </div>
-        <button type='submit' className='submit-button'>Register</button>
+        <button type='submit' className='submit-button'>{loading ? "loading..." : "Register"}</button>
       </form>
       <br />
       <p><Link to='/register' className='link'>Back</Link></p>

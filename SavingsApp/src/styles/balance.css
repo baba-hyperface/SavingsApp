@@ -11,7 +11,6 @@
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
-
 }
 .balance-container-right{
     background-color: #380080;
@@ -111,7 +110,7 @@
     }
 }
 
-/* Adjust for mobile devices */
+
 @media (max-width: 1081px) {
     .add-fund-button {
         font-size: 0.8rem;

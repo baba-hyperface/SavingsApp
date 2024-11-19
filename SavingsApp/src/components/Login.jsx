@@ -8,11 +8,13 @@ import Cookies from 'js-cookie';
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const toast = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const response = await api.post("/login", { email, password });
       console.log("API response:", response);
 
@@ -54,6 +56,8 @@ const Login = () => {
         duration: 2000,
         isClosable: true,
       });
+    }finally {
+      setLoading(false)
     }
   };
 
@@ -91,7 +95,7 @@ const Login = () => {
             type="submit"
             
           >
-            Login
+            {loading ? "Loading..." : "Login"}
           </button>
         </div>
       </form>

@@ -29,13 +29,6 @@ export const DeActivatedPage = () => {
       p={8} 
       minH="100vh" 
     >
-      <Text fontSize="3xl" fontWeight="bold" mb={8} textAlign="center">
-        Deactivated Saving Pots 
-        <Text fontSize={20} >{deactivatedPlans.length}</Text>
-      </Text>
-      {deactivatedPlans.length === 0 ? (
-        <Text fontSize="xl" textAlign="center">No deactivated pots available.</Text>
-      ) : (
         <SimpleGrid columns={{ base: 1, sm: 2, md: 3 }} spacing={8}>
           {deactivatedPlans.map((plan) => (
             <Box
@@ -74,7 +67,6 @@ export const DeActivatedPage = () => {
             </Box>
           ))}
         </SimpleGrid>
-      )}
     </Box>
   );
 };
