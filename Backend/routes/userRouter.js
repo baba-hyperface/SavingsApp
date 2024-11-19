@@ -5,6 +5,25 @@ import Transaction from '../models/historymodel.js';
 import { authorize, protect } from '../middleware/auth.js';
 
 const userRouter = express.Router();
+userRouter.get('/searchusers/:searchTerm', protect, authorize(["admin"]), async (req, res) => {
+    try {
+        const { searchTerm } = req.params;
+        
+        const users = await User.find({
+            email: { $regex: searchTerm, $options: 'i' } 
+        });
+
+        if (users.length === 0) {
+            return res.status(404).json({ message: "No users found with the provided email." });
+        }
+
+        res.status(200).json({ users });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error occurred." });
+    }
+});
+
 
 userRouter.get('/user',protect,authorize(["admin"]), async (req, res) => {
     try {

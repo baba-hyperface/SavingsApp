@@ -22,6 +22,7 @@ import { usePlans } from "./ContextApi";
 import { FilterModal } from "./FilterModel";
 import EditDeductionModel from "./EditDetuctionModel";
 import { SaveButton } from "./SaveButton";
+import { DeActivatedPage } from "./DeActivatedPage";
 export const SavingPlans = ({
   totalBalance,
   onBalanceUpdate,

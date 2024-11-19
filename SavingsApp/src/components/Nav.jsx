@@ -2,31 +2,39 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Nav.css";
 import api from "./api";
-import Cookies from "js-cookie";
+import { AuthContext } from "./AuthApi";
+import { useContext } from "react";
 
 const Nav = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [role, setRole] = useState(null); 
+  const { isAuthenticated, setIsAuthenticated, role, setRole } = useContext(AuthContext);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = Cookies.get("accessToken");
-    const userRole = Cookies.get("role");
-    setIsAuthenticated(!!token);  
-    setRole(userRole || null);
-}, []);
-
-  const handleLogout = async () => {
-    try {
-      const res = await api.post("/logout", {});
-      if (res.status === 200) {
-        Cookies.remove("accessToken");
-        Cookies.remove("role");
-        localStorage.removeItem("userid");
-        localStorage.removeItem("accessToken");
+    async function fetchAuthStatus() {
+      try {
+        const response = await api.get("/api/auth/check");
+        console.log("data check" , response.data);
+        setIsAuthenticated(response.data.isAuthenticated);
+        console.log("isauthenticated",isAuthenticated);
+        setRole(response.data.role);
+        console.log("get function");
+      } catch (error) {
+        console.error("Error fetching auth status:", error);
         setIsAuthenticated(false);
         setRole(null);
+      }
+    }
+    fetchAuthStatus();
+  },[]);
+  const handleLogout = async () => {
+    try {
+      const res = await api.post("/logout", {}, { withCredentials: true });
+      if (res.status === 200) {
+        setIsAuthenticated(false);
+        setRole(null);
+        localStorage.removeItem("userid");
         navigate("/");
       }
     } catch (error) {
@@ -34,11 +42,10 @@ const Nav = () => {
     }
   };
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
   return (
+
     <nav className="nav">
       <div className="nav-content">
         <h1 className="nav-logo">Coins Stash</h1>
