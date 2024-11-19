@@ -67,7 +67,7 @@ export const login = async (req, res) => {
                     await userExist.save();
 
                     res.cookie('accessToken', accessToken, {
-                        httpOnly: false,
+                        httpOnly: true,
                         secure: process.env.NODE_ENV === 'production', // true in production
                         sameSite: 'None',
                         maxAge: 30 * 24 * 60 * 60 * 1000, // Expires in 30 days
@@ -75,7 +75,7 @@ export const login = async (req, res) => {
                     });
 
                     res.cookie('role', role, {
-                        httpOnly: false, // Accessible to JavaScript if needed
+                        httpOnly: true, // Accessible to JavaScript if needed
                         secure: process.env.NODE_ENV === 'production', // true in production
                         sameSite: 'None',
                         maxAge: 30 * 24 * 60 * 60 * 1000, // Expires in 30 days
@@ -119,3 +119,23 @@ export const logout = (req, res) => {
     res.status(200).send("Logged out successfully");
  };
  
+
+ export const checklogin = (req, res) => {
+    const token = req.cookies.accessToken; // Access the httpOnly cookie
+    if (!token) {
+        return res.status(401).json({ isAuthenticated: false });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const { role } = decoded;
+
+        res.json({
+            isAuthenticated: true,
+            user: decoded,
+            role: role, // Send the role in the response
+        });
+    } catch (err) {
+        res.status(401).json({ isAuthenticated: false });
+    }
+};

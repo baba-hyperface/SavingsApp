@@ -10,6 +10,7 @@ export const Admin = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [filteredUsers,setFilteredUsers]=useState([]);
     const nav = useNavigate();
 
 const handleNav = (userid) => {
@@ -46,11 +47,30 @@ const handleNav = (userid) => {
             console.error("Error updating user:", error);
         }
     };
-    const filteredUsers = users.filter(user => 
-        user.email.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // const filteredUsers = users.filter(user => 
+    //     user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    // );
+    const handlesearch = async ()=>{
+        try {
+            const res= await api.get(`/searchusers/${searchTerm}`);
+            setUsers(res.data.users);
+            if(users.length === 0){
+                toast({
+                    title: "search successful.",
+                    description:res.data.message,
+                    status: "success",
+                    duration: 2000,
+                    isClosable: true,
+                  });
+          
+            }
+            // console.log(res.data);
+            
+        } catch (error) {
+            console.log(error);
 
-   
+        }
+    }
 
     if(loading) return <p>Loading...</p>
 
@@ -61,16 +81,8 @@ const handleNav = (userid) => {
                 fontWeight={"900"}
                 as={"h1"}
                 fontSize={'28px'} 
-                 >User Management</Text>
+                 >List Of Users</Text>
 
-                <Input
-                    placeholder="Search by email"
-                    value={searchTerm}
-                    border={"1px solid"}
-                    width={"30%"}
-                    borderRadius={"20px"}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
                 <Button 
                     as={Link} 
                     to="/createuser" 
@@ -82,6 +94,17 @@ const handleNav = (userid) => {
 
                 </Button>
             </Flex>
+            <Box>
+
+            <Input
+                    placeholder="Search by email"
+                    value={searchTerm}
+                    border={"1px solid"}
+                    width={"25%"}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <Button  onClick={(e)=>handlesearch()}> Search </Button>
+            </Box>
 
 
             {/* <h1>User Management</h1> */}
@@ -98,7 +121,7 @@ const handleNav = (userid) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredUsers.map((user) => (
+                    {users.map((user) => (
                         <tr key={user._id}>
                             <td>{user._id}</td>
                             <td>{user.name}</td>
