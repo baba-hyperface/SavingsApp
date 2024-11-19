@@ -47,8 +47,8 @@ export const SavingPlans = ({
     handleFilterOpen,
     isFilterModalOpen,
     handleFilterApply,
-    handleFilterClose,plans,
-    selectedPlan,selectedCategory,filterByAutoDeduction,autoDeductionStatus
+    handleFilterClose, plans,
+    selectedPlan, selectedCategory, filterByAutoDeduction, autoDeductionStatus
   } = usePlans();
 
   const handleDeleteHere = (potid, isActive) => {
@@ -61,7 +61,7 @@ export const SavingPlans = ({
       }
     }
     handleDeletePlan(potid, isActive);
-    const colorScheme="red";
+    const colorScheme = "red";
     toast({
       title: "Plan Deactivated",
       description: "Your saving plan has been successfully deactivated.",
@@ -174,12 +174,28 @@ export const SavingPlans = ({
     });
   };
 
-    if(filteredPlans.length === 0 && !selectedCategory && !filterByAutoDeduction && !autoDeductionStatus){
+  const categories = [
+    { label: "Holiday", icon: "fa-solid fa-plane" },
+    { label: "Health", icon: "fa-solid fa-heart-pulse" },
+    { label: "Home", icon: "fa-solid fa-house" },
+    { label: "Business", icon: "fa-solid fa-briefcase" },
+    { label: "Education", icon: "fa-solid fa-graduation-cap" },
+    { label: "Gadgets", icon: "fa-solid fa-mobile" },
+    { label: "Gifts", icon: "fa-solid fa-gift" },
+    { label: "Emergency", icon: "fa-solid fa-ambulance" },
+    { label: "Vehicle", icon: "fa-solid fa-car" },
+    { label: "Others", icon: "fa-solid fa-ellipsis" },
+  ];
+  
+
+
+
+  if (filteredPlans.length === 0 && !selectedCategory && !filterByAutoDeduction && !autoDeductionStatus) {
     return (
       <div className="no-saving-plan-container saving-plans-container">
         <h1>Start Saving</h1>
         <div>
-            <SaveButton />
+          <SaveButton />
         </div>
       </div>
     )
@@ -203,32 +219,50 @@ export const SavingPlans = ({
           </Button>
         </div>
         <div className="plans-list">
-          {filteredPlans.map((plan) => (
+          {filteredPlans.map((plan, ind) => (
             <div key={plan._id} className="plan-card">
-              <div onClick={() => handleNav(plan._id)}>
-                <div className="progress-bar">
-                  <div
-                    className="progress"
-                    style={{
-                      width: `${
-                        (plan.currentBalance / plan.targetAmount) * 100
-                      }%`,
-                      backgroundColor: plan.color,
-                    }}
-                  />
+              <div className="saving-plan-top-container">
+                <div>
+                <div className="creating-pot-container-savingplan">
+                <i
+                    className={`fa ${
+                      plan.category &&
+                      categories.find((cat) => cat.label === plan.category).icon
+                    }`}
+                  ></i>
+                  <p>{plan.category}</p>
                 </div>
+                </div>
+                <div className="saving-plan-top-right-container">
+                <div onClick={() => handleNav(plan._id)}>
                 <div className="plan-details">
                   <h4>{plan.potPurpose}</h4>
                   <p>
                     <span className="current-amount">
                       ₹{plan.currentBalance.toFixed(2)}
-                    </span>{" "}
-                    /{" "}
-                    <span className="goal-amount">
-                      ₹{plan.targetAmount.toFixed(2)}
                     </span>
                   </p>
                 </div>
+                <div className="progress-bar">
+                  <div
+                    className="progress"
+                    style={{
+                      width: `${(plan.currentBalance / plan.targetAmount) * 100}%`,
+                      backgroundColor: plan.color,
+                    }}
+                  >
+                  </div>
+                </div>
+                <div>
+                      <span className="progress-text-savingplan">
+                      {((plan.currentBalance / plan.targetAmount) * 100).toFixed(1)}% of {plan.targetAmount} Goal
+                    </span>
+                </div>
+              </div>
+                </div>
+              </div>
+              <div className="savingplan-middle-border">
+              <hr />
               </div>
               <div className="action-buttons-saving">
                 {plan.currentBalance >= plan.targetAmount ? (
@@ -336,6 +370,7 @@ export const SavingPlans = ({
           </ModalFooter>
         </ModalContent>
       </Modal>
+      
     </div>
   );
 };

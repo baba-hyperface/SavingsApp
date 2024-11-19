@@ -54,10 +54,14 @@ export const PlanProvider = ({ children }) => {
       return (
         categoryMatch &&
         autoDeductionMatch &&
-        autoDeductionStatusMatch &&
-        plan.potStatus
+        autoDeductionStatusMatch
       );
-    },[plans]);
+    },[plans])
+
+    filtered = filtered.sort((a, b) => {
+      if (a.potStatus === b.potStatus) return 0; 
+      return a.potStatus ? -1 : 1;
+    });
 
     if (sortOption) {
       filtered = filtered.sort((a, b) => {

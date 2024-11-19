@@ -128,7 +128,7 @@ const Nav = () => {
                 {role === "admin" && (
                   <li>
                     <Link to="/admin" onClick={toggleMenu}>
-                      Admin panel
+                      Admin
                     </Link>
                   </li>
                 )}

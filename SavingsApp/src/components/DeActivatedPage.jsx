@@ -29,6 +29,7 @@ export const DeActivatedPage = () => {
     >
       <Text>De-activate golas:-</Text><br/>
         <SimpleGrid gap={4} columns={{ base: 1, sm: 2, md: 3 }} >
+
           {deactivatedPlans.map((plan) => (
             <Box
               key={plan._id}
@@ -68,7 +69,6 @@ export const DeActivatedPage = () => {
             </Box>
           ))}
         </SimpleGrid>
-      
     </Box>
   );
 };
