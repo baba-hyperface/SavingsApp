@@ -5,18 +5,20 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter } from "react-router-dom";
 import { PlanProvider } from "./components/ContextApi.jsx";
 import { AuthProvider } from "./components/AuthApi.jsx";
+// import { UserProvider } from "./components/UserContext.js";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-      <PlanProvider>
-        <AuthProvider>
-    <BrowserRouter>
-        <ChakraProvider>
-          <App />
-        </ChakraProvider>
+    <PlanProvider>
+      <AuthProvider>
+        
+          <BrowserRouter>
+            <ChakraProvider>
+              <App />
+            </ChakraProvider>
+          </BrowserRouter>
       
-    </BrowserRouter>
-    </AuthProvider>
+      </AuthProvider>
     </PlanProvider>
   </StrictMode>
 );

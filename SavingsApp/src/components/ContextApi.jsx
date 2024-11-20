@@ -9,26 +9,21 @@ export const PlanProvider = ({ children }) => {
   const toast = useToast();
   const [plans, setPlans] = useState([]);
   const userId = localStorage.getItem("userid");
-
   const [isDeductModalOpen, setIsDeductModalOpen] = useState(false);
   const handleDeductCloseModal = () => setIsDeductModalOpen(false);
   const [selectedPlan, setSelectedPlan] = useState([]);
-
   const {
     isOpen: isFilterOpen,
     onOpen: onFilterOpen,
     onClose: onFilterClose,
   } = useDisclosure();
-
   const [categories, setCategories] = useState([]);
   const [filteredPlans, setFilteredPlans] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [filterByAutoDeduction, setFilterByAutoDeduction] = useState("");
   const [autoDeductionStatus, setAutoDeductionStatus] = useState("");
   const [sortOption, setSortOption] = useState("");
-
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-
   const handleFilterOpen = () => setIsFilterModalOpen(true);
   const handleFilterClose = () => {
     setIsFilterModalOpen(false);
@@ -37,7 +32,6 @@ export const PlanProvider = ({ children }) => {
     console.log("Applying filters");
     handleFilterClose();
   };
-
   useEffect(() => {
     let filtered = plans.filter((plan) => {
       const categoryMatch =
@@ -146,7 +140,6 @@ export const PlanProvider = ({ children }) => {
       const res = await api.patch(
         `/user/${userId}/savingplandeactivate/${planId}`
       );
-      // setPlans(res.data.pots);
       const potStatus = !res.data.potStatus;
       const colorScheme = potStatus ? "red" : "green";
       if (potStatus) {
@@ -177,12 +170,10 @@ export const PlanProvider = ({ children }) => {
         plans,
         setPlans,
         handleDeletePlan,
-
         isDeductModalOpen,
         handleDeductCloseModal,
         setIsDeductModalOpen,
         handleDeductOpenModal,
-
         filteredPlans,
         setFilteredPlans,
         selectedCategory,

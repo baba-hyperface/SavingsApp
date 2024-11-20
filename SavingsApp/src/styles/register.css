@@ -1,0 +1,126 @@
+.register-page-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      }
+    
+    .register-main-container {
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+      width: 90%;
+      max-width: 450px;
+      margin-top: 10%;
+      padding: 30px;
+      border-radius: 20px;
+      background-color: #fff;
+      transition: box-shadow 0.3s ease;
+    }
+    
+    .register-main-container:hover {
+      box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    }
+    
+    .register-main-container > h2 {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    
+    .label-for-input {
+      margin: 10px 0 5px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #555;
+    }
+    
+    .input-field {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin: 5px 0 15px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      transition: border-color 0.3s ease;
+    }
+    
+    .input-field:focus {
+      border-color: #38a169;
+      outline: none;
+    }
+    
+    .submit-button {
+      background-color: #380080;
+      width: 100%;
+      color: #fff;
+      padding: 13px 20px;
+      font-size: 18px;
+      font-weight: 600;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 15px;
+    }
+    
+    .submit-button:hover {
+      background-color: #2f855a;
+    }
+    
+    .register-main-container p {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 20px;
+      color: #333;
+    }
+    
+    .register-main-container p a {
+      color: #3182ce;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+    
+    .register-main-container p a:hover {
+      color: #2b6cb0;
+    }
+    
+    .signup-text {
+      font-size: 18px;
+      font-weight: 900;
+    }
+    
+    .register-image-container {
+      display: block;
+    }
+    
+    .register-image-container > img {
+      width: 1000px;
+      margin-top: 10%;
+    }
+    
+    @media (max-width: 768px) {
+      .register-main-container {
+        width: 90%;
+        padding: 20px;
+        margin: auto;
+        margin-top: 30%;
+      }
+    
+      .register-main-container > h2 {
+        font-size: 24px;
+      }
+    
+      .input-field {
+        font-size: 14px;
+      }
+    
+      .submit-button {
+        font-size: 16px;
+      }
+    
+      .register-image-container {
+        display: none;
+      }
+    }
+    
