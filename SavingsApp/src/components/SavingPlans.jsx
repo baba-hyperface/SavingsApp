@@ -60,15 +60,26 @@ export const SavingPlans = ({
       }
     }
     handleDeletePlan(potid, isActive);
-    const colorScheme = "red";
-    toast({
-      title: "Plan Deactivated",
-      description: "Your saving plan has been successfully deactivated.",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-      colorScheme
-    });
+    const colorScheme = !isActive ? "red" : "green";
+    if (!isActive) {
+      toast({
+        title: "Plan Deactivated",
+        description: "Your saving plan has been successfully deactivated.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        colorScheme
+      });
+    } else {
+      toast({
+        title: "Plan Activated",
+        description: "Your saving plan has been successfully activated.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        colorScheme,
+      });
+    }
   }
 
   const userIdFromLocalStorage = localStorage.getItem("userid");
@@ -185,7 +196,7 @@ export const SavingPlans = ({
     { label: "Vehicle", icon: "fa-solid fa-car" },
     { label: "Others", icon: "fa-solid fa-ellipsis" },
   ];
-  
+
 
 
 
@@ -206,8 +217,6 @@ export const SavingPlans = ({
       <div className="saving-plans-container">
         <div className="header">
           <div>
-            <h4>Savings plan</h4>
-            <h3>{filteredPlans.length} saving plans</h3>
           </div>
           <Button
             colorScheme="blue"
@@ -222,46 +231,45 @@ export const SavingPlans = ({
             <div key={plan._id} className="plan-card">
               <div className="saving-plan-top-container">
                 <div>
-                <div className="creating-pot-container-savingplan">
-                <i
-                    className={`fa ${
-                      plan.category &&
-                      categories.find((cat) => cat.label === plan.category).icon
-                    }`}
-                  ></i>
-                  <p>{plan.category}</p>
-                </div>
-                </div>
-                <div className="saving-plan-top-right-container">
-                <div onClick={() => handleNav(plan._id)}>
-                <div className="plan-details">
-                  <h4>{plan.potPurpose}</h4>
-                  <p>
-                    <span className="current-amount">
-                      ₹{plan.currentBalance.toFixed(2)}
-                    </span>
-                  </p>
-                </div>
-                <div className="progress-bar">
-                  <div
-                    className="progress"
-                    style={{
-                      width: `${(plan.currentBalance / plan.targetAmount) * 100}%`,
-                      backgroundColor: plan.color,
-                    }}
-                  >
+                  <div className="creating-pot-container-savingplan">
+                    <i
+                      className={`fa ${plan.category &&
+                        categories.find((cat) => cat.label === plan.category).icon
+                        }`}
+                    ></i>
+                    <p>{plan.category}</p>
                   </div>
                 </div>
-                <div>
+                <div className="saving-plan-top-right-container">
+                  <div onClick={() => handleNav(plan._id)}>
+                    <div className="plan-details">
+                      <h4>{plan.potPurpose}</h4>
+                      <p>
+                        <span className="current-amount">
+                          ₹{plan.currentBalance.toFixed(2)}
+                        </span>
+                      </p>
+                    </div>
+                    <div className="progress-bar">
+                      <div
+                        className="progress"
+                        style={{
+                          width: `${(plan.currentBalance / plan.targetAmount) * 100}%`,
+                          backgroundColor: plan.color,
+                        }}
+                      >
+                      </div>
+                    </div>
+                    <div>
                       <span className="progress-text-savingplan">
-                      {((plan.currentBalance / plan.targetAmount) * 100).toFixed(1)}% of {plan.targetAmount} Goal
-                    </span>
-                </div>
-              </div>
+                        {((plan.currentBalance / plan.targetAmount) * 100)}% of ₹{plan.targetAmount} 
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="savingplan-middle-border">
-              <hr />
+                <hr />
               </div>
               <div className="action-buttons-saving">
                 {plan.currentBalance >= plan.targetAmount ? (
@@ -280,6 +288,9 @@ export const SavingPlans = ({
                           onClick={() =>
                             handleAutoDeductionStatus(plan._id, plan.potPurpose)
                           }
+
+                          style={{ cursor: plan.potStatus ? "pointer" : "not-allowed" }}
+                          disabled={!plan.potStatus}
                           display="flex"
                           alignItems="center"
                         >
@@ -303,8 +314,11 @@ export const SavingPlans = ({
                         </Box>
                       ) : (
                         <Box
+
+                          style={{ cursor: plan.potStatus ? "pointer" : "not-allowed", display: "flex", alignItems: "center" }}
+                          disabled={!plan.potStatus}
                           onClick={() => handleDeductOpenModal(plan._id)}
-                          style={{ display: "flex", alignItems: "center" }} >
+                        >
                           <span>Set Deduct</span>
                         </Box>
                       )}
@@ -315,17 +329,22 @@ export const SavingPlans = ({
                         onOpen();
                       }}
                       className="add-money-btn"
+                      style={{ cursor: plan.potStatus ? "pointer" : "not-allowed" }}
+                      disabled={!plan.potStatus}
                     >
                       <i className="fa-solid fa-plus"></i> Add Money
                     </button>
+
+
                     <button
-                      onClick={() => handleDeleteHere(plan._id, false)}
+                      onClick={() => handleDeleteHere(plan._id, !plan.potStatus)}
                       className="delete-btn"
                       _hover={{ bg: "red.500", color: "white" }}
                       bg="gray.200"
                       color="black"
                     >
-                      <i className="fa-regular fa-circle-pause"></i> Deactivate
+                      {plan.potStatus ? <i className="fa-regular fa-circle-pause"></i> : <i class="fa-solid fa-play" style={{ color: "green" }}></i>} {"  "}
+                      {plan.potStatus ? "DeActivate" : "Activate"}
                     </button>
                   </>
                 )}
@@ -369,7 +388,6 @@ export const SavingPlans = ({
           </ModalFooter>
         </ModalContent>
       </Modal>
-      
     </div>
   );
 };
