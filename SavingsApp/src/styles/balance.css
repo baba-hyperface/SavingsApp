@@ -110,7 +110,7 @@
     }
 }
 
-
+/* Adjust for mobile devices */
 @media (max-width: 1081px) {
     .add-fund-button {
         font-size: 0.8rem;
@@ -155,9 +155,10 @@
     }
     .add-fund-button{
         position: absolute;
-        bottom: -25.5%;
+        text-align: center;
+        bottom: -20.5%;
         font-family: "Noto Sans", sans-serif;
-        font-size: 1rem;
+        font-size: 0.9rem;
         height: 5vh;
         left: 2%;
         color: rgb(218, 218, 218);

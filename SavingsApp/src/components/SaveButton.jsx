@@ -60,12 +60,12 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
     { label: "Holiday", icon: "fa-solid fa-plane" },
     { label: "Health", icon: "fa-solid fa-heart-pulse" },
     { label: "Home", icon: "fa-solid fa-house" },
+    { label: "Vehicle", icon: "fa-solid fa-car" },
     { label: "Business", icon: "fa-solid fa-briefcase" },
     { label: "Education", icon: "fa-solid fa-graduation-cap" },
     { label: "Gadgets", icon: "fa-solid fa-mobile" },
     { label: "Gifts", icon: "fa-solid fa-gift" },
     { label: "Emergency", icon: "fa-solid fa-ambulance" },
-    { label: "Vehicle", icon: "fa-solid fa-car" },
     { label: "Others", icon: "fa-solid fa-ellipsis" },
   ];
   
@@ -190,8 +190,8 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
       rotateY: -90,
       scale: 0.9,
       filter: "blur(10px)", 
-      duration: 0.8,
-      ease: "back.in(1.7)",
+      duration: 0.1,
+      //ease: "back.in(1.7)",
       onComplete,
     });
   };
@@ -215,8 +215,7 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
         rotateY: 0,
         scale: 1,
         filter: "blur(0px)", 
-        duration: 0.8,
-        ease: "power3.out",
+        duration: 0.1,
       }
     );
   }, [step]);

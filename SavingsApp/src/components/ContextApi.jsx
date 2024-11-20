@@ -154,14 +154,6 @@ export const PlanProvider = ({ children }) => {
         setPlans((prevPlans) =>
           prevPlans.filter((plan) => plan._id !== planId)
         );
-        toast({
-          title: "Plan Activated",
-          description: "Your saving plan has been successfully activated.",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-          colorScheme,
-        });
       }
       setRefreshKey((prev) => prev + 1);
     } catch (error) {

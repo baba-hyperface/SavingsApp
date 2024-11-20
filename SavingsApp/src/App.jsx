@@ -16,6 +16,7 @@ import Admin from "./components/Admin";
 import { AdminPot } from "./components/AdminPot";
 import AdminCreateUser from "./components/AdminCreateuser";
 import PrivateRoute from "./PrivateRouter";
+import { SavingPlans } from "./components/SavingPlans";
 
 function App() {
   const [potData, setPotData] = useState([]);
@@ -46,8 +47,9 @@ function App() {
         <Route
           path="/account"
           element={<BankDeatails />}/>
+        
 
-        {/* Protected Routes */}
+        <Route path="/savingplan" element={<SavingPlans />} />
         <Route
           path="/dashboard"
           element={
