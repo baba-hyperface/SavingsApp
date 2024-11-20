@@ -19,6 +19,23 @@
   .send-text{
     display: none;
   }
+
+  .action-buttons-saving-plan{
+    background-color: #E5EBF6;
+    padding: 13px 23px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    color: rgb(66, 65, 65);
+    font-family: "Noto Sans", sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .action-buttons-saving-plan > i{
+    margin-right: 8px;
+  }
   
   @media (max-width: 750px) {
     .action-buttons .button-text {
