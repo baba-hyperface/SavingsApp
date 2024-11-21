@@ -192,12 +192,6 @@ export const SavingPlanPage = () => {
                 </span>
               </div>
             </div>
-            <div>
-                <h3 className="current-amount-savingpage"><span>₹{data.dailyAmount}</span> {data.frequncy? data.frequncy:"Daily"} Target</h3>
-              </div>
-            <div>
-                <h3 className="current-amount-savingpage"><span>₹{remainingAmount}</span> Remaining to Reach Target </h3>
-              </div>
               <div>
               <h3 className="current-amount-savingpage"><span>{daysRequired}</span> Days Left to Reach Target</h3>
             </div>
@@ -206,26 +200,6 @@ export const SavingPlanPage = () => {
 
         <div className="money-and-date-container">
           <div className="money-deails-container">
-          </div>
-          <div className="date-deails-container">
-            <div className="date-child-container">
-              <div>
-                <i className="fa-solid fa-calendar-days"></i>
-              </div>
-              <div>
-                <h5>{formatDate(data.startDate)}</h5>
-                <p>Start date</p>
-              </div>
-            </div>
-            <div className="date-child-container">
-              <div>
-                <i className="fa-solid fa-calendar-days"></i>
-              </div>
-              <div>
-                <h5>{formatDate(data.endDate)}</h5>
-                <p>End date</p>
-              </div>
-            </div>
           </div>
         </div>
         <div>

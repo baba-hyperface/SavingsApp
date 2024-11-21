@@ -352,7 +352,7 @@ savingPlanRouter.get("/user/:userId/savingplan", protect,authorize(["user","admi
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.json(user.pots);
+    res.send({pots:user.pots, user:user._id});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
