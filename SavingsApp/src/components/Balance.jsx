@@ -38,8 +38,7 @@ export const Balance = ({ totalBalance, onBalanceUpdate, accNum, expDate, update
       try {
         setChartLoading(true); 
         const res = await api.get(`/user/${userIdFromLocalStorage}/savingplan`);
-        setPotData(res.data);
-        console.log(res.data);
+        setPotData(res.data.pots);
       } catch (error) {
         console.log(error);
       } finally {
