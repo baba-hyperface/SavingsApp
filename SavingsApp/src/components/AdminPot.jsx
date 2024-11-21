@@ -164,7 +164,7 @@ export const AdminPot = () => {
               Status:
               <select
                 style={{height:"30px"}}
-                value={editPot.potStatus ? "active" : "inactive"} // Convert boolean to string
+                value={editPot.potStatus ? "active" : "inactive"}
                 onChange={
                   (e) =>
                     setEditPot({
@@ -177,17 +177,33 @@ export const AdminPot = () => {
                 <option value="inactive">Inactive</option>
               </select>
             </label>
-
-            <label>
-              Auto Deduction:
-              <input
-                type="checkbox"
-                checked={editPot.autoDeduction}
-                onChange={(e) =>
-                  setEditPot({ ...editPot, autoDeduction: e.target.checked })
-                }
-              />
-            </label>
+            <div>
+              <label>Auto Deduction:</label>
+              <label>
+                <input
+                  type="radio"
+                  name="autoDeduction"
+                  value="true"
+                  checked={editPot.autoDeduction === true}
+                  onChange={() =>
+                    setEditPot({ ...editPot, autoDeduction: true })
+                  }
+                />
+                Yes
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="autoDeduction"
+                  value="false"
+                  checked={editPot.autoDeduction === false}
+                  onChange={() =>
+                    setEditPot({ ...editPot, autoDeduction: false })
+                  }
+                />
+                No
+              </label>
+            </div>
             <label>
               End Date:
               <input
