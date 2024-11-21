@@ -601,7 +601,7 @@ export const SavingPlans = ({
         if(!dayOfMonth){
           throw new Error("dayOfMonth is required for Monthly frequency.");
         }
-        nextDeductionDate= base.clone().add(1,"month").date(dayOfMonth);
+        nextDeductionDate= baseDate.clone().add(1,"month").date(dayOfMonth);
 
         if (!nextDeductionDate.isValid()) {
           nextDeductionDate = baseDate.clone().add(1, "month").endOf("month");
