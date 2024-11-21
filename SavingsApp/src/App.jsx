@@ -16,6 +16,8 @@ import Admin from "./components/Admin";
 import { AdminPot } from "./components/AdminPot";
 import AdminCreateUser from "./components/AdminCreateuser";
 import PrivateRoute from "./PrivateRouter";
+import CategoryForm from "./components/AdminCategoryform";
+import ShowCategory from "./components/AdminCategoryList";
 import { SavingPlans } from "./components/SavingPlans";
 
 function App() {
@@ -116,7 +118,17 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route path='/admincreatecategory'
+        element={
+            <PrivateRoute role='admin'> 
+            <CategoryForm/> 
+            </PrivateRoute>}/>
+
+        <Route path='/adminshowcategory'
+        element={<PrivateRoute role='admin'> <ShowCategory/> </PrivateRoute>}/>
+      
       </Routes>
+      
     </Box>
     </div>
   );

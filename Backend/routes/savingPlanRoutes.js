@@ -4,6 +4,7 @@ import SavingPot from "../models/potsmodel.js";
 import mongoose from "mongoose";
 import Transaction from "../models/historymodel.js";
 import { authorize, protect } from "../middleware/auth.js";
+import Category from "../models/categorymodel.js";
 
 const savingPlanRouter = express.Router();
 savingPlanRouter.get(
@@ -125,7 +126,12 @@ savingPlanRouter.post(`/user/:userId/savingplan`, protect,authorize(["user","adm
       startDate,
       user: req.params.userId,
     };
-
+    if (savingPotData.category) {
+      const categoryExists = await Category.findById(savingPotData.category);
+      if (!categoryExists) {
+        return res.status(400).json({ message: "Invalid category ID" });
+      }
+    }
     // Add endDate only if it's provided
     if (endDate) {
       savingPotData.endDate = endDate;
@@ -336,7 +342,13 @@ savingPlanRouter.get("/user/:userId/savingplan", protect,authorize(["user","admi
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid user ID" });
     }
-    const user = await User.findById(userId).populate("pots");
+    // const user = await User.findById(userId).populate("pots");
+    const user = await User.findById(userId).populate({
+      path: "pots",
+      populate: {
+        path: "category", // Populate the 'category' field inside each pot
+      },
+    });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -363,7 +375,7 @@ savingPlanRouter.get(
       if (!mongoose.Types.ObjectId.isValid(potId)) {
         return res.status(400).json({ message: "Invalid pot ID" });
       }
-      const pot = user.pots.find((pot) => pot._id.toString() === potId);
+      const pot = user.pots.find((pot) => pot._id.toString() === potId).populate("category");
       if (!pot) {
         return res.status(404).json({ message: "Pot not found for this user" });
       }

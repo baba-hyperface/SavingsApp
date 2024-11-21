@@ -7,6 +7,7 @@ import savingPlanRouter from './routes/savingPlanRoutes.js';
 import userRouter from './routes/userRouter.js';
 import historyrouter from './routes/history.js';
 import cookieParser from 'cookie-parser';
+import categoriesrouter from './routes/categoryrouter.js';
 // import './controllers/cornsjob.js';
 
 const app = express();
@@ -23,8 +24,9 @@ app.use(cookieParser());
 
 app.use('/api', loginrouter);
 app.use('/api',historyrouter);
-app.use('/api',userRouter)
+app.use('/api',userRouter);
 app.use('/api', savingPlanRouter);
+app.use('/api',categoriesrouter);
 app.use('/',(req,res)=>{
     res.send("this is home Route");
 });
