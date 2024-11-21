@@ -111,6 +111,7 @@ export const SavingPlans = ({
         const res = await api.get(`/user/${userId}/savingplan`);
         const fetchedPlans = res.data.pots;
         setPlans(fetchedPlans);
+        console.log(plans);
         const categoriesSet = new Set(
           fetchedPlans.map((plan) => plan.category ? plan.category.name : "Others")
         );
@@ -297,7 +298,7 @@ export const SavingPlans = ({
                  
                 <div className="creating-pot-savingplan">
                         <span
-                          style={{...getShapeStyle( plan.category.shape , plan.category.backgroundColor)}}
+                          style={{...getShapeStyle( plan.category.shape === ""? "":plan.category.shape , plan.category.backgroundColor)}}
                           mr={4}
                           className="category-icon"
                         >
@@ -348,13 +349,12 @@ export const SavingPlans = ({
                     </div>
                     <div>
                       <span className="progress-text-savingplan">
-                        {((plan.currentBalance / plan.targetAmount) * 100)}% of ₹{plan.targetAmount} 
+                        {Math.round(((plan.currentBalance / plan.targetAmount) * 100))}% of ₹{plan.targetAmount} 
                       </span>
                     </div>
                     <div>
                       <span className="progress-text-savingplan">
-                        {/* {((plan.currentBalance / plan.targetAmount) * 100)}% of ₹{plan.targetAmount}  */}
-                        {(plan.autoDeduction && plan.autoDeductionStatus) && <> {calculateNextDeductionDate(plan).toLocaleDateString()} </> }
+                        Next Deduction Date: {(plan.autoDeduction && plan.autoDeductionStatus) && <> {calculateNextDeductionDate(plan).toLocaleDateString()} </> }
                       </span>
                     </div>
                   </div>
@@ -583,7 +583,39 @@ export const calculateNextDeductionDate = (savingPot) => {
   baseDate = moment(baseDate);
 
   let nextDeductionDate;
+  switch (frequency) {
+    case "daily":
+      nextDeductionDate=baseDate.add(1,"day");
+      break;
+      case "weekly":
+        if (!dayOfWeek) {
+          throw new Error("dayOfWeek is required for weekly frequency.");
+        }
+        nextDeductionDate = baseDate.clone().add(1, "week").isoWeekday(dayOfWeek);
+        break;
+      
+      case "monthly":
+        if(!dayOfMonth){
+          throw new Error("dayOfMonth is required for Monthly frequency.");
+        }
+        nextDeductionDate= base.clone().add(1,"month").date(dayOfMonth);
 
-  return nextDeductionDate.toDate(); // Return as JavaScript Date object
+        if (!nextDeductionDate.isValid()) {
+          nextDeductionDate = baseDate.clone().add(1, "month").endOf("month");
+        }
+        break;
+  
+    default:
+      throw new Error("Invalid frequency ")
+      
+  }
+
+  if (nextDeductionDate.isBefore(moment())) {
+    nextDeductionDate = calculateNextDeductionDate({
+      ...savingPot,
+      lastAutoDeductionDate: nextDeductionDate.toDate(),
+    });
+  }
+  return nextDeductionDate.toDate();
 };
 
