@@ -17,6 +17,7 @@ import {
   useDisclosure,
   Toast,
   useToast,
+  border,
 } from "@chakra-ui/react";
 import gsap from "gsap";
 import "../styles/buttonStyles.css";
@@ -30,7 +31,11 @@ const generateRandomColor = () => {
     .padStart(6, "0")}`;
 };
 
-export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => {
+export const SaveButton = ({
+  totalBalance,
+  onBalanceUpdate,
+  updateBalance,
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [step, setStep] = useState(1);
   const [category, setCategory] = useState("");
@@ -47,28 +52,38 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
   const [emoji, setEmoji] = useState("");
   const [icon, setIcon] = useState("");
   const [loading, setLoading] = useState(false);
-  const { userId } = usePlans();
-  const toast = useToast()
+  // const { userId } = usePlans();
+  
+  const toast = useToast();
   const modalRef = useRef(null);
   const userIdFromLocalStorage = localStorage.getItem("userid");
+  const userId =userIdFromLocalStorage;
+  const [categories, setCategories] = useState([]);
+  const [iconname, setIconName] = useState("");
+  const [backgroundColor, setBackgroundColor] = useState("#ffffff");
+  const [shape, setShape] = useState("circle");
+  const [iconType, setIconType] = useState("url"); // Either 'url' or 'class'
+  
 
   useEffect(() => {
     calculateRequiredAmount();
   }, [goalAmount, currentAmount, frequency, goalDate]);
 
-  const categories = [
-    { label: "Holiday", icon: "fa-solid fa-plane" },
-    { label: "Health", icon: "fa-solid fa-heart-pulse" },
-    { label: "Home", icon: "fa-solid fa-house" },
-    { label: "Business", icon: "fa-solid fa-briefcase" },
-    { label: "Education", icon: "fa-solid fa-graduation-cap" },
-    { label: "Gadgets", icon: "fa-solid fa-mobile" },
-    { label: "Gifts", icon: "fa-solid fa-gift" },
-    { label: "Emergency", icon: "fa-solid fa-ambulance" },
-    { label: "Vehicle", icon: "fa-solid fa-car" },
-    { label: "Others", icon: "fa-solid fa-ellipsis" },
-  ];
-  
+  const fetchCategories = async () => {
+    try {
+      const response = await api.get("/categoriesget");
+      setCategories(response.data);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching categories:", err);
+      setError("Failed to load categories.");
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     if (step === 3) {
@@ -189,21 +204,21 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
       x: -100,
       rotateY: -90,
       scale: 0.9,
-      filter: "blur(10px)", 
+      filter: "blur(10px)",
       duration: 0.8,
       ease: "back.in(1.7)",
       onComplete,
     });
   };
-  
+
   const nextStep = () => {
     animateExit(() => setStep((prev) => prev + 1));
   };
-  
+
   const prevStep = () => {
     animateExit(() => setStep((prev) => prev - 1));
   };
-  
+
   useEffect(() => {
     if (!modalRef.current) return;
     gsap.fromTo(
@@ -214,15 +229,12 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
         x: 0,
         rotateY: 0,
         scale: 1,
-        filter: "blur(0px)", 
+        filter: "blur(0px)",
         duration: 0.8,
         ease: "power3.out",
       }
     );
   }, [step]);
-  
-  
-
 
   const handleSavePlan = async () => {
     const randomColor = generateRandomColor();
@@ -295,6 +307,48 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
 
   const percentage = ((currentAmount / goalAmount) * 100).toFixed(1);
 
+  const getShapeStyle = (shape, backgroundColor) => {
+    const baseStyle = {
+      display: "flex",
+      margin:"auto",
+      justifyContent: "center",
+      // FlexDirection:"column",
+      alignItems: "center",
+      boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+      width: "120px",
+      height: "120px",
+    };
+
+    switch (shape) {
+      case "circle":
+        return { ...baseStyle, borderRadius: "50%", backgroundColor };
+      case "square":
+        return { ...baseStyle, borderRadius: "8px", backgroundColor };
+      case "hexagon":
+        return {
+          ...baseStyle,
+          backgroundColor,
+          clipPath:
+            "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
+        };
+      case "cave":
+        return {
+          ...baseStyle,
+          backgroundColor,
+          borderRadius: "50px 50px 0 0",
+        };
+      case "star":
+        return {
+          ...baseStyle,
+          backgroundColor,
+          clipPath:
+            "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)",
+        };
+      default:
+        return baseStyle;
+    }
+  };
+
   return (
     <div>
       <button className="action-buttons" onClick={onOpen}>
@@ -329,9 +383,9 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
           }}
         >
           <ModalBody className="modal-body" ref={modalRef}>
-          <div className="modal-close-button" onClick={onClose}>
-          <i class="fa-solid fa-xmark"></i>
-          </div>
+            <div className="modal-close-button" onClick={onClose}>
+              <i class="fa-solid fa-xmark"></i>
+            </div>
             {step !== 1 && step !== 3 && (
               <i
                 className="fa-solid fa-chevron-left back-icon"
@@ -344,27 +398,57 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
                 <h1 className="main-heading">Define Your Goal</h1>
                 <div className="nav-container">
                   <h1 className="label">Choose a Category</h1>
-                  <p className="start-saving-for-it">Start saving towards your dream today!</p>
+                  <p className="start-saving-for-it">
+                    Start saving towards your dream today!
+                  </p>
                 </div>
                 <div className="category-container">
                   {categories.map((cat) => (
                     <div
-                      key={cat.label}
+                      key={cat._id}
                       onClick={() => {
-                        setCategory(cat.label);
+                        setCategory(cat._id);
+                        setIconName(cat.name)
+                        setIcon(cat.icon)
+                        setBackgroundColor(cat.backgroundColor)
+                        setIconType(cat.iconType)
+                        setShape(cat.shape)
                         nextStep();
                         setIcon(cat.icon);
+
                       }}
-                      className={`category ${
-                        category === cat.label ? "selected" : ""
-                      }`}
+                      className={` ${category === cat.name ? "selected" : ""}`}
                     >
-                      <div className="category-items-style">
-                        <span className="category-icon">
-                          <i className={cat.icon}></i>
+                      <div  className="category-items-style">
+                        <span
+                          style={{...getShapeStyle(cat.shape, cat.backgroundColor)}}
+                          mr={4}
+                          className="category-icon"
+                        >
+                          {cat.iconType === "url" && (
+                            
+                              <img
+                                alt="Category Icon"
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "contain",
+                                  borderRadius:
+                                    category.shape === "circle" ? "50%" : "0", // Circle-specific styling
+                                }}
+                                src={cat.icon}
+                              />
+                            
+                          )}
+                          {cat.iconType === "class" && (
+                            
+                              <i className={cat.icon}></i>
+                          
+                          )}
                         </span>
-                        <p>{cat.label}</p>
+                        <h1 style={{textAlign:"center"}}>{cat.name}</h1>
                       </div>
+                          {/* <p style={{color: "black"}}>{cat.name}</p> */}
                     </div>
                   ))}
                 </div>
@@ -376,14 +460,34 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
                 <div>
                   <h1 className="label">Personalize Your Goal</h1>
                 </div>
-                <div className="creating-pot-container">
-                  <i
-                    className={`fa ${
-                      category &&
-                      categories.find((cat) => cat.label === category).icon
-                    }`}
-                  ></i>
-                  <p>{category}</p>
+                <div className="creating-pot ">
+                <span
+                          style={{...getShapeStyle(shape, backgroundColor)}}
+                          mr={4}
+                          className="category-icon"
+                        >
+                          {iconType === "url" && (
+                            <>
+                              <img
+                                alt="Category Icon"
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "contain",
+                                  borderRadius:
+                                    shape === "circle" ? "50%" : "0", // Circle-specific styling
+                                }}
+                                src={icon}
+                              />
+                            </>
+                          )}
+                          {iconType === "class" && (
+                            <>
+                              <i className={icon}></i>
+                            </>
+                          )}
+                        </span>
+                  <p>{iconname}</p>
                 </div>
                 <div className="input-feld-and-label-container">
                   <label className="label-for-input">Goal Name</label>
@@ -403,14 +507,34 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
 
             {step === 3 && (
               <div className="step3">
-                <div className="creating-pot-container">
-                  <i
-                    className={`fa ${
-                      category &&
-                      categories.find((cat) => cat.label === category).icon
-                    }`}
-                  ></i>
-                  <p>{name}</p>
+                <div className="creating-pot">
+                  <span
+                          style={{...getShapeStyle(shape, backgroundColor)}}
+                          mr={4}
+                          className="category-icon"
+                        >
+                          {iconType === "url" && (
+                            <>
+                              <img
+                                alt="Category Icon"
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "contain",
+                                  borderRadius:
+                                    shape === "circle" ? "50%" : "0", // Circle-specific styling
+                                }}
+                                src={icon}
+                              />
+                            </>
+                          )}
+                          {iconType === "class" && (
+                            <>
+                              <i className={icon}></i>
+                            </>
+                          )}
+                        </span>
+                  <h1 style={{textAlign:"center"}}>{iconname}</h1>
                 </div>
                 <p className="pot-created-text">
                   <strong>{name}</strong> Goal Successfully Created!
@@ -420,14 +544,34 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
 
             {step === 4 && (
               <div className="step4">
-                <div className="creating-pot-container">
-                  <i
-                    className={`fa ${
-                      category &&
-                      categories.find((cat) => cat.label === category).icon
-                    }`}
-                  ></i>
-                  <p>{name}</p>
+                <div className="creating-pot">
+                  <span
+                          style={{...getShapeStyle(shape, backgroundColor)}}
+                          mr={4}
+                          className="category-icon"
+                        >
+                          {iconType === "url" && (
+                            <>
+                              <img
+                                alt="Category Icon"
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "contain",
+                                  borderRadius:
+                                    shape === "circle" ? "50%" : "0", // Circle-specific styling
+                                }}
+                                src={icon}
+                              />
+                            </>
+                          )}
+                          {iconType === "class" && (
+                            <>
+                              <i className={icon}></i>
+                            </>
+                          )}
+                        </span>
+                  <h1 style={{textAlign:"center"}}>{iconname}</h1>
                 </div>
                 <div className="step-verification-container">
                   <p>1 Step Closer to Your Goal</p>
@@ -444,14 +588,34 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
             {step === 5 && (
               <div className="step-container">
                 <h1 className="label">Set Your Starting Point</h1>
-                <div className="creating-pot-container">
-                  <i
-                    className={`fa ${
-                      category &&
-                      categories.find((cat) => cat.label === category).icon
-                    }`}
-                  ></i>
-                  <p>{name}</p>
+                <div className="creating-pot">
+                  <span
+                          style={{...getShapeStyle(shape, backgroundColor)}}
+                          mr={4}
+                          className="category-icon"
+                        >
+                          {iconType === "url" && (
+                            <>
+                              <img
+                                alt="Category Icon"
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "contain",
+                                  borderRadius:
+                                    shape === "circle" ? "50%" : "0", // Circle-specific styling
+                                }}
+                                src={icon}
+                              />
+                            </>
+                          )}
+                          {iconType === "class" && (
+                            <>
+                              <i className={icon}></i>
+                            </>
+                          )}
+                        </span>
+                  <h1 style={{textAlign:"center"}}>{iconname}</h1>
                 </div>
                 <div className="input-feld-and-label-container">
                   <label className="label-for-input">
@@ -474,19 +638,37 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
             {step === 6 && (
               <div className="step-container">
                 <h1 className="label">Define Your Target</h1>
-                <div className="creating-pot-container">
-                  <i
-                    className={`fa ${
-                      category &&
-                      categories.find((cat) => cat.label === category).icon
-                    }`}
-                  ></i>
-                  <p>{name}</p>
+                <div className="creating-pot">
+                  <span
+                          style={{...getShapeStyle(shape, backgroundColor)}}
+                          mr={4}
+                          className="category-icon"
+                        >
+                          {iconType === "url" && (
+                            <>
+                              <img
+                                alt="Category Icon"
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "contain",
+                                  borderRadius:
+                                    shape === "circle" ? "50%" : "0", // Circle-specific styling
+                                }}
+                                src={icon}
+                              />
+                            </>
+                          )}
+                          {iconType === "class" && (
+                            <>
+                              <i className={icon}></i>
+                            </>
+                          )}
+                        </span>
+                  <h1 style={{textAlign:"center"}}>{iconname}</h1>
                 </div>
                 <div className="input-feld-and-label-container">
-                  <label className="label-for-input">
-                  Goal Amount
-                  </label>
+                  <label className="label-for-input">Goal Amount</label>
                   <input
                     type="number"
                     value={goalAmount}
@@ -504,14 +686,34 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
             {step === 7 && (
               <div className="step-container">
                 <h1 className="label">Timeline for Your Goal</h1>
-                <div className="creating-pot-container">
-                  <i
-                    className={`fa ${
-                      category &&
-                      categories.find((cat) => cat.label === category).icon
-                    }`}
-                  ></i>
-                  <p>{name}</p>
+                <div className="creating-pot">
+                  <span
+                          style={{...getShapeStyle(shape, backgroundColor)}}
+                          mr={4}
+                          className="category-icon"
+                        >
+                          {iconType === "url" && (
+                            <>
+                              <img
+                                alt="Category Icon"
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "contain",
+                                  borderRadius:
+                                    shape === "circle" ? "50%" : "0", // Circle-specific styling
+                                }}
+                                src={icon}
+                              />
+                            </>
+                          )}
+                          {iconType === "class" && (
+                            <>
+                              <i className={icon}></i>
+                            </>
+                          )}
+                        </span>
+                  <h1 style={{textAlign:"center"}}>{iconname}</h1>
                 </div>
                 <div className="input-feld-and-label-container">
                   <label className="label-for-input">End Date</label>
@@ -533,14 +735,34 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
               <div className="step-container">
                 <h1 className="label">Automate Your Savings</h1>
 
-                <div className="creating-pot-container">
-                  <i
-                    className={`fa ${
-                      category &&
-                      categories.find((cat) => cat.label === category).icon
-                    }`}
-                  ></i>
-                  <p>{name}</p>
+                <div className="creating-pot">
+                  <span
+                          style={{...getShapeStyle(shape, backgroundColor)}}
+                          mr={4}
+                          className="category-icon"
+                        >
+                          {iconType === "url" && (
+                            <>
+                              <img
+                                alt="Category Icon"
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "contain",
+                                  borderRadius:
+                                    shape === "circle" ? "50%" : "0", // Circle-specific styling
+                                }}
+                                src={icon}
+                              />
+                            </>
+                          )}
+                          {iconType === "class" && (
+                            <>
+                              <i className={icon}></i>
+                            </>
+                          )}
+                        </span>
+                  <h1 style={{textAlign:"center"}}>{iconname}</h1>
                 </div>
 
                 <div className="toggle-container">
@@ -598,7 +820,6 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
                       ))}
                     </div>
 
-
                     {frequency && (
                       <div className="frequency-options">
                         {frequency === "daily" && <></>}
@@ -632,7 +853,7 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
                       </div>
                     )}
 
-                    { (requiredAmount > 0 && goalDate) && (
+                    {requiredAmount > 0 && goalDate && (
                       <div className="summary">
                         <p>
                           To reach your goal by {goalDate}, you need to save
@@ -646,20 +867,21 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
                       </div>
                     )}
 
-                    { !goalDate && 
-                        <div className="input-feld-and-label-container">
+                    {!goalDate && (
+                      <div className="input-feld-and-label-container">
                         <label className="label-for-input">
-                          Enter Auto Deduction Amount {frequency? frequency:"Daily"}
+                          Enter Auto Deduction Amount{" "}
+                          {frequency ? frequency : "Daily"}
                         </label>
                         <input
                           type="number"
-                          value={requiredAmount==0? "":requiredAmount}
+                          value={requiredAmount == 0 ? "" : requiredAmount}
                           onChange={(e) => setRequiredAmount(e.target.value)}
                           placeholder="Deduction amount Amount"
                           className="input-field"
                         />
                       </div>
-                    }
+                    )}
 
                     <button className="next-button" onClick={nextStep}>
                       Set Auto Deduction
@@ -670,19 +892,41 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
             )}
             {step === 9 && (
               <div className="step-container">
-                <div className="creating-pot-container">
-                  <i
-                    className={`fa ${
-                      category &&
-                      categories.find((cat) => cat.label === category).icon
-                    }`}
-                  ></i>
-                  <p>{name}</p>
+                <div className="creating-pot">
+                  <span
+                          style={{...getShapeStyle(shape, backgroundColor)}}
+                          mr={4}
+                          className="category-icon"
+                        >
+                          {iconType === "url" && (
+                            <>
+                              <img
+                                alt="Category Icon"
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "contain",
+                                  borderRadius:
+                                    shape === "circle" ? "50%" : "0", // Circle-specific styling
+                                }}
+                                src={icon}
+                              />
+                            </>
+                          )}
+                          {iconType === "class" && (
+                            <>
+                              <i className={icon}></i>
+                            </>
+                          )}
+                        </span>
+                  <h1 style={{textAlign:"center"}}>{iconname}</h1>
                 </div>
 
                 <div className="creating-pot-last-step">
                   <p>Currently in the Pot</p>
-                  <h1 className="current-amount-while-creating">₹{currentAmount.toLocaleString()}</h1>
+                  <h1 className="current-amount-while-creating">
+                    ₹{currentAmount.toLocaleString()}
+                  </h1>
 
                   <div className="progress-container">
                     <div
@@ -697,7 +941,7 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
                 </div>
 
                 <button className="lock-button" onClick={handleSavePlan}>
-                  {loading ? "Loading..." :  "Lock And Load"}
+                  {loading ? "Loading..." : "Lock And Load"}
                 </button>
               </div>
             )}
@@ -707,5 +951,3 @@ export const SaveButton = ({ totalBalance, onBalanceUpdate, updateBalance }) => 
     </div>
   );
 };
-
-

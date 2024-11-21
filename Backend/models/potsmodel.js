@@ -36,7 +36,9 @@ const savingPotSchema = new mongoose.Schema(
     },
     lastInterestAddedDate: { type: Date, default: null },
     category: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: "Category", 
+      required: false, 
     },
     currentBalance: {
       type: Number,
