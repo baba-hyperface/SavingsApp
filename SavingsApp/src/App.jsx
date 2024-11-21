@@ -19,6 +19,8 @@ import PrivateRoute from "./PrivateRouter";
 import { SavingPlans } from "./components/SavingPlans";
 import { AdminSavingPlan } from "./components/AdminSavingPlan";
 import api from "./components/api";
+import ShowCategory from "./components/AdminCategoryList";
+import { CategoryForm } from "./components/AdminCategoryform";
 
 function App() {
   const [potData, setPotData] = useState([]);
@@ -238,6 +240,40 @@ function App() {
                 </PrivateRoute>
               }
             />
+            <Route
+              path='/adminshowcategory'
+              element={
+                <PrivateRoute role="admin">
+                  <motion.div
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    variants={pageVariants}
+                    transition={pageTransition}
+                  >
+                    <ShowCategory />
+                  </motion.div>
+                </PrivateRoute>
+              }
+            />
+
+<Route
+             path='/admincreatecategory'
+              element={
+                <PrivateRoute role="admin">
+                  <motion.div
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    variants={pageVariants}
+                    transition={pageTransition}
+                  >
+                   <CategoryForm />
+                  </motion.div>
+                </PrivateRoute>
+              }
+            />
+
             <Route
               path="/allsavingplan"
               element={

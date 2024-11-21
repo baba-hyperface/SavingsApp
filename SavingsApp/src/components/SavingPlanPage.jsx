@@ -201,7 +201,7 @@ export const SavingPlanPage = () => {
           <div className="header-container-savepage" >
             <div className="saving-plan-top-container-savingpage">
               <div>
-                <div className="creating-pot-savingplan-page">
+                <div className="creating-pot-container-savingplan-page">
                 <span
                           style={{...getShapeStyle( data.category.shape , data.category.backgroundColor)}}
                           mr={4}
@@ -224,11 +224,15 @@ export const SavingPlanPage = () => {
                           )}
                           {data.category.iconType === "class" && (
                             
-                              <i className={data.category.icon}></i>
+                              <div className="category-items-style">
+                          <span>
+                            <i className={data.category.icon}></i>
+                          </span>
+                          <h1>{data.category.name}</h1>
+                        </div>
                             
                           )}
                         </span>
-                  <h1 style={{textAlign:"center"}}>{data.category.name}</h1>
 
                 </div>
               </div>

@@ -29,11 +29,11 @@ export const SavingPlans = ({
   onBalanceUpdate,
   updateBalance,
 }) => {
-//   const {
-//     currentBalance : totalBalance,
-//     handleBalanceUpdate : onBalanceUpdate,
-//     updateBalance,
-// } = useContext(UserContext);
+  //   const {
+  //     currentBalance : totalBalance,
+  //     handleBalanceUpdate : onBalanceUpdate,
+  //     updateBalance,
+  // } = useContext(UserContext);
 
   const [addMoney, setAddMoney] = useState("");
   const [selectedPlanId, setSelectedPlanId] = useState(null);
@@ -59,7 +59,7 @@ export const SavingPlans = ({
     selectedPlan, selectedCategory, filterByAutoDeduction, autoDeductionStatus
   } = usePlans();
 
-  
+
 
   const handleDeleteHere = (potid, isActive) => {
     if (!isActive) {
@@ -99,7 +99,7 @@ export const SavingPlans = ({
   useEffect(() => {
     setBalance(totalBalance || 0);
   }, [totalBalance]);
-  
+
   const handleNav = (potid) => {
     nav(`/savingplan/${potid}`);
   };
@@ -231,7 +231,7 @@ export const SavingPlans = ({
   const getShapeStyle = (shape, backgroundColor) => {
     const baseStyle = {
       display: "flex",
-      margin:"auto",
+      margin: "auto",
       justifyContent: "center",
       alignItems: "center",
       boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
@@ -278,7 +278,7 @@ export const SavingPlans = ({
         </div>
         <div className="header">
           <div>
-              <SaveButton totalBalance={totalBalance} onBalanceUpdate={onBalanceUpdate} updateBalance={updateBalance}/>
+            <SaveButton totalBalance={totalBalance} onBalanceUpdate={onBalanceUpdate} updateBalance={updateBalance} />
           </div>
           <Button
             colorScheme="blue"
@@ -295,37 +295,38 @@ export const SavingPlans = ({
             <div key={plan._id} className="plan-card">
               <div className="saving-plan-top-container">
                 <div>
-                 
-                <div className="creating-pot-savingplan">
-                        <span
-                          style={{...getShapeStyle( plan.category.shape === ""? "":plan.category.shape , plan.category.backgroundColor)}}
-                          mr={4}
-                          className="category-icon"
-                        >
-                          {plan.category.iconType === "url" && (
-                            <>
-                              <img
-                                alt="Category Icon"
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "contain",
-                                  borderRadius:
-                                    shape === "circle" ? "50%" : "0", 
-                                }}
-                                src={plan.category.icon}
-                              />
-                            </>
-                          )}
-                          {plan.category.iconType === "class" && (
-                            <>
-                              <i className={plan.category.icon}></i>
-                            </>
-                          )}
-                        </span>
-                  <h1 style={{textAlign:"center"}}>{plan.category.name}</h1>
+                  <div className="creating-pot-savingplan">
+                    <span
+                      style={{ ...getShapeStyle(plan.category.shape, plan.category.backgroundColor) }}
+                      mr={4}
+                      className="category-icon"
+                    >
+                      {plan.category.iconType === "url" && (
+                        <>
+                          <img
+                            alt="Category Icon"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "contain",
+                              borderRadius:
+                                shape === "circle" ? "50%" : "0",
+                            }}
+                            src={plan.category.icon}
+                          />
+                        </>
+                      )}
+                      {plan.category.iconType === "class" && (
+                       <div className="category-items-style">
+                       <span>
+                         <i className={plan.category.icon}></i>
+                       </span>
+                       <h1>{plan.category.name}</h1>
+                     </div>
+                      )}
+                    </span>
 
-                </div>
+                  </div>
                 </div>
                 <div className="saving-plan-top-right-container">
                   <div onClick={() => handleNav(plan._id)}>
@@ -445,43 +446,45 @@ export const SavingPlans = ({
           ))}
         </div>
         <hr />
-          <h1 className="saving-active-deactive-heading">Deactivated Goals</h1>
+        <h1 className="saving-active-deactive-heading">Deactivated Goals</h1>
         <div className="plans-list">
           {deactivatedPlans.map((plan, ind) => (
             <div key={plan._id} className="plan-card">
               <div className="saving-plan-top-container">
                 <div>
-                  
-                <div className="creating-pot-savingplan">
-                        <span
-                          style={{...getShapeStyle( plan.category.shape , plan.category.backgroundColor)}}
-                          mr={4}
-                          className="category-icon"
-                        >
-                          {plan.category.iconType === "url" && (
-                            <>
-                              <img
-                                alt="Category Icon"
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "contain",
-                                  borderRadius:
-                                    shape === "circle" ? "50%" : "0", 
-                                }}
-                                src={plan.category.icon}
-                              />
-                            </>
-                          )}
-                          {plan.category.iconType === "class" && (
-                            <>
-                              <i className={plan.category.icon}></i>
-                            </>
-                          )}
-                        </span>
-                  <h1 style={{textAlign:"center"}}>{plan.category.name}</h1>
 
-                </div>
+                  <div className="creating-pot-savingplan">
+                    <span
+                      style={{ ...getShapeStyle(plan.category.shape, plan.category.backgroundColor) }}
+                      mr={4}
+                      className="category-icon"
+                    >
+                      {plan.category.iconType === "url" && (
+                        <>
+                          <img
+                            alt="Category Icon"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "contain",
+                              borderRadius:
+                                shape === "circle" ? "50%" : "0",
+                            }}
+                            src={plan.category.icon}
+                          />
+                        </>
+                      )}
+                      {plan.category.iconType === "class" && (
+                        <div className="category-items-style">
+                          <span>
+                            <i className={plan.category.icon}></i>
+                          </span>
+                          <h1>{plan.category.name}</h1>
+                        </div>
+                      )}
+                    </span>
+
+                  </div>
                 </div>
                 <div className="saving-plan-top-right-container">
                   <div onClick={() => handleNav(plan._id)}>
@@ -505,7 +508,7 @@ export const SavingPlans = ({
                     </div>
                     <div>
                       <span className="progress-text-savingplan">
-                        {((plan.currentBalance / plan.targetAmount) * 100)}% of ₹{plan.targetAmount} 
+                        {((plan.currentBalance / plan.targetAmount) * 100)}% of ₹{plan.targetAmount}
                       </span>
                     </div>
                   </div>
@@ -515,16 +518,16 @@ export const SavingPlans = ({
                 <hr />
               </div>
               <div className="action-buttons-saving">
-                    <button
-                      onClick={() => handleDeleteHere(plan._id, !plan.potStatus)}
-                      className="delete-btn"
-                      _hover={{ bg: "red.500", color: "white" }}
-                      bg="gray.200"
-                      color="black"
-                    >
-                      {plan.potStatus ? <i className="fa-regular fa-circle-pause"></i> : <i class="fa-solid fa-play" style={{ color: "green" }}></i>} {"  "}
-                      {plan.potStatus ? "DeActivate" : "Activate"}
-                    </button>
+                <button
+                  onClick={() => handleDeleteHere(plan._id, !plan.potStatus)}
+                  className="delete-btn"
+                  _hover={{ bg: "red.500", color: "white" }}
+                  bg="gray.200"
+                  color="black"
+                >
+                  {plan.potStatus ? <i className="fa-regular fa-circle-pause"></i> : <i class="fa-solid fa-play" style={{ color: "green" }}></i>} {"  "}
+                  {plan.potStatus ? "DeActivate" : "Activate"}
+                </button>
               </div>
             </div>
           ))}
@@ -570,17 +573,17 @@ export const SavingPlans = ({
 };
 
 
-export const calculateNextDeductionDate = (savingPot) => {
-  const { 
-    lastAutoDeductionDate, 
+ export const calculateNextDeductionDate = (savingPot) => {
+   const { 
+     lastAutoDeductionDate, 
     startDate, 
-    frequency, 
-    dayOfWeek, 
-    dayOfMonth 
-  } = savingPot;
+     frequency, 
+     dayOfWeek, 
+     dayOfMonth 
+   } = savingPot;
 
-  let baseDate = lastAutoDeductionDate || startDate;
-  baseDate = moment(baseDate);
+   let baseDate = lastAutoDeductionDate || startDate;
+   baseDate = moment(baseDate);
 
   let nextDeductionDate;
   switch (frequency) {
@@ -618,4 +621,5 @@ export const calculateNextDeductionDate = (savingPot) => {
   }
   return nextDeductionDate.toDate();
 };
+
 

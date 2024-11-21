@@ -329,7 +329,7 @@ export const SaveButton = ({
         return {
           ...baseStyle,
           backgroundColor,
-          borderRadius: "50px 50px 0 0",
+          borderRadius: "100px 100px 10px 10px",
         };
       case "star":
         return {
@@ -434,12 +434,14 @@ export const SaveButton = ({
                             
                           )}
                           {cat.iconType === "class" && (
-                            
-                              <i className={cat.icon}></i>
-                          
+                            <div className="category-items-style">
+                              <span>
+                          <i className={cat.icon}></i>
+                              </span>
+                          <h1>{cat.name}</h1>
+                            </div>
                           )}
                         </span>
-                        <h1 style={{textAlign:"center"}}>{cat.name}</h1>
                       </div>
                           {/* <p style={{color: "black"}}>{cat.name}</p> */}
                     </div>
@@ -468,19 +470,21 @@ export const SaveButton = ({
                                   height: "100%",
                                   objectFit: "contain",
                                   borderRadius:
-                                    shape === "circle" ? "50%" : "0", // Circle-specific styling
+                                    shape === "circle" ? "50%" : "0", 
                                 }}
                                 src={icon}
                               />
                             </>
                           )}
                           {iconType === "class" && (
-                            <>
-                              <i className={icon}></i>
-                            </>
+                            <div className="category-items-style">
+                            <span>
+                        <i className={icon}></i>
+                            </span>
+                        <h1>{iconname}</h1>
+                          </div>
                           )}
                         </span>
-                  <p>{iconname}</p>
                 </div>
                 <div className="input-feld-and-label-container">
                   <label className="label-for-input">Goal Name</label>
@@ -522,12 +526,14 @@ export const SaveButton = ({
                             </>
                           )}
                           {iconType === "class" && (
-                            <>
-                              <i className={icon}></i>
-                            </>
+                           <div className="category-items-style">
+                           <span>
+                       <i className={icon}></i>
+                           </span>
+                       <h1>{iconname}</h1>
+                         </div>
                           )}
                         </span>
-                  <h1 style={{textAlign:"center"}}>{iconname}</h1>
                 </div>
                 <p className="pot-created-text">
                   <strong>{name}</strong> Goal Successfully Created!
@@ -559,12 +565,14 @@ export const SaveButton = ({
                             </>
                           )}
                           {iconType === "class" && (
-                            <>
-                              <i className={icon}></i>
-                            </>
+                            <div className="category-items-style">
+                            <span>
+                        <i className={icon}></i>
+                            </span>
+                        <h1>{iconname}</h1>
+                          </div>
                           )}
                         </span>
-                  <h1 style={{textAlign:"center"}}>{iconname}</h1>
                 </div>
                 <div className="step-verification-container">
                   <p>1 Step Closer to Your Goal</p>
@@ -603,12 +611,14 @@ export const SaveButton = ({
                             </>
                           )}
                           {iconType === "class" && (
-                            <>
-                              <i className={icon}></i>
-                            </>
+                            <div className="category-items-style">
+                            <span>
+                        <i className={icon}></i>
+                            </span>
+                        <h1>{iconname}</h1>
+                          </div>
                           )}
                         </span>
-                  <h1 style={{textAlign:"center"}}>{iconname}</h1>
                 </div>
                 <div className="input-feld-and-label-container">
                   <label className="label-for-input">
@@ -653,12 +663,15 @@ export const SaveButton = ({
                             </>
                           )}
                           {iconType === "class" && (
-                            <>
-                              <i className={icon}></i>
-                            </>
+                            <div className="category-items-style">
+                            <span>
+                        <i className={icon}></i>
+                            </span>
+                        <h1>{iconname}</h1>
+                          </div>
                           )}
                         </span>
-                  <h1 style={{textAlign:"center"}}>{iconname}</h1>
+        
                 </div>
                 <div className="input-feld-and-label-container">
                   <label className="label-for-input">Goal Amount</label>
@@ -701,12 +714,15 @@ export const SaveButton = ({
                             </>
                           )}
                           {iconType === "class" && (
-                            <>
-                              <i className={icon}></i>
-                            </>
+                            <div className="category-items-style">
+                            <span>
+                        <i className={icon}></i>
+                            </span>
+                        <h1>{iconname}</h1>
+                          </div>
                           )}
                         </span>
-                  <h1 style={{textAlign:"center"}}>{iconname}</h1>
+            
                 </div>
                 <div className="input-feld-and-label-container">
                   <label className="label-for-input">End Date</label>
@@ -750,12 +766,15 @@ export const SaveButton = ({
                             </>
                           )}
                           {iconType === "class" && (
-                            <>
-                              <i className={icon}></i>
-                            </>
+                            <div className="category-items-style">
+                            <span>
+                        <i className={icon}></i>
+                            </span>
+                        <h1>{iconname}</h1>
+                          </div>
                           )}
                         </span>
-                  <h1 style={{textAlign:"center"}}>{iconname}</h1>
+                 
                 </div>
 
                 <div className="toggle-container">
@@ -907,12 +926,15 @@ export const SaveButton = ({
                             </>
                           )}
                           {iconType === "class" && (
-                            <>
-                              <i className={icon}></i>
-                            </>
+                            <div className="category-items-style">
+                            <span>
+                        <i className={icon}></i>
+                            </span>
+                        <h1>{iconname}</h1>
+                          </div>
                           )}
                         </span>
-                  <h1 style={{textAlign:"center"}}>{iconname}</h1>
+               
                 </div>
 
                 <div className="creating-pot-last-step">

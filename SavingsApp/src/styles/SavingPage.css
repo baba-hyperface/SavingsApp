@@ -33,17 +33,20 @@
       transition: border-color 0.3s;
 }
 
-.creating-pot-container-savingplan-page > i {
-  padding: 15px;
-  font-size: 34px;
-  color: rgb(253, 241, 241);
+
+.category-items-style > span {
+  text-align: center !important;
+  font-size: 40px;
+  color: white;
 }
-.creating-pot-container-savingplan-page > p{
-  padding-top: 5px !important;
-  font-size: 16px !important;
+
+
+.category-items-style > h1 {
+  padding-top: 10px !important;
+  font-size: 15px !important;
   color: white !important;
   text-align: center;
-  font-weight: 900;
+  font-weight: 600;
 }
 
 .plan-details-savingpage{

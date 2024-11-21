@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import api from "./api";
 
-const CategoryForm = () => {
+export const CategoryForm = () => {
   const [name, setName] = useState("");
   const [icon, setIcon] = useState(""); 
     const [backgroundColor, setBackgroundColor] = useState("");
@@ -277,4 +277,4 @@ const CategoryForm = () => {
   );
 };
 
-export default CategoryForm;
+

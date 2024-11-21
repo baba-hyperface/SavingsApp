@@ -16,6 +16,15 @@
     flex-wrap: wrap;
 }
 
+.category-items-style > h1 {
+    padding-top: 10px !important;
+    font-size: 15px !important;
+    color: white !important;
+    text-align: center;
+    font-weight: 600;
+  }
+  
+
 .totalsaving-heading{
     font-size: 19px;
     font-weight: 800;
@@ -50,6 +59,8 @@ h3 {
 .saving-plan-top-container {
     display: flex;
 }
+
+
 
 .creating-pot-container-savingplan{
     cursor: pointer;

@@ -117,9 +117,19 @@
       text-align: center;
       font-weight: 900;
     }
-    .category-items-style > p {
+
+
+    
+    .category-items-style > span {
+      text-align: center !important;
+      font-size: 40px;
+      color: white;
+    }
+
+
+    .category-items-style > h1 {
       padding-top: 10px !important;
-      font-size: 16px !important;
+      font-size: 15px !important;
       color: white !important;
       text-align: center;
       font-weight: 600;

@@ -21,8 +21,8 @@ export const AdminNavigation = () => {
           <h1>Saving Plan</h1>
         </div>
       </Link>
-      <Link to="/category">
-        <div className={`nav-item ${location.pathname === "/category" ? "active" : ""}`}>
+      <Link to="/adminshowcategory">
+        <div className={`nav-item ${location.pathname === "/adminshowcategory" ? "active" : ""}`}>
           <i className="fa-solid fa-layer-group"></i>
           <h1>Category</h1>
         </div>
