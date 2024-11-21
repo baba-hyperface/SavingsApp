@@ -75,18 +75,12 @@ export const Admin = () => {
             Admin Panel
           </Text>
           <Flex gap={4}>
-            <div
-              colorScheme="teal"
-            >
-            <Link className="nav-link" to="/admincreatecategory">
-            Create Category
-            </Link>
-            </div>
+            
             <div
               colorScheme="blue"
             >
             <Link className="nav-link" to="/adminshowcategory">
-            Show Categories
+            Categories
             </Link>
             </div>
           </Flex>

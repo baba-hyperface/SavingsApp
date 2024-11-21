@@ -30,18 +30,18 @@ export const SavingPlanPage = () => {
   const userid = localStorage.getItem("userid");
   const toast = useToast();
 
-  const categories = [
-    { label: "Holiday", icon: "fa-solid fa-plane" },
-    { label: "Health", icon: "fa-solid fa-heart-pulse" },
-    { label: "Home", icon: "fa-solid fa-house" },
-    { label: "Business", icon: "fa-solid fa-briefcase" },
-    { label: "Education", icon: "fa-solid fa-graduation-cap" },
-    { label: "Gadgets", icon: "fa-solid fa-mobile" },
-    { label: "Gifts", icon: "fa-solid fa-gift" },
-    { label: "Emergency", icon: "fa-solid fa-ambulance" },
-    { label: "Vehicle", icon: "fa-solid fa-car" },
-    { label: "Others", icon: "fa-solid fa-ellipsis" },
-  ];
+  // const categories = [
+  //   { label: "Holiday", icon: "fa-solid fa-plane" },
+  //   { label: "Health", icon: "fa-solid fa-heart-pulse" },
+  //   { label: "Home", icon: "fa-solid fa-house" },
+  //   { label: "Business", icon: "fa-solid fa-briefcase" },
+  //   { label: "Education", icon: "fa-solid fa-graduation-cap" },
+  //   { label: "Gadgets", icon: "fa-solid fa-mobile" },
+  //   { label: "Gifts", icon: "fa-solid fa-gift" },
+  //   { label: "Emergency", icon: "fa-solid fa-ambulance" },
+  //   { label: "Vehicle", icon: "fa-solid fa-car" },
+  //   { label: "Others", icon: "fa-solid fa-ellipsis" },
+  // ];
 
 
   const {
@@ -150,6 +150,47 @@ export const SavingPlanPage = () => {
     return date.toLocaleDateString();
   };
 
+  const getShapeStyle = (shape, backgroundColor) => {
+    const baseStyle = {
+      display: "flex",
+      margin:"auto",
+      justifyContent: "center",
+      alignItems: "center",
+      boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+      width: "110px",
+      height: "110px",
+    };
+
+    switch (shape) {
+      case "circle":
+        return { ...baseStyle, borderRadius: "50%", backgroundColor };
+      case "square":
+        return { ...baseStyle, borderRadius: "8px", backgroundColor };
+      case "hexagon":
+        return {
+          ...baseStyle,
+          backgroundColor,
+          clipPath:
+            "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
+        };
+      case "cave":
+        return {
+          ...baseStyle,
+          backgroundColor,
+          borderRadius: "50px 50px 0 0",
+        };
+      case "star":
+        return {
+          ...baseStyle,
+          backgroundColor,
+          clipPath:
+            "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)",
+        };
+      default:
+        return baseStyle;
+    }
+  };
+
   return (
     <div className="saving-plan-page-main-container">
       <div>
@@ -160,13 +201,35 @@ export const SavingPlanPage = () => {
           <div className="header-container-savepage" >
             <div className="saving-plan-top-container-savingpage">
               <div>
-                <div className="creating-pot-container-savingplan-page">
-                <i
-                      className={`fa ${data.category &&
-                        categories.find((cat) => cat.label === data.category).icon
-                        }`}
-                    ></i>
-                  <p>{data.category}</p>
+                <div className="creating-pot-savingplan-page">
+                <span
+                          style={{...getShapeStyle( data.category.shape , data.category.backgroundColor)}}
+                          mr={4}
+                          className="category-icon"
+                        >
+                          {data.category.iconType === "url" && (
+                            
+                              <img
+                                alt="Category Icon"
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "contain",
+                                  borderRadius:
+                                    shape === "circle" ? "50%" : "0", 
+                                }}
+                                src={data.category.icon}
+                              />
+                            
+                          )}
+                          {data.category.iconType === "class" && (
+                            
+                              <i className={data.category.icon}></i>
+                            
+                          )}
+                        </span>
+                  <h1 style={{textAlign:"center"}}>{data.category.name}</h1>
+
                 </div>
               </div>
               <div className="saving-plan-top-right-container-saving-plan">

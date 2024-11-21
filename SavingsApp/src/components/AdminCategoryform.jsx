@@ -17,8 +17,8 @@ import api from "./api";
 const CategoryForm = () => {
   const [name, setName] = useState("");
   const [icon, setIcon] = useState(""); 
-    const [backgroundColor, setBackgroundColor] = useState("#ffffff");
-  const [shape, setShape] = useState("circle");
+    const [backgroundColor, setBackgroundColor] = useState("");
+  const [shape, setShape] = useState("");
   const [iconType, setIconType] = useState("url");
   const toast = useToast();
   const handleSubmit = async (e) => {
@@ -183,14 +183,27 @@ const CategoryForm = () => {
               />
             </FormControl>
           )}
+
+
           <FormControl id="background-color">
             <FormLabel>Background Color</FormLabel>
-            <Input
-              type="color"
-              value={backgroundColor}
-              onChange={(e) => setBackgroundColor(e.target.value)}
-            />
+            <div style={{display:"flex",justifyContent:"space-between"}}>
+              <Input
+                type="string"
+                width={"50%"}
+                placeholder="Enter color code"
+                value={backgroundColor}
+                onChange={(e) => setBackgroundColor(e.target.value)}
+              />
+              <Input
+                type="color"
+                width={"15%"}
+                value={backgroundColor? backgroundColor:"#ffffff"}
+                onChange={(e) => setBackgroundColor(e.target.value)}
+              />
+            </div>
           </FormControl>
+
           <FormControl id="shape">
             <FormLabel>Shape</FormLabel>
             <Select
@@ -228,7 +241,7 @@ const CategoryForm = () => {
           {...getShapeStyle()}
           overflow="hidden" 
         >
-          {shape !== "triangle" && icon ? (
+          {icon ? (
             iconType === "url" ? (
               <img
                 src={icon}
