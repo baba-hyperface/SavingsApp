@@ -1,0 +1,49 @@
+/* Admin Navigation Styling */
+.admin-navigation {
+      position: fixed;
+      left: 0;
+      top: 100px;
+      height: 100vh;
+      width: 250px;
+      padding: 20px;
+      background-color: #f8f9fa;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding-top: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    color: #333;
+    gap: 10px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .nav-item.active {
+      background-color: #4CAF50;
+      color: white;
+  }
+  
+  .nav-item:hover {
+      background-color: #3e475f;
+      color: white;
+  }
+  
+  .nav-item h1 {
+      margin: 0;
+      font-size: 16px;
+  }
+  
+  /* .admin-container {
+      margin-left: 200px; 
+      padding: 20px;
+  } */
+  
