@@ -8,7 +8,6 @@ import { AuthProvider } from "./components/AuthApi.jsx";
 // import { UserProvider } from "./components/UserContext.js";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
     <PlanProvider>
       <AuthProvider>
         
@@ -20,5 +19,4 @@ createRoot(document.getElementById("root")).render(
       
       </AuthProvider>
     </PlanProvider>
-  </StrictMode>
 );

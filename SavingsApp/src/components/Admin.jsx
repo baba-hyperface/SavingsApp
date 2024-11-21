@@ -3,6 +3,8 @@ import api from './api';
 import '../styles/Admin.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { Box, Button, Flex, Input, Text } from '@chakra-ui/react';
+import { AdminSavingPlan } from './AdminSavingPlan';
+import { AdminNavigation } from './AdminNavigation';
 
 export const Admin = () => {
     const [users, setUsers] = useState([]);
@@ -75,7 +77,12 @@ const handleNav = (userid) => {
     if(loading) return <p>Loading...</p>
 
     return (
-        <div className="admin-container">
+        <div className='admin-main-container'>
+            <div>
+            <AdminNavigation />
+            </div>
+
+            <div className="admin-container">
             <Flex  justify="space-between" align="center" verticalAlign={"center"} mb="4"py={4}>
                 <Text 
                 fontWeight={"900"}
@@ -94,20 +101,19 @@ const handleNav = (userid) => {
 
                 </Button>
             </Flex>
-            <Box>
-
-            <Input
-                    placeholder="Search by email"
-                    value={searchTerm}
-                    border={"1px solid"}
-                    width={"25%"}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <Button  onClick={(e)=>handlesearch()}> Search </Button>
-            </Box>
-
-
-            {/* <h1>User Management</h1> */}
+            <div class="search-container">
+    <input
+      type="text"
+      placeholder="Search by Email..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      className="search-input-admin"
+    />
+    <button className="search-button-style" onClick={(e) => handlesearch()}>
+      <i className="fa fa-search"></i>
+    </button>
+  </div>
+            <h3>Total Users: {users.length}</h3>
             <table className="user-table">
                 <thead>
                     <tr>
@@ -179,6 +185,7 @@ const handleNav = (userid) => {
                     </div>
                 </div>
             )}
+             </div>
         </div>
     );
 };

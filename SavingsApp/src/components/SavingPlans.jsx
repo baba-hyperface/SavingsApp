@@ -99,6 +99,7 @@ export const SavingPlans = ({
   useEffect(() => {
     setBalance(totalBalance || 0);
   }, [totalBalance]);
+  
   const handleNav = (potid) => {
     nav(`/savingplan/${potid}`);
   };
@@ -108,7 +109,7 @@ export const SavingPlans = ({
       try {
         setLoading(true);
         const res = await api.get(`/user/${userId}/savingplan`);
-        const fetchedPlans = res.data;
+        const fetchedPlans = res.data.pots;
         setPlans(fetchedPlans);
         const categoriesSet = new Set(
           fetchedPlans.map((plan) => plan.category || "Others")

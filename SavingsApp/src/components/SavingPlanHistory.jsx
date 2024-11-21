@@ -31,13 +31,8 @@ export const SavingPlanHistory = () => {
 
   return (
     <div>
-      <div className="transaction-icon-container" onClick={toggleHistory}>
-        <h1 className='history-text-saving-page'>History</h1>
-      </div>
-
       <div className={`transaction-history-container ${isHistoryOpen ? 'open' : ''}`}>
         <div className="transaction-close-btn-container" onClick={toggleHistory}>
-          <i className="fa-solid fa-xmark"></i> Close
         </div>
 
         {loading ? (
@@ -46,7 +41,7 @@ export const SavingPlanHistory = () => {
           <p>Error loading history.</p>
         ) : (
           <div className="transaction-list">
-            <h3>Transactions</h3>
+            <h3 className='heading-of-transaction'>Transactions</h3>
             {!history && history === undefined ? (
               <p>No history available</p>
             ) : (

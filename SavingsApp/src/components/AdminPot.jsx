@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react";
 import api from "./api";
 import { useParams } from "react-router-dom";
 import "../styles/AdminPot.css";
+import { AdminNavigation } from "./AdminNavigation";
 
 export const AdminPot = () => {
   const [potData, setPotData] = useState([]);
   const [editPot, setEditPot] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState('');
   const { id } = useParams();
+  const [user, setUser] = useState('');
 
   const openEditModal = (pot) => {
     setEditPot(pot);
@@ -20,8 +23,9 @@ export const AdminPot = () => {
       try {
         setLoading(true);
         const res = await api.get(`/user/${id}/savingplan`);
-        console.log(res.data);
-        setPotData(res.data);
+        console.log(res.data.pots);
+        setPotData(res.data.pots);
+        setUserId(res.data.user);
       } catch (error) {
         console.log("Error fetching saving pots:", error);
       } finally {
@@ -30,6 +34,24 @@ export const AdminPot = () => {
     };
     fetchPlan();
   }, [id]);
+
+
+  useEffect(() => {
+    const fetchUserdata = async () => {
+        try {
+            setLoading(true);
+            const res = await api.get(`/user/${userId}`);
+            setUser(res.data.name);
+            setLoading(false);
+        } catch (error) {
+            setError(error);
+            console.log(error);
+            setLoading(false);
+        }
+    };
+    fetchUserdata();
+}, [userId]);
+
 
   if (loading) {
     return <p>Loading....</p>;
@@ -53,8 +75,10 @@ export const AdminPot = () => {
 
   return (
     <div className="admin-container">
-      <h1>Manage User Saving Plans</h1>
+      <h1>Manage Saving Plans</h1>
+      <h3>User Name: {user}</h3>
       <table className="user-table">
+        <AdminNavigation />
         <thead>
           <tr>
             <th>Purpose</th>
