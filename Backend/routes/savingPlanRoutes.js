@@ -368,14 +368,19 @@ savingPlanRouter.get(
       if (!mongoose.Types.ObjectId.isValid(userId)) {
         return res.status(400).json({ message: "Invalid user ID" });
       }
-      const user = await User.findById(userId).populate("pots");
+      const user = await User.findById(userId).populate({
+        path: "pots",
+        populate: {
+          path: "category", 
+        },
+      });
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
       if (!mongoose.Types.ObjectId.isValid(potId)) {
         return res.status(400).json({ message: "Invalid pot ID" });
       }
-      const pot = user.pots.find((pot) => pot._id.toString() === potId).populate("category");
+      const pot = user.pots.find((pot) => pot._id.toString() === potId);
       if (!pot) {
         return res.status(404).json({ message: "Pot not found for this user" });
       }

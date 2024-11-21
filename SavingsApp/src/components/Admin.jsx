@@ -73,7 +73,6 @@ const handleNav = (userid) => {
 
         }
     }
-
     if(loading) return <p>Loading...</p>
 
     return (
