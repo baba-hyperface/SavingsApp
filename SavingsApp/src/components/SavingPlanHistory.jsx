@@ -32,7 +32,7 @@ export const SavingPlanHistory = () => {
   return (
     <div>
       <div className="transaction-icon-container" onClick={toggleHistory}>
-        <i className="fa-solid fa-clock-rotate-left"></i>
+        <h1 className='history-text-saving-page'>History</h1>
       </div>
 
       <div className={`transaction-history-container ${isHistoryOpen ? 'open' : ''}`}>

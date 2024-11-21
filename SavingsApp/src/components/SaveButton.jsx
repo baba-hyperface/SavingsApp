@@ -201,12 +201,9 @@ export const SaveButton = ({
   const animateExit = (onComplete) => {
     gsap.to(modalRef.current, {
       opacity: 0,
-      x: -100,
-      rotateY: -90,
-      scale: 0.9,
-      filter: "blur(10px)",
-      duration: 0.8,
-      ease: "back.in(1.7)",
+      x: -100, 
+      duration: 0.2, 
+      ease: "power1.inOut", 
       onComplete,
     });
   };
@@ -223,15 +220,12 @@ export const SaveButton = ({
     if (!modalRef.current) return;
     gsap.fromTo(
       modalRef.current,
-      { opacity: 0, x: 100, rotateY: 90, scale: 0.9, filter: "blur(10px)" },
+      { opacity: 0, x: 100 }, 
       {
         opacity: 1,
-        x: 0,
-        rotateY: 0,
-        scale: 1,
-        filter: "blur(0px)",
-        duration: 0.8,
-        ease: "power3.out",
+        x: 0, 
+        duration: 0.2,
+        ease: "power1.inOut", 
       }
     );
   }, [step]);
@@ -351,11 +345,10 @@ export const SaveButton = ({
 
   return (
     <div>
-      <button className="action-buttons" onClick={onOpen}>
+      <button className="action-buttons-saving-plan" onClick={onOpen}>
         <i className="fa-solid fa-piggy-bank"></i>{" "}
-        <span className="button-text">Save it</span>
+        <span className="button-text-save-button">Save it</span>
       </button>
-      <p className="send-text">Save</p>
 
       <Modal
         isOpen={isOpen}

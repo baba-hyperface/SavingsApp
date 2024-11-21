@@ -10,11 +10,14 @@ import '../App.css'
 import { Transaction } from './Transaction';
 import { DeActivated } from './DeActivated';
 import { SaveButton } from './SaveButton';
+import { useNavigate } from 'react-router-dom';
+import { SavePlanList } from './SavePlanList';
 
 export const ChildDashBoard = ({data, setUser}) => {
     let {name,email, totalBalance, accountNumber, expDate} = data;
     const [currentBalance, setCurrentBalance] = useState(totalBalance);
     const [history, setHistory] = useState([]);
+    const nav = useNavigate();
 
     const handleBalanceUpdate = (newBalance) => {
         setCurrentBalance(newBalance);
@@ -64,6 +67,10 @@ const handleTransactionHistoryUpdate = (transaction) => {
 
 };
 
+const handleNav = () => {
+  nav('/savingplan')
+}
+
 
   return (
     <div className='main-container'>
@@ -77,9 +84,17 @@ const handleTransactionHistoryUpdate = (transaction) => {
       <div className='button-action-container'>
         <SendMoney totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance} onHistoryChange={handleTransactionHistoryUpdate} email={email} accountNum={name}/>
         <WithdrawMoney totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance} email={email} onHistoryChange={handleTransactionHistoryUpdate}/>
-        <SaveButton totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance} />
+        {/* <SaveButton totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance} /> */}
+        {/* <SavePlanList totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance} /> */}
+        <div>
+        <button className="action-buttons" onClick={handleNav}>
+        <i className="fa-solid fa-piggy-bank"></i>{" "}
+        <span className="button-text">Save it</span>
+      </button>
+      <p className="send-text">Save</p>
+        </div>
       </div>
-      <SavingPlans totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance}/>
+      {/* <SavingPlans totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance}/> */}
     </div>
   )
 }
