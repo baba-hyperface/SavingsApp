@@ -264,6 +264,22 @@ export const SavingPlans = ({
           clipPath:
             "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)",
         };
+        case "den":
+        return {
+          ...baseStyle,
+          backgroundColor,
+          clipPath: "polygon(0% 20%, 100% 20%, 100% 80%, 0% 80%)", // "Den" shape with rectangular style
+          width: "50px",
+          height: "50px",
+        };
+        case "msg":
+        return {
+          ...baseStyle,
+          backgroundColor,
+          borderRadius:"60px 50px 50px 0px",
+          width: "50px",
+          height: "50px",
+        };
       default:
         return baseStyle;
     }
@@ -326,6 +342,7 @@ export const SavingPlans = ({
                       )}
                     </span>
 
+           
                   </div>
                 </div>
                 <div className="saving-plan-top-right-container">
@@ -355,7 +372,7 @@ export const SavingPlans = ({
                     </div>
                     <div>
                       <span className="progress-text-savingplan">
-                        Next Deduction Date: {(plan.autoDeduction && plan.autoDeductionStatus) && <> {calculateNextDeductionDate(plan).toLocaleDateString()} </> }
+                        Next Deduction {(plan.autoDeduction && plan.autoDeductionStatus) && <> {calculateNextDeductionDate(plan).toLocaleDateString()} </> }
                       </span>
                     </div>
                   </div>
