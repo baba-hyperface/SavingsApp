@@ -309,8 +309,8 @@ export const SaveButton = ({
       // FlexDirection:"column",
       alignItems: "center",
       boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-      width: "120px",
-      height: "120px",
+      width: "150px",
+      height: "150px",
     };
 
     switch (shape) {
@@ -435,7 +435,7 @@ export const SaveButton = ({
                           className="category-icon"
                         >
                           {cat.iconType === "url" && (
-                            
+                            <>
                               <img
                                 alt="Category Icon"
                                 style={{
@@ -447,6 +447,7 @@ export const SaveButton = ({
                                 }}
                                 src={cat.icon}
                               />
+                            </>
                             
                           )}
                           {cat.iconType === "class" && (
@@ -471,7 +472,7 @@ export const SaveButton = ({
                 <div>
                   <h1 className="label">Personalize Your Goal</h1>
                 </div>
-                <div className="creating-pot ">
+                <div className="creating-pot">
                 <span
                           style={{...getShapeStyle(shape, backgroundColor)}}
                           mr={4}
@@ -629,7 +630,7 @@ export const SaveButton = ({
                           {iconType === "class" && (
                             <div className="category-items-style">
                             <span>
-                        <i className={icon}></i>
+                           <i className={icon}></i>
                             </span>
                         <h1>{iconname}</h1>
                           </div>
@@ -676,6 +677,7 @@ export const SaveButton = ({
                                 }}
                                 src={icon}
                               />
+                              <h1>{iconname}</h1>
                             </>
                           )}
                           {iconType === "class" && (
