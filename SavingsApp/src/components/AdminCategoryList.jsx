@@ -22,6 +22,7 @@ const ShowCategory = () => {
     try {
       const response = await api.get("/categoriesget");
       setCategories(response.data);
+      console.log(response.data);
       setLoading(false);
     } catch (err) {
       console.error("Error fetching categories:", err);
@@ -50,6 +51,86 @@ const ShowCategory = () => {
       </Flex>
     );
   }
+  const getShapeStyle = (shape,backgroundColor) => {
+    const baseStyle = {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)", // Subtle shadow for depth
+      transition: "transform 0.2s ease, box-shadow 0.2s ease", // Smooth animation
+      cursor: "pointer", // Pointer effect for interactivity
+      _hover: {
+        transform: "scale(1.1)", // Zoom effect on hover
+        boxShadow: "0px 8px 10px rgba(0, 0, 0, 0.2)", // Enhanced shadow on hover
+      },
+    };
+
+    switch (shape) {
+      case "circle":
+        return {
+          ...baseStyle,
+          borderRadius: "50%",
+          backgroundColor,
+          width: "50px",
+          height: "50px",
+        };
+      case "square":
+        return {
+          ...baseStyle,
+          borderRadius: "8px", // Rounded corners for square
+          backgroundColor,
+          width: "50px",
+          height: "50px",
+        };
+      case "hexagon":
+        return {
+          ...baseStyle,
+          backgroundColor,
+          clipPath:
+            "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)",
+          width: "50px",
+          height: "50px",
+        };
+      case "den":
+        return {
+          ...baseStyle,
+          backgroundColor,
+          clipPath: "polygon(0% 20%, 100% 20%, 100% 80%, 0% 80%)", // "Den" shape with rectangular style
+          width: "50px",
+          height: "50px",
+        };
+        case "msg":
+        return {
+          ...baseStyle,
+          backgroundColor,
+          borderRadius:"60px 50px 50px 0px",
+          width: "50px",
+          height: "50px",
+        };
+      case "star":
+        return {
+          ...baseStyle,
+          backgroundColor,
+          clipPath:
+            "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)",
+          width: "50px",
+          height: "50px",
+        };
+      case "cave":
+        return {
+          ...baseStyle,
+          backgroundColor,
+          borderRadius: "50px 50px 0px 0px",
+          width: "50px",
+          height: "50px",
+          margintop:"10px"
+        };
+        
+
+      default:
+        return {};
+    }
+  };
 
   if (error) {
     return (
@@ -92,13 +173,12 @@ const ShowCategory = () => {
                   justify="center"
                   align="center"
                   boxShadow="0px 4px 6px rgba(0, 0, 0, 0.1)"
-                  width="30px"
-                  height="30px"
-                  borderRadius={category.shape === "circle" ? "50%" : "8px"}
-                  backgroundColor={category.backgroundColor}
                   style={{
                     margin: "auto",
                   }}
+                  width="50Px"
+                  height="50px"
+                  {...getShapeStyle(category.shape,category.backgroundColor)}
                 >
                   {category.iconType === "url" ? (
                     <img
@@ -114,7 +194,7 @@ const ShowCategory = () => {
                     <i
                       className={category.icon}
                       style={{
-                        fontSize: "110%",
+                        fontSize: "150%",
                         color: "white",
                       }}
                     />
