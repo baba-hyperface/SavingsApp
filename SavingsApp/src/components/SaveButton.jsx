@@ -342,17 +342,13 @@ export const SaveButton = ({
         return {
           ...baseStyle,
           backgroundColor,
-          clipPath: "polygon(0% 20%, 100% 20%, 100% 80%, 0% 80%)", // "Den" shape with rectangular style
-          width: "50px",
-          height: "50px",
+          clipPath: "polygon(0% 20%, 100% 20%, 100% 80%, 0% 80%)", 
         };
         case "msg":
         return {
           ...baseStyle,
           backgroundColor,
           borderRadius:"60px 50px 50px 0px",
-          width: "50px",
-          height: "50px",
         };
       default:
         return baseStyle;
