@@ -81,6 +81,11 @@
       justify-content: center;
       transition: border-color 0.3s;
     }
+    .creating-pot{
+      margin-top: 80px;
+      margin-bottom: 30px;
+    }
+
     .category-icon > i{
       padding: 20px;
       font-size: 40px;
@@ -118,9 +123,8 @@
       font-weight: 900;
     }
 
-
     
-    .category-items-style > span {
+    .category-items-style > span > i {
       text-align: center !important;
       font-size: 40px;
       color: white;
@@ -129,7 +133,7 @@
 
     .category-items-style > h1 {
       padding-top: 10px !important;
-      font-size: 15px !important;
+      font-size: 19px !important;
       color: white !important;
       text-align: center;
       font-weight: 600;
