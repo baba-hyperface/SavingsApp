@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "../styles/SavingPlans.css";
 import {
   useDisclosure,
@@ -24,20 +24,13 @@ import { FilterModal } from "./FilterModel";
 import EditDeductionModel from "./EditDetuctionModel";
 import { SaveButton } from "./SaveButton";
 import moment from "moment";
-export const SavingPlans = ({
-  totalBalance,
-  onBalanceUpdate,
-  updateBalance,
-}) => {
-  //   const {
-  //     currentBalance : totalBalance,
-  //     handleBalanceUpdate : onBalanceUpdate,
-  //     updateBalance,
-  // } = useContext(UserContext);
-
+import { AuthContext } from "./AuthApi";
+export const SavingPlans = () => {
+  const {handleBalanceUpdate: onBalanceUpdate, updateBalance} = useContext(AuthContext);
   const [addMoney, setAddMoney] = useState("");
   const [selectedPlanId, setSelectedPlanId] = useState(null);
   const { onClose, onOpen, isOpen } = useDisclosure();
+  const [totalBalance, setTotalBalance] = useState(0);
   const [balance, setBalance] = useState(totalBalance);
   const [loading, setLoading] = useState(false);
   const toast = useToast();
@@ -58,8 +51,20 @@ export const SavingPlans = ({
     handleFilterClose, plans,
     selectedPlan, selectedCategory, filterByAutoDeduction, autoDeductionStatus
   } = usePlans();
+  const [user, setUser] = useState([]);
 
-
+  useEffect(() => {
+      const fetchUserdata = async () => {
+          try {
+              setLoading(true);
+              const res = await api.get(`/user/${userIdFromLocalStorage}`);
+              setTotalBalance(res.data.totalBalance);
+          } catch (error) {
+              console.log(error);
+          }
+      };
+      fetchUserdata();
+  }, []);
 
   const handleDeleteHere = (potid, isActive) => {
     if (!isActive) {
@@ -130,7 +135,7 @@ export const SavingPlans = ({
     if (addMoney > totalBalance) {
       toast({
         title: "Insufficient balance.",
-        description: `You cannot withdraw more than your available balance of ₹${totalBalance}.`,
+        description: `You cannot Add more than your available balance of ₹${totalBalance}.`,
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -235,8 +240,8 @@ export const SavingPlans = ({
       justifyContent: "center",
       alignItems: "center",
       boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-      width: "110px",
-      height: "110px",
+      width: "120px",
+      height: "120px",
     };
 
     switch (shape) {
@@ -317,7 +322,7 @@ export const SavingPlans = ({
                         </>
                       )}
                       {plan.category.iconType === "class" && (
-                       <div className="category-items-style">
+                       <div className="category-items-style-plans">
                        <span>
                          <i className={plan.category.icon}></i>
                        </span>
@@ -354,8 +359,8 @@ export const SavingPlans = ({
                       </span>
                     </div>
                     <div>
-                      <span className="progress-text-savingplan">
-                        Next Deduction Date: {(plan.autoDeduction && plan.autoDeductionStatus) && <> {calculateNextDeductionDate(plan).toLocaleDateString()} </> }
+                      <span className="progress-text-savingplan-deduction">
+                        {(plan.autoDeduction && plan.autoDeductionStatus) && <> Next Deduction: {calculateNextDeductionDate(plan).toLocaleDateString()} </> }
                       </span>
                     </div>
                   </div>
@@ -446,7 +451,9 @@ export const SavingPlans = ({
           ))}
         </div>
         <hr />
+        {deactivatedPlans.length > 0  && (
         <h1 className="saving-active-deactive-heading">Deactivated Goals</h1>
+        )}
         <div className="plans-list">
           {deactivatedPlans.map((plan, ind) => (
             <div key={plan._id} className="plan-card">

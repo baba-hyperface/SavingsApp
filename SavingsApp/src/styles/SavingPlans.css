@@ -58,6 +58,8 @@ h3 {
 
 .saving-plan-top-container {
     display: flex;
+    align-items: center;
+    justify-content: space-around;
 }
 
 
@@ -83,7 +85,7 @@ h3 {
 
 .creating-pot-container-savingplan > i {
     padding: 15px;
-    font-size: 34px;
+    font-size: 27px;
     color: rgb(253, 241, 241);
   }
   .creating-pot-container-savingplan > p{
@@ -103,6 +105,18 @@ h3 {
     padding: 1rem;
     background-color: #f9f9f9;
     text-align: center;
+}
+
+.category-items-style-plans > span > i{
+    font-size: 35px;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.category-items-style-plans > h1{
+    color: white;
+    font-weight: 900;
+    margin-top: 10px;
 }
 
 .saving-plan-top-right-container{
@@ -160,6 +174,14 @@ h3 {
     font-weight: 600;
     text-align: center;
     margin-left: 0 !important;
+    color: rgb(112, 112, 112);
+}
+
+.progress-text-savingplan-deduction{
+    font-weight: 600;
+    text-align: center;
+    margin-left: 0 !important;
+    font-size: 14px;
     color: rgb(112, 112, 112);
 }
 

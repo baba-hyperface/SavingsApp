@@ -10,7 +10,7 @@ import '../App.css'
 import { Transaction } from './Transaction';
 import { DeActivated } from './DeActivated';
 import { SaveButton } from './SaveButton';
-import { useNavigate } from 'react-router-dom';
+import { Router, useNavigate } from 'react-router-dom';
 import { SavePlanList } from './SavePlanList';
 
 export const ChildDashBoard = ({data, setUser}) => {
@@ -23,8 +23,6 @@ export const ChildDashBoard = ({data, setUser}) => {
         setCurrentBalance(newBalance);
         console.log("Updated Balance:", newBalance);
       };
-
-      console.log(totalBalance);
 
  const updateBalance = async (userId, currentBalance, amountToAddOrSubtract, isAddition) => {
   const moneyChange = parseInt(amountToAddOrSubtract, 10);
@@ -64,7 +62,6 @@ useEffect(() => {
 
 const handleTransactionHistoryUpdate = (transaction) => {
   setHistory((prevHistory) => [...(prevHistory || []), transaction]);
-
 };
 
 const handleNav = () => {
@@ -84,8 +81,6 @@ const handleNav = () => {
       <div className='button-action-container'>
         <SendMoney totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance} onHistoryChange={handleTransactionHistoryUpdate} email={email} accountNum={name}/>
         <WithdrawMoney totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance} email={email} onHistoryChange={handleTransactionHistoryUpdate}/>
-        {/* <SaveButton totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance} /> */}
-        {/* <SavePlanList totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance} /> */}
         <div>
         <button className="action-buttons" onClick={handleNav}>
         <i className="fa-solid fa-piggy-bank"></i>{" "}
@@ -94,7 +89,10 @@ const handleNav = () => {
       <p className="send-text">Save</p>
         </div>
       </div>
-      {/* <SavingPlans totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance}/> */}
+        <div  style={{ display: 'none' }}>
+          <SavingPlans totalBalance={totalBalance} onBalanceUpdate={handleBalanceUpdate} updateBalance={updateBalance}/>
+         </div>
+
     </div>
   )
 }

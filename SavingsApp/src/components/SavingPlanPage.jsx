@@ -157,8 +157,8 @@ export const SavingPlanPage = () => {
       justifyContent: "center",
       alignItems: "center",
       boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-      width: "110px",
-      height: "110px",
+      width: "130px",
+      height: "130px",
     };
 
     switch (shape) {
