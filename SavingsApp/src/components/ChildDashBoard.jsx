@@ -84,9 +84,9 @@ const handleNav = () => {
         <div>
         <button className="action-buttons" onClick={handleNav}>
         <i className="fa-solid fa-piggy-bank"></i>{" "}
-        <span className="button-text">Save it</span>
+        <span className="button-text">Goals</span>
       </button>
-      <p className="send-text">Save</p>
+      <p className="send-text">Goals</p>
         </div>
       </div>
         <div  style={{ display: 'none' }}>
