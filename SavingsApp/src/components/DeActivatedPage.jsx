@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, SimpleGrid, Text, Stack, Button, useColorModeValue, useToast } from '@chakra-ui/react';
 import api from './api'; 
 import { usePlans } from './ContextApi';
+import moment from 'moment';
 
 export const DeActivatedPage = () => {
   const [deactivatedPlans, setDeactivatedPlans] = useState([]);
@@ -71,4 +72,52 @@ export const DeActivatedPage = () => {
         </SimpleGrid>
     </Box>
   );
+};
+export const calculateNextDeductionDate = (savingPot) => {
+  const { 
+    lastAutoDeductionDate, 
+   startDate, 
+    frequency, 
+    dayOfWeek, 
+    dayOfMonth 
+  } = savingPot;
+
+  let baseDate = lastAutoDeductionDate || startDate;
+  baseDate = moment(baseDate);
+
+ let nextDeductionDate;
+ switch (frequency) {
+   case "daily":
+     nextDeductionDate=baseDate.add(1,"day");
+     break;
+     case "weekly":
+       if (!dayOfWeek) {
+         throw new Error("dayOfWeek is required for weekly frequency.");
+       }
+       nextDeductionDate = baseDate.clone().add(1, "week").isoWeekday(dayOfWeek);
+       break;
+     
+     case "monthly":
+       if(!dayOfMonth){
+         throw new Error("dayOfMonth is required for Monthly frequency.");
+       }
+       nextDeductionDate= baseDate.clone().add(1,"month").date(dayOfMonth);
+
+       if (!nextDeductionDate.isValid()) {
+         nextDeductionDate = baseDate.clone().add(1, "month").endOf("month");
+       }
+       break;
+ 
+   default:
+     throw new Error("Invalid frequency ")
+     
+ }
+
+ if (nextDeductionDate.isBefore(moment())) {
+   nextDeductionDate = calculateNextDeductionDate({
+     ...savingPot,
+     lastAutoDeductionDate: nextDeductionDate.toDate(),
+   });
+ }
+ return nextDeductionDate.toDate();
 };

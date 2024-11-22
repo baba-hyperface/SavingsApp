@@ -13,6 +13,16 @@
   text-align: center;
   margin: 20px;
 }
+.progress-text-savingplan-deduction{
+  font-weight: 600;
+  width: 100%;
+  display: block;
+  text-align: center !important;
+  margin-left: 0 !important;
+  margin-top: 10px;
+  font-size: 14px;
+  color: rgb(112, 112, 112);
+}
 
 .creating-pot-container-savingplan-page{
       cursor: pointer;

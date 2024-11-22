@@ -19,6 +19,7 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import EditDeductionModel from "./EditDetuctionModel";
+import { calculateNextDeductionDate } from "./DeActivatedPage";
 
 export const SavingPlanPage = () => {
   const [data, setData] = useState(null);
@@ -42,7 +43,6 @@ export const SavingPlanPage = () => {
   //   { label: "Vehicle", icon: "fa-solid fa-car" },
   //   { label: "Others", icon: "fa-solid fa-ellipsis" },
   // ];
-
 
   const {
     isOpen: isOptionsOpen,
@@ -128,7 +128,6 @@ export const SavingPlanPage = () => {
     }
   };
 
-
   if (loading) {
     return (
       <div className="loading-container">
@@ -137,9 +136,7 @@ export const SavingPlanPage = () => {
     );
   }
 
-  const remainingAmount = data.targetAmount
-    ? data.targetAmount - balance
-    : 0;
+  const remainingAmount = data.targetAmount ? data.targetAmount - balance : 0;
   const daysRequired =
     data.dailyAmount > 0
       ? Math.ceil(remainingAmount / data.dailyAmount)
@@ -153,7 +150,7 @@ export const SavingPlanPage = () => {
   const getShapeStyle = (shape, backgroundColor) => {
     const baseStyle = {
       display: "flex",
-      margin:"auto",
+      margin: "auto",
       justifyContent: "center",
       alignItems: "center",
       boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
@@ -186,17 +183,17 @@ export const SavingPlanPage = () => {
           clipPath:
             "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)",
         };
-        case "den":
+      case "den":
         return {
           ...baseStyle,
           backgroundColor,
-          clipPath: "polygon(0% 20%, 100% 20%, 100% 80%, 0% 80%)", 
+          clipPath: "polygon(0% 20%, 100% 20%, 100% 80%, 0% 80%)",
         };
-        case "msg":
+      case "msg":
         return {
           ...baseStyle,
           backgroundColor,
-          borderRadius:"60px 50px 50px 0px",
+          borderRadius: "60px 50px 50px 0px",
         };
       default:
         return baseStyle;
@@ -210,79 +207,92 @@ export const SavingPlanPage = () => {
           Your {data.potPurpose} Saving Plan
         </h1>
         <div className="goal-section">
-          <div className="header-container-savepage" >
+          <div className="header-container-savepage">
             <div className="saving-plan-top-container-savingpage">
               <div>
                 <div className="creating-pot-container-savingplan-page">
-                <span
-                          style={{...getShapeStyle( data.category.shape , data.category.backgroundColor)}}
-                          mr={4}
-                          className="category-icon"
-                        >
-                          {data.category.iconType === "url" && (
-                            
-                              <img
-                                alt="Category Icon"
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "contain",
-                                  borderRadius:
-                                    shape === "circle" ? "50%" : "0", 
-                                }}
-                                src={data.category.icon}
-                              />
-                            
-                          )}
-                          {data.category.iconType === "class" && (
-                            
-                              <div className="category-items-style">
-                          <span>
-                            <i className={data.category.icon}></i>
-                          </span>
-                          <h1>{data.category.name}</h1>
-                        </div>
-                            
-                          )}
+                  <span
+                    style={{
+                      ...getShapeStyle(
+                        data.category.shape,
+                        data.category.backgroundColor
+                      ),
+                    }}
+                    mr={4}
+                    className="category-icon"
+                  >
+                    {data.category.iconType === "url" && (
+                      <img
+                        alt="Category Icon"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "contain",
+                          borderRadius: shape === "circle" ? "50%" : "0",
+                        }}
+                        src={data.category.icon}
+                      />
+                    )}
+                    {data.category.iconType === "class" && (
+                      <div className="category-items-style">
+                        <span>
+                          <i className={data.category.icon}></i>
                         </span>
-
+                        <h1>{data.category.name}</h1>
+                      </div>
+                    )}
+                  </span>
                 </div>
               </div>
               <div className="saving-plan-top-right-container-saving-plan">
                 <div className="plan-details-savingpage">
                   <h1 className="current-amount-savingpage">
-                      <span>₹{balance}</span> Current Balance
+                    <span>₹{balance}</span> Current Balance
                   </h1>
                 </div>
                 <div className="progress-bar">
                   <div
                     className="progress"
                     style={{
-                      width: `${
-                        (balance / data.targetAmount) * 100
-                      }%`,
+                      width: `${(balance / data.targetAmount) * 100}%`,
                       backgroundColor: data.color || "blue",
                     }}
                   ></div>
+                </div >
+                <div >
+                  <span  className="progress-text-savingpage">
+                    {Math.round((balance / data.targetAmount) * 100)}% of ₹
+                    {data.targetAmount}
+                  </span>
                 </div>
-                <span className="progress-text-savingpage">
-                  {((balance / data.targetAmount) * 100)}% of ₹
-                  {data.targetAmount}
+              </div>
+              <div>
+                <span className="progress-text-savingplan-deduction">
+                  {data.autoDeduction && data.autoDeductionStatus && (
+                    <>
+                      {" "}
+                      Next Deduction:{" "}
+                      {calculateNextDeductionDate(
+                        data
+                      ).toLocaleDateString()}{" "}
+                    </>
+                  )}
                 </span>
               </div>
             </div>
-              <div>
-              <h3 className="current-amount-savingpage"><span>{daysRequired}</span> Days Left to Reach Target</h3>
+            <div>
+              <h3 className="current-amount-savingpage">
+                <span>{daysRequired}</span> Days Left to Reach Target
+              </h3>
             </div>
           </div>
         </div>
 
         <div className="money-and-date-container">
-          <div className="money-deails-container">
-          </div>
+          <div className="money-deails-container"></div>
         </div>
         <div>
-               {/* <div className="add-goal-card" onClick={onOptionsOpen}>
+          {/* <div className="add-goal-card" onClick={onOptionsOpen}>
             <i className="fa-solid fa-bars"></i>Manage
           </div> */}
           <SavingPlanHistory />
