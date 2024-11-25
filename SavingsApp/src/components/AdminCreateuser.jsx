@@ -12,6 +12,7 @@ import {
   VStack,
   useToast,
 } from "@chakra-ui/react";
+import { Breadcrumbs } from "./BreadCrumb";
 
 const AdminCreateUser = () => {
   const [name, setName] = useState("");
@@ -73,6 +74,8 @@ const AdminCreateUser = () => {
       borderRadius="md"
       bg="white"
     >
+
+<Breadcrumbs/>
       <Text fontSize="2xl" align={"center"}>Create user</Text>
       <form onSubmit={handleSubmit}>
         <VStack spacing={4}>

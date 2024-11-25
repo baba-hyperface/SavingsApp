@@ -8,16 +8,32 @@ const userRouter = express.Router();
 userRouter.get('/searchusers/:searchTerm', protect, authorize(["admin"]), async (req, res) => {
     try {
         const { searchTerm } = req.params;
-        
+        const { page = 1, limit = 10 } = req.query; // Default to page 1 and limit of 10
+
+        const skip = (page - 1) * limit;
+
+        // Perform the search with pagination
         const users = await User.find({
-            email: { $regex: searchTerm, $options: 'i' } 
+            email: { $regex: searchTerm, $options: 'i' } // Case-insensitive match
+        })
+            .skip(skip)
+            .limit(Number(limit)); // Convert limit to a number
+
+        // Count total matching users (for pagination)
+        const totalUsers = await User.countDocuments({
+            email: { $regex: searchTerm, $options: 'i' }
         });
 
         if (users.length === 0) {
             return res.status(404).json({ message: "No users found with the provided email." });
         }
 
-        res.status(200).json({ users });
+        res.status(200).json({
+            users,
+            totalUsers, // Total number of matching users
+            totalPages: Math.ceil(totalUsers / limit), // Total number of pages
+            currentPage: Number(page) // Current page
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server error occurred." });
@@ -29,6 +45,30 @@ userRouter.get('/user',protect,authorize(["admin"]), async (req, res) => {
     try {
         const users = await User.find().populate('pots').populate('history');
         res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+userRouter.get('/users', protect, authorize(["admin"]), async (req, res) => {
+    const { page = 1, limit = 10 } = req.query; // Defaults to page 1 and 10 users per page
+
+    try {
+        const totalUsers = await User.countDocuments(); // Total number of users
+        const users = await User.find()
+            .populate('pots')
+            .populate('history')
+            .skip((page - 1) * limit) // Skip documents from previous pages
+            .limit(Number(limit)); // Limit the number of documents per page
+
+        console.log(`Page: ${page}, Users sent: ${users.length}, Total Users: ${totalUsers}`);
+
+        res.json({
+            users,          // Paginated users
+            totalUsers,     // Total number of users (for frontend to calculate pages)
+            totalPages: Math.ceil(totalUsers / limit), // Total pages for frontend navigation
+            currentPage: Number(page), // Current page number
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -157,5 +197,22 @@ userRouter.delete('/users/:id',protect,authorize(["admin"]), async (req, res) =>
     }
 });
 
+userRouter.get("/userspots/all-potsfetch",protect,authorize(["admin"]), async (req, res) => {
+    
+    try {
+      const usersWithPots = await User.find({ pots: { $exists: true, $ne: [] } }).populate("pots");
+  
+      const allPots = usersWithPots.reduce((acc, user) => {
+        acc.push(...user.pots);
+        return acc;
+      }, []);
+  
+      res.status(200).json(allPots);
+    } catch (error) {
+      console.error("Error fetching pots:", error);
+      res.status(500).json({ message: "Server error occurred.", error: error.message });
+    }
+  });
+  
 
   export default userRouter;

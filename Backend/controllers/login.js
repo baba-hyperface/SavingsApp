@@ -2,6 +2,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/usermodel.js';
 import {} from "dotenv/config";
+import { faker } from '@faker-js/faker'; // For generating dummy data
+import { pipeline } from 'stream/promises';
 
 const generateToken = (user) => {
     return jwt.sign(
@@ -23,7 +25,7 @@ export const register = async (req, res) => {
         const userExist = await User.findOne({ email });
         console.log(userExist);
         if (!userExist) {
-            const hashedPassword = await bcrypt.hash(password, 10);
+            const hashedPassword = await bcrypt.hash(password, 1);
             console.log("register hash", hashedPassword);
             const newuser={name,email,password:hashedPassword,accountNumber,expDate,totalBalance:0,pots:[],history:[]};
             if(role){
@@ -137,5 +139,110 @@ export const logout = (req, res) => {
         });
     } catch (err) {
         res.status(401).json({ isAuthenticated: false });
+    }
+};
+
+export const generateUsers = async (req, res) => {
+
+    let accountNumber = 100000;
+    try {
+        const { count = 1000000 } = req.body; // Total number of users to create
+        const batchSize = 10000; // Number of users per batch
+        const hashedPassword = '$2a$10$eW5G8s9b4VhojYqNYy.FhOw8JZI4PYnAhLfW9fke69ZHy2lBOHQJK'; // Pre-hashed password
+
+        console.time("User Generation and Insertion"); // Start timer
+
+        // Helper functions to generate unique emails and account numbers
+        const uniqueEmails = new Set();
+        const uniqueAccountNumbers = new Set();
+
+        // const generateUniqueEmail = () => {
+        //     let email;
+        //     do {
+        //         email = faker.internet.email();
+        //     } while (uniqueEmails.has(email));
+        //     uniqueEmails.add(email);
+        //     return email;
+        // };
+        const generateUniqueEmail = (index) => `user${index}@example.com`;
+
+        
+
+        // const generateUniqueAccountNumber = () => {
+        //     let accountNumber;
+        //     do {
+        //         accountNumber = faker.number.int({ min: 100000, max: 999999 });
+        //     } while (uniqueAccountNumbers.has(accountNumber));
+        //     uniqueAccountNumbers.add(accountNumber);
+        //     return accountNumber;
+        // };
+        const generateUniqueAccountNumber = () => accountNumber++;
+
+
+        let totalInserted = 0; // Counter for successfully inserted users
+        // Stream-based batch generation and insertion
+        await pipeline(
+            // Generate batches of users
+            async function* generateUsers() {
+                for (let i = 1; i < count; i += batchSize+1) {
+                    const users = [];
+                    for (let j = 1; j < Math.min(batchSize+1, count - i+1); j++) {
+                        users.push({
+                            name: faker.person.fullName(),
+                            email: generateUniqueEmail(i+j),
+                            password: hashedPassword,
+                            accountNumber: generateUniqueAccountNumber(),
+                            expDate: faker.date.future(),
+                            totalBalance: faker.number.int({ min: 100, max: 100000 }),
+                            pots: [],
+                            history: [],
+                            role: 'user',
+                        });
+                    }
+                    yield users;
+                }
+            },
+            // Insert each batch into the database
+            async function* insertBatches(source) {
+                for await (const batch of source) {
+                    try {
+                        const result = await User.collection.insertMany(batch, { ordered: false });
+                        totalInserted += result.insertedCount;
+                        console.log(`Inserted ${result.insertedCount} users`);
+                    } catch (error) {
+                        console.error("Batch insert error:", error.message);
+                    }
+                }
+            }
+        );
+
+        console.timeEnd("User Generation and Insertion"); // End timer
+
+        res.status(201).json({ message: `${totalInserted+10000} users created successfully` });
+    } catch (err) {
+        console.error("Error during user generation:", err);
+        res.status(500).send({ message: 'Internal server error', error: err.message });
+    }
+};
+
+export const deleteLastMillionUsers = async (req, res) => {
+    try {
+        // Fetch the last 1 million users based on their `_id` (newest first)
+        const lastMillionUsers = await User.find()
+            .sort({ _id: -1 }) // Sort by `_id` in descending order
+            .limit(6)    // Limit to 1 million users
+            .select('_id');    // Fetch only the `_id` field to reduce memory usage
+
+        // Extract the IDs of these users
+        const userIds = lastMillionUsers.map(user => user._id);
+
+        // Delete all users whose `_id` is in the list
+        const result = await User.deleteMany({ _id: { $in: userIds } });
+
+        // Respond with the number of deleted users
+        res.status(200).json({ message: `${result.deletedCount} users deleted successfully.` });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal server error', error: err.message });
     }
 };

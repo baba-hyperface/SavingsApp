@@ -431,19 +431,21 @@ export const SaveButton = ({
                           className="category-icon"
                         >
                           {cat.iconType === "url" && (
-                            <>
+                            <div >
                               <img
+                                src={cat.icon}
                                 alt="Category Icon"
                                 style={{
+                                  border:"1px solid ",
                                   width: "100%",
                                   height: "100%",
                                   objectFit: "contain",
                                   borderRadius:
                                     category.shape === "circle" ? "50%" : "0", // Circle-specific styling
                                 }}
-                                src={cat.icon}
                               />
-                            </>
+                            <p>{cat.name}</p>
+                            </div>
                             
                           )}
                           {cat.iconType === "class" && (
@@ -456,7 +458,6 @@ export const SaveButton = ({
                           )}
                         </span>
                       </div>
-                          {/* <p style={{color: "black"}}>{cat.name}</p> */}
                     </div>
                   ))}
                 </div>
@@ -475,7 +476,7 @@ export const SaveButton = ({
                           className="category-icon"
                         >
                           {iconType === "url" && (
-                            <>
+                            <div >
                               <img
                                 alt="Category Icon"
                                 style={{
@@ -486,8 +487,9 @@ export const SaveButton = ({
                                     shape === "circle" ? "50%" : "0", 
                                 }}
                                 src={icon}
-                              />
-                            </>
+                              /> 
+                            <p >{iconname}</p>
+                            </div>
                           )}
                           {iconType === "class" && (
                             <div className="category-items-style">
@@ -524,7 +526,7 @@ export const SaveButton = ({
                           className="category-icon"
                         >
                           {iconType === "url" && (
-                            <>
+                            <div>
                               <img
                                 alt="Category Icon"
                                 style={{
@@ -536,7 +538,8 @@ export const SaveButton = ({
                                 }}
                                 src={icon}
                               />
-                            </>
+                            <p>{iconname}</p>
+                            </div>
                           )}
                           {iconType === "class" && (
                            <div className="category-items-style">
@@ -563,7 +566,7 @@ export const SaveButton = ({
                           className="category-icon"
                         >
                           {iconType === "url" && (
-                            <>
+                            <div>
                               <img
                                 alt="Category Icon"
                                 style={{
@@ -575,7 +578,8 @@ export const SaveButton = ({
                                 }}
                                 src={icon}
                               />
-                            </>
+                            <p>{iconname}</p>
+                            </div>
                           )}
                           {iconType === "class" && (
                             <div className="category-items-style">
@@ -609,7 +613,7 @@ export const SaveButton = ({
                           className="category-icon"
                         >
                           {iconType === "url" && (
-                            <>
+                            <div>
                               <img
                                 alt="Category Icon"
                                 style={{
@@ -621,7 +625,8 @@ export const SaveButton = ({
                                 }}
                                 src={icon}
                               />
-                            </>
+                            <p>{iconname}</p>
+                            </div>
                           )}
                           {iconType === "class" && (
                             <div className="category-items-style">
@@ -661,7 +666,7 @@ export const SaveButton = ({
                           className="category-icon"
                         >
                           {iconType === "url" && (
-                            <>
+                            <div>
                               <img
                                 alt="Category Icon"
                                 style={{
@@ -673,8 +678,8 @@ export const SaveButton = ({
                                 }}
                                 src={icon}
                               />
-                              <h1>{iconname}</h1>
-                            </>
+                              <p>{iconname}</p>
+                            </div>
                           )}
                           {iconType === "class" && (
                             <div className="category-items-style">
@@ -713,7 +718,7 @@ export const SaveButton = ({
                           className="category-icon"
                         >
                           {iconType === "url" && (
-                            <>
+                            <div>
                               <img
                                 alt="Category Icon"
                                 style={{
@@ -725,7 +730,8 @@ export const SaveButton = ({
                                 }}
                                 src={icon}
                               />
-                            </>
+                            <p>{iconname}</p>
+                            </div>
                           )}
                           {iconType === "class" && (
                             <div className="category-items-style">
@@ -765,7 +771,7 @@ export const SaveButton = ({
                           className="category-icon"
                         >
                           {iconType === "url" && (
-                            <>
+                            <div>
                               <img
                                 alt="Category Icon"
                                 style={{
@@ -777,7 +783,8 @@ export const SaveButton = ({
                                 }}
                                 src={icon}
                               />
-                            </>
+                            <p>{iconname}</p>
+                            </div>
                           )}
                           {iconType === "class" && (
                             <div className="category-items-style">
@@ -925,7 +932,7 @@ export const SaveButton = ({
                           className="category-icon"
                         >
                           {iconType === "url" && (
-                            <>
+                            <div>
                               <img
                                 alt="Category Icon"
                                 style={{
@@ -937,7 +944,8 @@ export const SaveButton = ({
                                 }}
                                 src={icon}
                               />
-                            </>
+                            <p>{iconname}</p>
+                            </div>
                           )}
                           {iconType === "class" && (
                             <div className="category-items-style">

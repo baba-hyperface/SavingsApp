@@ -12,6 +12,7 @@ import api from "./api";
 import "../styles/Admin.css"; 
 import { Link } from "react-router-dom";
 import { AdminNavigation } from "./AdminNavigation";
+import { Breadcrumbs } from "./BreadCrumb";
 
 const ShowCategory = () => {
   const [categories, setCategories] = useState([]);
@@ -144,13 +145,15 @@ const ShowCategory = () => {
 
   return (
     <div className="admin-container">
+
+<Breadcrumbs/>
       <AdminNavigation />
       <Flex py={4} alignItems={"center"} mt={4} justifyContent={"space-between"}>
       <Heading size="lg" textAlign="center">
         Categories
       </Heading>
       <span>
-            <Link className="nav-link" to="/admincreatecategory">
+            <Link className="nav-link" to="/Category/CreateCategory">
             Create Category
             </Link>
             </span>

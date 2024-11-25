@@ -3,6 +3,7 @@ import api from "./api";
 import { useParams } from "react-router-dom";
 import "../styles/AdminPot.css";
 import { AdminNavigation } from "./AdminNavigation";
+import { Breadcrumbs } from "./BreadCrumb";
 
 export const AdminPot = () => {
   const [potData, setPotData] = useState([]);
@@ -75,6 +76,8 @@ export const AdminPot = () => {
 
   return (
     <div className="admin-container">
+
+<Breadcrumbs/>
       <h1>Manage Saving Plans</h1>
       <h3>User Name: {user}</h3>
       <table className="user-table">

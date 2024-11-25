@@ -13,6 +13,7 @@ import {
   useToast
 } from "@chakra-ui/react";
 import api from "./api";
+import { Breadcrumbs } from "./BreadCrumb";
 
 export const CategoryForm = () => {
   const [name, setName] = useState("");
@@ -137,6 +138,7 @@ export const CategoryForm = () => {
       bg="white"
       _dark={{ bg: "gray.800" }}
     >
+      <Breadcrumbs/>
       <Heading size="md" mb={4} textAlign="center">
         Create New Category
       </Heading>
