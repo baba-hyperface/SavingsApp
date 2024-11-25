@@ -5,8 +5,8 @@ import { useLocation, Link } from "react-router-dom";
 // Static breadcrumb map
 const breadcrumbMap = {
   "/admin": "Users",
-  "/admin/users": "Users",
   "/Category": "Category",
+  "/admin/createuser":"User Creation",
   "/Category/CreateCategory": "Create Category",
   "/Allsavingplan":'All Saving Plans'
 };

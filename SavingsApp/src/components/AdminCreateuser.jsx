@@ -13,6 +13,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Breadcrumbs } from "./BreadCrumb";
+import { AdminNavigation } from "./AdminNavigation";
 
 export const AdminCreateUser = () => {
   const [name, setName] = useState("");
@@ -70,13 +71,12 @@ export const AdminCreateUser = () => {
       mx="auto"
       mt="10"
       p="6"
-      boxShadow="md"
-      borderRadius="md"
       bg="white"
     >
 
 <Breadcrumbs/>
       <Text fontSize="2xl" align={"center"}>Create user</Text>
+      <AdminNavigation/>
       <form onSubmit={handleSubmit}>
         <VStack spacing={4}>
           <FormControl id="name" isRequired>

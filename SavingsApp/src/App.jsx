@@ -284,7 +284,7 @@ function App() {
               }
             />
             <Route
-              path="/createuser"
+              path="/admin/createuser"
               element={
                 <PrivateRoute role="admin">
                   <motion.div

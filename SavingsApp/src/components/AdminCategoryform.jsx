@@ -134,13 +134,10 @@ export const CategoryForm = () => {
       </div>
       <div>
       <Box
-      maxW="500px"
+      maxW="600px"
       mx="auto"
       mt={8}
       p={6}
-      borderWidth="1px"
-      borderRadius="lg"
-      boxShadow="lg"
       bg="white"
       _dark={{ bg: "gray.800" }}
     >
