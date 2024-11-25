@@ -13,7 +13,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 
-const AdminCreateUser = () => {
+export const AdminCreateUser = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -150,5 +150,3 @@ const AdminCreateUser = () => {
     </Box>
   );
 };
-
-export default AdminCreateUser;

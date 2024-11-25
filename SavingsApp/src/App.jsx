@@ -14,13 +14,13 @@ import { Transaction } from "./components/Transaction";
 import { DonutChart } from "./components/DonutChart";
 import Admin from "./components/Admin";
 import { AdminPot } from "./components/AdminPot";
-import AdminCreateUser from "./components/AdminCreateuser";
 import PrivateRoute from "./PrivateRouter";
 import { SavingPlans } from "./components/SavingPlans";
 import { AdminSavingPlan } from "./components/AdminSavingPlan";
 import api from "./components/api";
 import ShowCategory from "./components/AdminCategoryList";
 import { CategoryForm } from "./components/AdminCategoryform";
+import { AdminCreateUser } from "./components/AdminCreateuser";
 
 function App() {
   const [potData, setPotData] = useState([]);
@@ -132,15 +132,8 @@ function App() {
               path="/dashboard"
               element={
                 <PrivateRoute>
-                  <motion.div
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                    variants={pageVariants}
-                    transition={pageTransition}
-                  >
                     <DashBoard />
-                  </motion.div>
+
                 </PrivateRoute>
               }
             />

@@ -130,7 +130,7 @@ export const SavingPlanPage = () => {
 
   if (loading) {
     return (
-      <div className="loading-container">
+      <div className="loading-container-saving-plan">
         <Spinner size="xl" color="blue.500" />
       </div>
     );
@@ -291,10 +291,7 @@ export const SavingPlanPage = () => {
         <div className="money-and-date-container">
           <div className="money-deails-container"></div>
         </div>
-        <div>
-          {/* <div className="add-goal-card" onClick={onOptionsOpen}>
-            <i className="fa-solid fa-bars"></i>Manage
-          </div> */}
+        <div className="savingplanpage-history">
           <SavingPlanHistory />
         </div>
       </div>

@@ -222,5 +222,3 @@ export const AdminPot = () => {
     </div>
   );
 };
-
-export default AdminPot;

@@ -13,6 +13,7 @@ import {
   useToast
 } from "@chakra-ui/react";
 import api from "./api";
+import { AdminNavigation } from "./AdminNavigation";
 
 export const CategoryForm = () => {
   const [name, setName] = useState("");
@@ -126,7 +127,12 @@ export const CategoryForm = () => {
   };
 
   return (
-    <Box
+    <div>
+      <div>
+        <AdminNavigation />
+      </div>
+      <div>
+      <Box
       maxW="500px"
       mx="auto"
       mt={8}
@@ -274,6 +280,8 @@ export const CategoryForm = () => {
         </Text>
       </Flex>
     </Box>
+    </div>
+      </div>
   );
 };
 
