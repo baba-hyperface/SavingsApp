@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { Breadcrumbs } from "./BreadCrumb";
 
-const AdminCreateUser = () => {
+export const AdminCreateUser = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -153,5 +153,3 @@ const AdminCreateUser = () => {
     </Box>
   );
 };
-
-export default AdminCreateUser;

@@ -15,6 +15,7 @@ import {
   useBreakpointValue,
   Box,
   Spinner,
+  Skeleton,
 } from "@chakra-ui/react";
 import api from "./api";
 import { FiFilter, FiTrash2 } from "react-icons/fi";
@@ -23,7 +24,6 @@ import { usePlans } from "./ContextApi";
 import { FilterModal } from "./FilterModel";
 import EditDeductionModel from "./EditDetuctionModel";
 import { SaveButton } from "./SaveButton";
-import moment from "moment";
 import { AuthContext } from "./AuthApi";
 import { calculateNextDeductionDate } from "./DeActivatedPage";
 export const SavingPlans = () => {
@@ -210,26 +210,6 @@ export const SavingPlans = () => {
   const activePlans = filteredPlans.filter((plan) => plan.potStatus);
   const deactivatedPlans = filteredPlans.filter((plan) => !plan.potStatus);
 
-
-  if (loading) {
-    return (
-      <div className="loading-container">
-        <Spinner size="xl" color="blue.500" />
-      </div>
-    );
-  }
-
-  if (filteredPlans.length === 0 && !selectedCategory && !filterByAutoDeduction && !autoDeductionStatus) {
-    return (
-      <div className="no-saving-plan-container saving-plans-container">
-        <h1>Start Saving</h1>
-        <div>
-          <SaveButton />
-        </div>
-      </div>
-    )
-  }
-
   const totalBalanceCal = activePlans.reduce((acc, curr) => {
     return acc + curr.currentBalance;
   }, 0);
@@ -262,7 +242,7 @@ export const SavingPlans = () => {
         return {
           ...baseStyle,
           backgroundColor,
-          borderRadius: "50px 50px 0 0",
+          borderRadius: "100px 100px 10px 10px",
         };
       case "star":
         return {
@@ -275,7 +255,7 @@ export const SavingPlans = () => {
         return {
           ...baseStyle,
           backgroundColor,
-          clipPath: "polygon(0% 20%, 100% 20%, 100% 80%, 0% 80%)", // "Den" shape with rectangular style
+          clipPath: "polygon(0% 20%, 100% 20%, 100% 80%, 0% 80%)", 
           width: "50px",
           height: "50px",
         };
@@ -292,6 +272,55 @@ export const SavingPlans = () => {
     }
   };
 
+  useEffect(() => {
+    const checkDetails = () => {
+      if (activePlans.length === 0 && deactivatedPlans.length === 0) {
+        return (
+          <div className="no-saving-plan-container saving-plans-container">
+            <h1>Start Saving</h1>
+            <div>
+              <SaveButton />
+            </div>
+          </div>
+        )
+      }
+    }
+    checkDetails();
+  }, [])
+
+
+  const renderSkeletons = () =>
+    Array.from({ length: activePlans.length + deactivatedPlans.length }).map((_, index) => (
+      <div key={index} className="plan-card skeleton-card">
+        <div className="saving-plan-top-container">
+          <div>
+            <Skeleton circle={true} height={40} width={40} />
+          </div>
+          <div className="saving-plan-top-right-container">
+            <Skeleton width="60%" height={7} mb={3} />
+            <Skeleton width="80%" height={7} mb={3}/>
+            <Skeleton width="90%" height={7} />
+          </div>
+        </div>
+        <div className="savingplan-middle-border">
+          <Skeleton height={1} />
+        </div>
+        <div className="action-buttons-saving">
+          <Skeleton width="30%" height={30} />
+          <Skeleton width="30%" height={30} />
+          <Skeleton width="30%" height={30} />
+        </div>
+      </div>
+    ));
+
+    
+    if (loading) {
+      return (
+        <div className="plans-list">
+          {renderSkeletons()}
+        </div>
+      );
+    }
 
   return (
     <div>
