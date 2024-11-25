@@ -215,6 +215,7 @@ export const SavingPlans = () => {
   }, 0);
 
   const getShapeStyle = (shape, backgroundColor) => {
+    console.log("getShape is called");
     const baseStyle = {
       display: "flex",
       margin: "auto",
@@ -348,7 +349,7 @@ export const SavingPlans = () => {
                 <div>
                   <div className="creating-pot-savingplan">
                     <span
-                      style={{ ...getShapeStyle(plan.category.shape, plan.category.backgroundColor) }}
+                      style={{ ...getShapeStyle(plan.category.shape? plan.category.shape:"", plan.category.backgroundColor) }}
                       mr={4}
                       className="category-icon"
                     >
@@ -370,6 +371,8 @@ export const SavingPlans = () => {
                       {plan.category.iconType === "class" && (
                        <div className="category-items-style-plans">
                        <span>
+                        {console.log("gdftgdgfdgfdg",plan.category)}
+                        {console.log("gdftgdgfdgfdg",plan)}
                          <i className={plan.category.icon}></i>
                        </span>
                        <h1>{plan.category.name}</h1>

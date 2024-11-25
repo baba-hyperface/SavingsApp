@@ -2,16 +2,16 @@ import React, { useEffect, useState } from 'react'
 import api from './api';
 import { Link } from 'react-router-dom';
 import { AdminNavigation } from './AdminNavigation';
+import { Breadcrumbs } from './BreadCrumb';
 
 export const AdminSavingPlan = () => {
       const [users, setUsers] = useState([]);
       const[loading, setLoading] = useState(true);
-      const arr = [];
       
       useEffect(() => {
             const fetchUsers = async () => {
                 try {
-                    const res = await api.get(`/user`);
+                    const res = await api.get(`/userspots/all-potsfetch`);
                     setUsers(res.data);
                 } catch (error) {
                     console.log("Error fetching users:", error);
@@ -21,16 +21,6 @@ export const AdminSavingPlan = () => {
             };
             fetchUsers();
         }, []);
-
-        
-
-
-        for(let i = 0; i < users.length; i++){
-            for(let j = 0; j < users[i].pots.length;j++){
-                  arr.push(users[i].pots[j])
-            }
-        }
-
         
         if(loading){
             return <p>Loading....</p>
@@ -42,8 +32,9 @@ export const AdminSavingPlan = () => {
              <div className="admin-navigation">
             <AdminNavigation />
             </div>
+            <Breadcrumbs/>
             <h1>All Saving plan</h1>
-      <h3>Total Saving Plan : {arr.length}</h3>
+      <h3>Total Saving Plan : {users.length}</h3>
       <table className="user-table">
         <thead>
           <tr>
@@ -57,7 +48,7 @@ export const AdminSavingPlan = () => {
           </tr>
         </thead>
         <tbody>
-          {arr
+          {users
             .sort((a, b) => new Date(b.startDate) - new Date(a.startDate))
             .map((pot) => (
               <tr key={pot._id}>

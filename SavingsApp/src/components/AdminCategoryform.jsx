@@ -13,6 +13,7 @@ import {
   useToast
 } from "@chakra-ui/react";
 import api from "./api";
+import { Breadcrumbs } from "./BreadCrumb";
 import { AdminNavigation } from "./AdminNavigation";
 
 export const CategoryForm = () => {
@@ -143,6 +144,7 @@ export const CategoryForm = () => {
       bg="white"
       _dark={{ bg: "gray.800" }}
     >
+      <Breadcrumbs/>
       <Heading size="md" mb={4} textAlign="center">
         Create New Category
       </Heading>

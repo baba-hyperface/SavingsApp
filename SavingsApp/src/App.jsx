@@ -234,7 +234,7 @@ function App() {
               }
             />
             <Route
-              path='/adminshowcategory'
+              path='/Category'
               element={
                 <PrivateRoute role="admin">
                   <motion.div
@@ -250,8 +250,8 @@ function App() {
               }
             />
 
-<Route
-             path='/admincreatecategory'
+          <Route
+             path='/Category/CreateCategory'
               element={
                 <PrivateRoute role="admin">
                   <motion.div
@@ -268,7 +268,7 @@ function App() {
             />
 
             <Route
-              path="/allsavingplan"
+              path="/Allsavingplan"
               element={
                 <PrivateRoute role="admin">
                   <motion.div
