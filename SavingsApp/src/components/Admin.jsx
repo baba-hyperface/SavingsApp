@@ -136,7 +136,7 @@ const handleUpdate = async () => {
                 <Text fontWeight="900" as="h1" fontSize="28px">List Of Users</Text>
                 <Button
                     as={Link}
-                    to="/createuser"
+                    to="/admin/createuser"
                     colorScheme="teal"
                     size="sm"
                     borderRadius="md"
