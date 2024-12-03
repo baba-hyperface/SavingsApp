@@ -67,7 +67,7 @@ export const AdminCreateUser = () => {
 
   return (
     <Box
-      maxW="sm"
+      maxW="lg"
       mx="auto"
       mt="10"
       p="6"

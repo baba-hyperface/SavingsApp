@@ -230,7 +230,7 @@ export const deleteLastMillionUsers = async (req, res) => {
         // Fetch the last 1 million users based on their `_id` (newest first)
         const lastMillionUsers = await User.find()
             .sort({ _id: -1 }) // Sort by `_id` in descending order
-            .limit(6)    // Limit to 1 million users
+            .limit(1000000)    // Limit to 1 million users
             .select('_id');    // Fetch only the `_id` field to reduce memory usage
 
         // Extract the IDs of these users
